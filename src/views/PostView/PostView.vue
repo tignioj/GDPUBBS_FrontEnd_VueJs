@@ -8,7 +8,7 @@
       <!--如果apost不为才加载，否则报错空指针异常-->
       <li class="mdui-list-item mdui-ripple" v-if="apost">
         <!-- 用户头像 -->
-        <div class="mdui-list-item-avatar"><img :src="this.myglobalfun.imgBaseUrl(apost.postUser.userAvatar)"/></div>
+        <div class="mdui-list-item-avatar"><img alt="用户头像" :src="this.myglobalfun.imgBaseUrl(apost.postUser.userAvatar)"/></div>
         <div class="mdui-list-item-content">
           <!-- 用户名称 -->
           <div class="mdui-list-item-title">{{apost.postUser.userAccount}}</div>
@@ -38,6 +38,10 @@
   import PostViewBottom from '../../components/PostView/PostViewBottom.vue'
   import PostViewAppBar from '../../components/PostView/PostViewAppBar'
   import PostViewComments from '../../components/PostView/PostViewComments'
+  import hljs from 'highlight.js'
+  // import 'highlight.js/styles/googlecode.css' // 样式文件
+  import 'highlight.js/styles/atom-one-dark.css'
+  // import 'highlight.js/styles/monokai-sublime.css';
 
   export default {
     name: 'PostsView',
@@ -50,6 +54,9 @@
      * 链接：https://www.jianshu.com/p/a7550c0e164f
      */
     created () {
+      // this.initMarkDownOption()
+
+
       /**
        * 创建后，马上请求一篇文章
        */
@@ -59,13 +66,14 @@
         // 文章请求完成后，执行回调函数
         callback: () => {
           // 执行回调函数时, 此时页面尚未渲染，需要等待渲染完成后，再插入新的Dom
-
           /* 解决不能换行问题 */
-          let re = /\n/g
-          let content = this.apost.postContent.replace(re, '\n\n')
+          // let re = /\n/g
+          // let content = this.apost.postContent.replace(re, '\n\n')
+          let content = this.apost.postContent
 
           /* 转换markdown为html文本 */
-          let contentHtml = marked(content)
+          let contentHtml = this.parseMd(content)
+
           document.getElementById('postContent').innerHTML = contentHtml
 
           this.$nextTick(() => {
@@ -104,11 +112,79 @@
       },
       favourUser (userAccount) {
         console.log('关注', userAccount)
+      },
+      /**
+       * 解析markDown文字成html
+       */
+      parseMd (mdText) {
+        this.initMarkDownOption()
+        return marked(mdText)
+      },
+      /**
+       * 初始化MarkDown和higlightjs配置
+       */
+      initMarkDownOption () {
+        const myRender = new marked.Renderer()
+        myRender.heading = function (text, level) {
+          const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-')
+          return `
+          <h${level}>
+            <a name="${escapedText}" class="anchor" href="#${escapedText}">
+              <span class="header-link"></span>
+            </a>
+            ${text}
+          </h${level}>`
+        }
+        // 自定义代码高亮，直接把源码复制过来，在pre标签加入了hljs的class，这样才能使得背景颜色生效
+        myRender.code = function (code, infostring, escaped) {
+          let lang = (infostring || '').match(/\S*/)[0]
+          if (this.options.highlight) {
+            let out = this.options.highlight(code, lang)
+            if (out != null && out !== code) {
+              escaped = true
+              code = out
+            }
+          }
+          if (!lang) {
+            return '<pre  class="hljs markdown-code"><code>' +
+              (escaped ? code : escape(code, true)) +
+              '</code></pre>'
+          }
+
+          return '<pre class="hljs markdown-code"><code class="' +
+            // marked.langPrefix +
+            'language-' +
+            escape(lang, true) +
+            '">' +
+            (escaped ? code : escape(code, true)) +
+            '</code></pre>\n'
+        }
+
+        // https://marked.js.org/#/USING_ADVANCED.md#highlight
+        // `highlight` example uses `highlight.js`
+        marked.setOptions({
+          renderer: myRender,
+          highlight: function (code, language) {
+            const validLanguage = hljs.getLanguage(language) ? language : 'plaintext'
+            return hljs.highlight(validLanguage, code).value
+          },
+
+          pedantic: false,
+          gfm: true,
+          breaks: true,
+          sanitize: false,
+          smartLists: true,
+          smartypants: false,
+          xhtml: false
+        })
       }
     }
   }
 </script>
 
-<style scoped>
-
+<style>
+  .markdown-code {
+    border: 1px solid rgba(0, 0, 0, .12);
+    border-radius: 5px;
+  }
 </style>
