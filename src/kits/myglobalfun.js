@@ -1,5 +1,4 @@
 import common from './common.js'
-
 /**
  * 清除应用栏，侧栏，顶栏的空位
  */
@@ -30,9 +29,6 @@ const onlyTopHeaderBar = function () {
   addBodyComponentClass()
   document.body.classList.remove("mdui-appbar-with-tab-larger", "mdui-appbar-with-toolbar")
 }
-
-
-
 
 
 

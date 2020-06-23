@@ -19,7 +19,6 @@
 
             <!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 -->
             <div class="mdui-card-media">
-
               <!--图片地址 -->
               <img :src="myglobalfun.imgBaseUrl(post.postImg)" />
               <!-- 卡片中可以包含一个或多个菜单按钮 -->

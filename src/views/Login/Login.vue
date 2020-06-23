@@ -38,8 +38,6 @@
                :src="captchaBase64Img"
                ref="captcha"
           >
-
-
         </div>
         <div class="mdui-col">
           <div class="mdui-textfield mdui-textfield-floating-label mdui-m-a-0 mdui-p-t-0 mdui-p-r-2">

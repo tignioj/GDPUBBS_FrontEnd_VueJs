@@ -10,6 +10,7 @@ import Login from '../views/Login/Login.vue'
 import Categories from '../views/Categories/Categories.vue'
 import UserInfoMe from '../views/UserInfo/UserInfoMe/UserInfoMe.vue'
 import UserInfoOther from '../views/UserInfo/UserInfoOther/UserInfoOther.vue'
+import PostAddPreview from '../views/PostAddPreview/PostAddPreview.vue'
 
 
 
@@ -33,7 +34,13 @@ export default new Router({
     },
     {
       path: '/addpost',
-      component: PostAdd
+      component: PostAdd,
+      meta: { keepAlive: true }
+    },
+    {
+      name: 'previewpost',
+      path: '/previewpost',
+      component: PostAddPreview
     },
     {
       path: '/editpost',

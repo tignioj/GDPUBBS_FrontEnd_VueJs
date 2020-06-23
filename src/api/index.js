@@ -52,4 +52,5 @@ export const reqblob = (url) => reqBlob(BASE_URL + url)
 // 实时获取用户信息，保持登陆
 export const requserProfile = () => ajax(BASE_URL + '/login/userProfile')
 
+// 请求其它用户信息
 export const reqOtherUserProfile = (userAccount) => ajax(BASE_URL + `/user/profile/${userAccount}`)

@@ -14,3 +14,4 @@ export const RECEIVE_COMMENTS_BY_POSTID = 'receive_comments_by_postid' // 根据
 export const RECEIVE_USER_PROFILE = 'receive_user_profile' // 接收用户概览消息
 
 export const RESET_USER_INFO = 'reset_user_info' // 重置用户信息
+

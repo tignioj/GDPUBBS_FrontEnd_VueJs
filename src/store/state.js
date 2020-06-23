@@ -19,5 +19,6 @@ export default {
   indexcategory: [], // 主页所有分类
   apost: '', // 篇帖子
   comments: [], // 一篇帖子的所有评论
-  userProfile: '' // 登陆用户部分信息
+  userProfile: '', // 登陆用户部分信息
+  postPreviewText: '' // markdown预览用
 }
