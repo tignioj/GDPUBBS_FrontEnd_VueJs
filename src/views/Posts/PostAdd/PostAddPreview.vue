@@ -19,8 +19,9 @@
         content: ''
       }
     },
-    activated () {
+    created () {
       let html = this.parseMd(this.$route.params.content)
+      console.log(html)
       this.content = html
     },
     methods: {

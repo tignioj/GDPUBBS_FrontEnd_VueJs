@@ -55,8 +55,6 @@
      */
     created () {
       // this.initMarkDownOption()
-
-
       /**
        * 创建后，马上请求一篇文章
        */

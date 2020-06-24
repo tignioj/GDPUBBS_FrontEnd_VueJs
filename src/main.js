@@ -12,7 +12,6 @@ import myglobalfun from './kits/myglobalfun.js'
 Vue.use(mdui)
 Vue.use(myglobalfun)
 
-
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

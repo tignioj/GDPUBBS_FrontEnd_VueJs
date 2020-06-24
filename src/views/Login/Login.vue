@@ -50,7 +50,7 @@
 
       <div class="mdui-row-xs-2 mdui-m-b-1">
         <div class="mdui-col">
-          <button class="mdui-btn mdui-btn-block mdui-color-theme-accent mdui-ripple">注册</button>
+          <button class="mdui-btn mdui-btn-block mdui-color-theme-accent mdui-ripple" @click="regist()">注册</button>
         </div>
         <div class="mdui-col">
           <button class="mdui-btn mdui-btn-block mdui-color-theme-accent mdui-ripple" @click="login()">登陆</button>
@@ -63,7 +63,7 @@
 
 <script>
   import {mutation} from 'mdui/dist/js/mdui'
-  import {reqbase64Img, reqPwdLogin} from '../../api'
+  import {reqbase64Img, reqPwdLogin, reqPwdRegist} from '../../api'
   import LoginTopBar from '../../components/TopBar/LoginTopBar/LoginTopBar'
 
   export default {
@@ -77,10 +77,34 @@
         usernametips: '',
         pwdtips: '',
         codetips: '',
-        captchaBase64Img: ''
+        captchaBase64Img: '',
+        userexistedtip: ''
       }
     },
     methods: {
+      async regist () {
+        // 1. 表单校验
+        if (!this.checkInput()) {
+          return
+        }
+        const {username, pwd, code} = this
+
+        // 2. 异步注册
+        let result = await reqPwdRegist({username, pwd, code})
+        if (result.code === 0) {
+          const user = result.data
+          console.log(result.data)
+          // 将user保存到vuex的state
+          this.$store.dispatch('recordUser', user)
+          // 去个人中心界面
+          this.$router.replace('/profile')
+        } else {
+          // 显示新的图片验证码
+          this.getCaptcha()
+          // 错误信息
+          this.showLoginError(result.msg)
+        }
+      },
       async login () {
         // 1. 表单校验
         if (!this.checkInput()) {
@@ -138,10 +162,16 @@
         if (!(typeof (this.codetips) === 'undefined')) {
           err.push('code')
         }
-        this.usernametips = msg.err_username
+
+        this.usernametips = msg.err_username == null ? msg.err_existed : undefined
         if (!(typeof (this.usernametips) === 'undefined')) {
           err.push('username')
         }
+
+        // this.userexistedtip = msg.err_existed
+        // if (!(typeof (this.userexistedtip) === 'undefined')) {
+        //   err.push('username')
+        // }
 
         if (err.length > 0) {
           this.focusError(err)
@@ -155,6 +185,7 @@
         // 把焦点定位在第一个错误上面
         document.getElementById(err[0]).focus()
         for (let i = 0; i < err.length; i++) {
+          console.log(err[i])
           document.getElementById(err[i]).parentNode.classList.add('mdui-textfield-invalid')
         }
       },

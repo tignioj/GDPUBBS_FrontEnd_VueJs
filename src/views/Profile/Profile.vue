@@ -36,7 +36,9 @@
               </div>
               <div class="mdui-col">
                 <span class="mdui-center" style="text-align: center">{{userProfile.posts}}</span>
-                <button class="mdui-btn mdui-btn-block  mdui-ripple">帖子</button>
+                <button class="mdui-btn mdui-btn-block  mdui-ripple"
+                        @click="$router.push(globaRouterURL.MY_POSTS)">
+                  帖子</button>
               </div>
             </div>
           </div>
@@ -84,7 +86,7 @@
       </div>
     </div>
     <div class="mdui-container mdui-p-t-2" v-else>
-      <button @click="$router.push('/login')"
+      <button @click="$router.push(globaRouterURL.LOGIN)"
               class="mdui-btn mdui-color-theme mdui-btn-raised  mdui-btn-block mdui-color-theme-accent mdui-ripple">
         点击登陆
       </button>

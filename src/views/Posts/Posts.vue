@@ -12,7 +12,7 @@
       <div class="mdui-fab-dial" style="height: 0px;">
         <button class="mdui-fab mdui-fab-mini mdui-ripple mdui-color-pink" style="transition-delay: 0ms;">
           <a class="mdui-color-theme"
-             @click="$router.push('/addpost/')"
+             @click="$router.push('/post/add/')"
           ><i class="mdui-icon material-icons">add_circle_outline</i></a>
         </button>
         <button class="mdui-fab mdui-fab-mini mdui-ripple mdui-color-red" style="transition-delay: 15ms;"><i

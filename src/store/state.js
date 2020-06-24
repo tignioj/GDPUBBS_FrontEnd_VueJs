@@ -17,7 +17,7 @@ export default {
   currentminblock: {}, // 当前所在的小版块
   indexposts: [], // 主页帖子信息
   indexcategory: [], // 主页所有分类
-  apost: '', // 篇帖子
+  apost: '', // 一篇帖子
   comments: [], // 一篇帖子的所有评论
   userProfile: '', // 登陆用户部分信息
   postPreviewText: '' // markdown预览用

@@ -10,7 +10,8 @@ import {
   RECEIVE_APOST_BYID,
   RECEIVE_COMMENTS_BY_POSTID,
   RECEIVE_USER_PROFILE,
-  RESET_USER_INFO
+  RESET_USER_INFO,
+  POST_ADD_ONE
 } from './mutation-types'
 
 export default {
@@ -37,5 +38,8 @@ export default {
   },
   [RESET_USER_INFO] (state) {
     state.userProfile = ''
+  },
+  [POST_ADD_ONE] (state, {count}) {
+    state.userProfile.posts = parseInt(state.userProfile.posts) + count
   }
 }

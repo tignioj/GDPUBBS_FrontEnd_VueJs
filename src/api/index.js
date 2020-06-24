@@ -17,7 +17,7 @@ export const reqIndexblockbigs = () => ajax(BASE_URL + '/index/blockbigs')
  * @param id
  * @returns {*|Promise<any>}
  */
-export const reqAPostById = (id) => ajax(BASE_URL + `/post/${id}`)
+export const reqAPostById = (id) => ajax(BASE_URL + `/post/id/${id}`)
 
 /**
  * 给帖子点赞或者踩
@@ -40,6 +40,19 @@ export const reqPwdLogin = ({username, pwd, code}) => ajax(BASE_URL + '/login/pw
   code
 }, 'POST')
 
+export const reqPwdRegist = ({username, pwd, code}) => ajax(BASE_URL + '/login/pwdregist', {
+  userAccount: username,
+  userPassword: pwd,
+  code
+}, 'POST')
+
+
+// 删除一个帖子
+export const deleteOnePost = (postUid) => ajax(BASE_URL + '/post/delete', {
+  postUid: postUid
+}, 'POST')
+
+
 // 异步登出
 export const reqLogout = () => ajax(BASE_URL + '/login/logout')
 
@@ -54,3 +67,6 @@ export const requserProfile = () => ajax(BASE_URL + '/login/userProfile')
 
 // 请求其它用户信息
 export const reqOtherUserProfile = (userAccount) => ajax(BASE_URL + `/user/profile/${userAccount}`)
+
+// 请求我的帖子
+export const reqMyPosts = () => ajax(BASE_URL + '/post/myposts')

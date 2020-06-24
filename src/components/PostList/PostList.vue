@@ -15,12 +15,12 @@
               </div>
           </router-link>
 
-          <router-link :to="'/viewpost/' + post.postUid" tag="div">
+          <router-link :to="'/post/view/' + post.postUid" tag="div">
 
             <!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 -->
             <div class="mdui-card-media">
               <!--图片地址 -->
-              <img :src="myglobalfun.imgBaseUrl(post.postImg)" />
+              <img  v-if="post.postImg"  :src="myglobalfun.imgBaseUrl(post.postImg)" />
               <!-- 卡片中可以包含一个或多个菜单按钮 -->
               <!--        <div class="mdui-card-menu">-->
               <!--          <button class="mdui-btn mdui-btn-icon mdui-text-color-white"><i class="mdui-icon material-icons">share</i></button>-->

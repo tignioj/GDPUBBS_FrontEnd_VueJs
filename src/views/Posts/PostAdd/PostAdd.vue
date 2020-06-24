@@ -70,6 +70,8 @@
 
 <script>
   import {mapState} from 'vuex'
+  import axios from 'axios'
+  import mdui from 'mdui'
 
   export default {
     name: 'PostsAdd',
@@ -109,9 +111,65 @@
 
         // 注意：如果路由里面没有写name属性，而这里却用name的话，会返回到'/'，可以通过name路由传参而不显示在url上
         // 2. 如果配置了path, 没有配置name, 只能通过query传参，这样子会显示在URL上面
-        this.$router.push({name: 'previewpost', params: {title: title, content: content}})
+        this.$router.push({name: '/post/preview', params: {title: title, content: content}})
         // self.$router.push({path: '/previewpost', params: {text: '# abc'}})
         // self.$router.push('/previewpost')
+      },
+      submit: function (event) {
+        // event.preventDefault()
+
+        let formData = new FormData(document.getElementById('form'))
+
+        // // 下面是表单绑定的data 数据
+        // formData.append('name', this.name);
+        // formData.append('age', this.age);
+        // formData.append('file', this.file);
+
+        // 根据后台接收参数格式进行修改
+        let config = {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+        // vue-resource
+        axios.post('api/post/add', formData, config).then(res => {
+          console.log(res.data)
+
+          // success callback
+          let obj = res.data
+          let view = true
+          const self = this
+          if (obj.code === 1) {
+            // 未登录
+            this.$router.push('/login')
+          }
+
+          if (obj.code === 0) {
+            // 帖子数量加1
+            this.$store.dispatch('postCountAddOne', 1)
+
+            mdui.snackbar({
+              message: '创建成功，3秒后自动跳转到帖子',
+              buttonText: '取消',
+              onClick: function () {
+                self.$router.push('/post/view/' + obj.data)
+              },
+              onButtonClick: function () {
+                view = false
+              },
+              onClose: function () {
+              }
+            })
+            if (view) {
+              setTimeout(function () {
+                self.$router.push('/post/view/' + obj.data)
+              }, 3000)
+            }
+          }
+        }).catch(err => {
+          // error callback
+          console.log(err)
+        })
       }
     },
     mounted () {
@@ -171,20 +229,13 @@
 
       // 监听提交按钮
       document.getElementById('submitBtn').onclick = function () {
-        // 获取大板块
-        // var category = document.getElementsByClassName('mdui-typo-title')[0].innerText
-        // 获取子版块
-        // var subCategory = document.getElementsByClassName('mdui-tab-active')[0].getElementsByTagName('label')[0].innerText
-        // 给隐藏表单赋值
-        // document.getElementById("bblock").value = category;
-        // document.getElementById("mblock").value = subCategory;
-
         document.getElementById('bblock').value = self.currentbigblock.bBlockUid
         document.getElementById('mblock').value = self.currentminblock.blockMinUid
         // console.log(self.currentbigblock.bBlockUid)
         // console.log(self.currentminblock.blockMinUid)
         // 提交
-        document.getElementById('form').submit()
+        // document.getElementById('form').submit()
+        self.submit()
       }
     }
   }

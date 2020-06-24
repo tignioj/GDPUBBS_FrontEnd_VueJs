@@ -1,21 +1,23 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Posts from '../views/Posts/Posts.vue'
-import PostView from '../views/PostView/PostView.vue'
-import PostAdd from '../views/PostAdd/PostAdd.vue'
-import PostEdit from '../views/PostsEdit/PostEdit.vue'
+import PostView from '../views/Posts/PostView.vue'
+import PostAdd from '../views/Posts/PostAdd/PostAdd.vue'
+import PostEdit from '../views/Posts/PostEdit.vue'
 import Messages from '../views/Messages/Messages.vue'
 import Profile from '../views/Profile/Profile.vue'
 import Login from '../views/Login/Login.vue'
 import Categories from '../views/Categories/Categories.vue'
 import UserInfoMe from '../views/UserInfo/UserInfoMe/UserInfoMe.vue'
 import UserInfoOther from '../views/UserInfo/UserInfoOther/UserInfoOther.vue'
-import PostAddPreview from '../views/PostAddPreview/PostAddPreview.vue'
-
-
+import PostAddPreview from '../views/Posts/PostAdd/PostAddPreview.vue'
+import MyPosts from '../views/Posts/MyPosts.vue'
+import routerURL from './routeurl.js'
 
 
 Vue.use(Router)
+Vue.use(routerURL)
+const routerUrl = Vue.prototype.globaRouterURL
 
 export default new Router({
   routes: [
@@ -29,36 +31,40 @@ export default new Router({
       }
     },
     {
-      path: '/viewpost/:id',
+      path: routerUrl.POST_VIEW + '/:id',
       component: PostView
     },
     {
-      path: '/addpost',
+      path: routerUrl.POST_ADD,
       component: PostAdd,
-      meta: { keepAlive: true }
+      meta: {keepAlive: true}
+    },
+    /* 我的帖子 */
+    {
+      path: routerUrl.MY_POSTS,
+      component: MyPosts
     },
     {
-      name: 'previewpost',
-      path: '/previewpost',
+      name: routerUrl.POST_PREVIEW,
+      path: routerUrl.POST_PREVIEW,
       component: PostAddPreview
     },
     {
-      path: '/editpost',
+      path: routerUrl.POST_EDIT + '/:id',
       component: PostEdit
     },
     /* 分类 */
     {
-      path: '/categories',
+      path: routerUrl.CATEGORIES,
       component: Categories,
       meta: {
         showBottom: true,
         showSideBar: true
       }
     },
-
     /* 消息 */
     {
-      path: '/messages',
+      path: routerUrl.MESSAGE,
       component: Messages,
       meta: {
         showBottom: true,
@@ -67,7 +73,7 @@ export default new Router({
     },
     /* 个人中心 */
     {
-      path: '/profile',
+      path: routerUrl.PROFILE,
       component: Profile,
       meta: {
         showBottom: true,
@@ -92,13 +98,17 @@ export default new Router({
         showSideBar: true
       }
     },
+
     {
-      path: '/login',
+      path: routerUrl.LOGIN,
       component: Login
     },
+
+    /* 主页 */
     {
       path: '/',
       redirect: '/posts'
     }
+
   ]
 })

@@ -9,7 +9,8 @@ import {
   RECEIVE_APOST_BYID,
   RECEIVE_COMMENTS_BY_POSTID,
   RECEIVE_USER_PROFILE,
-  RESET_USER_INFO
+  RESET_USER_INFO,
+  POST_ADD_ONE
 } from './mutation-types'
 
 import {
@@ -73,6 +74,10 @@ export default {
   // 同步记录用户信息
   recordUser ({commit}, userProfile) {
     commit(RECEIVE_USER_PROFILE, {userProfile})
+  },
+  // 同步帖子数量+1且更新首页的帖子
+  postCountAddOne ({commit}, count) {
+    commit(POST_ADD_ONE, {count})
   },
   // 异步登出
   async logout ({commit}) {
