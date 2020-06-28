@@ -1,8 +1,7 @@
 <template>
 
   <div id="bottomNav" class="mdui-bottom-nav  mdui-color-theme">
-    <a href="javascript:void(0)" class="mdui-ripple mdui-ripple-white ">
-
+    <a href="javascript:void(0)" @click="openCommentEditor(true)" class="mdui-ripple mdui-ripple-white ">
       <i class="mdui-icon material-icons">edit</i>
       <label>回复</label>
     </a>
@@ -28,6 +27,10 @@
     methods: {
       goTo (path) {
         this.$router.replace(path)
+      },
+      openCommentEditor (isShow) {
+        console.log('open replyer')
+        this.$emit('showEditor', isShow)
       }
     },
     mounted () {

@@ -1,34 +1,50 @@
 <template>
-  <div class="mdui-container">
-    <PostViewAppBar/>
 
-    <!-- 帖子信息 -->
-    <div @click="$router.push('/userinfoother/' + apost.postUser.userAccount)" id="postInfo"
-         class="mdui-card mdui-hoverable mdui-m-t-1">
-      <!--如果apost不为才加载，否则报错空指针异常-->
-      <li class="mdui-list-item mdui-ripple" v-if="apost">
-        <!-- 用户头像 -->
-        <div class="mdui-list-item-avatar"><img alt="用户头像" :src="this.myglobalfun.imgBaseUrl(apost.postUser.userAvatar)"/></div>
-        <div class="mdui-list-item-content">
-          <!-- 用户名称 -->
-          <div class="mdui-list-item-title">{{apost.postUser.userAccount}}</div>
-          <div class="mdui-list-item-text mdui-list-item-one-line"><span class="mdui-text-color-theme-text">{{apost.postDate | date-format}}</span>
+  <div>
+    <div id="img-header-div" v-if="apost && apost.postImg">
+      <img class="img-header" :src="apost.postImg"/>
+    </div>
+
+    <div class="mdui-container">
+<!--      <PostViewAppBar/>-->
+      <!-- 帖子信息 -->
+      <div @click="$router.push('/userinfoother/' + apost.postUser.userAccount)" id="postInfo"
+           class="mdui-card mdui-hoverable mdui-m-t-1">
+        <!--如果apost不为才加载，否则报错空指针异常-->
+        <li class="mdui-list-item mdui-ripple" v-if="apost">
+          <!-- 用户头像 -->
+          <div class="mdui-list-item-avatar"><img alt="用户头像"
+                                                  :src="this.myglobalfun.imgBaseUrl(apost.postUser.userAvatar)"/></div>
+          <div class="mdui-list-item-content">
+            <!-- 用户名称 -->
+            <div class="mdui-list-item-title">{{apost.postUser.userAccount}}</div>
+            <div class="mdui-list-item-text mdui-list-item-one-line"><span class="mdui-text-color-theme-text">{{apost.postDate | date-format}}</span>
+            </div>
           </div>
-        </div>
-        <div @click.stop="favourUser(apost.postUser.userAccount)" class="mdui-chip">
-          <span class="mdui-chip-title">关注</span>
-        </div>
-      </li>
+          <div @click.stop="favourUser(apost.postUser.userAccount)" class="mdui-chip">
+            <span class="mdui-chip-title">关注</span>
+          </div>
+        </li>
+      </div>
+
+
+      <!-- 内容 -->
+      <div id="postContent" class="mdui-card mdui-hoverable mdui-m-t-1 mdui-p-x-3 mdui-p-y-1">
+      </div>
+
+      <PostViewCommentEditor
+        class="mdui-card mdui-hoverable mdui-m-t-1 mdui-p-x-3 mdui-p-y-1" id="postViewCommentEditor"
+        @commentsUpdate="commentsUpdate"
+        :post-uid="this.$route.params.id"
+      />
+
+      <PostViewComments ref="comments"
+        :apostUid="apost.postUid" v-show="postCommentCount > 0"
+      />
+      <!--底部栏-->
+      <!--      传给组件一个方法-->
+      <PostViewBottom @showEditor="showEditor"/>
     </div>
-
-
-    <!-- 内容 -->
-    <div id="postContent" class="mdui-card mdui-hoverable mdui-m-t-1 mdui-p-x-3 mdui-p-y-1">
-    </div>
-
-    <PostViewComments :apostUid="apost.postUid" v-if="apost"/>
-    <!--底部栏-->
-    <PostViewBottom/>
   </div>
 </template>
 
@@ -38,6 +54,8 @@
   import PostViewBottom from '../../components/PostView/PostViewBottom.vue'
   import PostViewAppBar from '../../components/PostView/PostViewAppBar'
   import PostViewComments from '../../components/PostView/PostViewComments'
+  import PostViewCommentEditor from '../../components/PostView/PostViewCommentEditor'
+
   import hljs from 'highlight.js'
   // import 'highlight.js/styles/googlecode.css' // 样式文件
   import 'highlight.js/styles/atom-one-dark.css'
@@ -45,7 +63,7 @@
 
   export default {
     name: 'PostsView',
-    components: {PostViewComments, PostViewAppBar, PostViewBottom},
+    components: {PostViewCommentEditor, PostViewComments, PostViewAppBar, PostViewBottom},
     /**
      * 在created()钩子函数执行的时候DOM 其实并未进行任何渲染，而此时进行DOM操作无异于徒劳，
      * 所以此处一定要将DOM操作的js代码放进Vue.nextTick()的回调函数中。
@@ -68,12 +86,9 @@
           // let re = /\n/g
           // let content = this.apost.postContent.replace(re, '\n\n')
           let content = this.apost.postContent
-
           /* 转换markdown为html文本 */
           let contentHtml = this.parseMd(content)
-
           document.getElementById('postContent').innerHTML = contentHtml
-
           this.$nextTick(() => {
             this.setImgSize()
           })
@@ -84,10 +99,30 @@
       /* 拿到帖子后，有一个回调函数 */
       ...mapState(['apost'])
     },
+    data () {
+      return {
+        postCommentCount: 0
+      }
+    },
     mounted () {
       this.myglobalfun.cleanTopTabCard()
+      this.postCommentCount = this.apost.postComments
     },
     methods: {
+      commentsUpdate () {
+        this.postCommentCount = this.postCommentCount + 1
+        this.$refs.comments.commentsUpdate()
+      },
+      // 滚动到评论编辑器
+      showEditor (isShow) {
+        // this.isShowEditor = isShow
+        this.$nextTick(() => {
+          let ed = document.getElementById('postViewCommentEditor')
+          console.log('scroll to view:', ed)
+          ed.scrollIntoView({behavior: "auto", block: "center", inline: "center"})
+          // ed.scrollTo(0, 100)
+        })
+      },
       /**
        * 防止图片超出屏幕范围
        * @param imgs
@@ -184,5 +219,14 @@
   .markdown-code {
     border: 1px solid rgba(0, 0, 0, .12);
     border-radius: 5px;
+  }
+
+  #img-header-div {
+    height: 100px;
+  }
+
+  .img-header {
+    height: auto;
+    min-width: 100%;
   }
 </style>

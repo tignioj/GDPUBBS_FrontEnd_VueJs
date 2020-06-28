@@ -1,10 +1,6 @@
 <template>
   <div class="mdui-container">
-    PostsAdd
-
-    <div></div>
-
-
+    <h1>添加帖子</h1>
     <form id="form" method="post" enctype="multipart/form-data"
           action="/api/post/add"
     >
@@ -18,14 +14,15 @@
         <div class="mdui-textfield-error">标题不能为空</div>
       </div>
 
-
       <div class="mdui-textfield">
         <textarea name="postContent" id="content" class="mdui-textfield-input" maxlength="10000"
                   placeholder="输入内容；（支持Markdown）" required></textarea>
         <div class="mdui-textfield-error">内容不能为空</div>
       </div>
 
-      <input name="fileupload" id="file" type="file" multiple="multiple" accept="image/jpeg,image/gif,image/png"
+      <!--      <input name="fileupload" id="file" type="file" multiple="multiple" accept="image/jpeg,image/gif,image/png"-->
+      <!--             style="display:none"/>-->
+      <input name="fileupload" id="file" type="file" accept="image/jpeg,image/gif,image/png"
              style="display:none"/>
       <span>上传图片</span>
 
@@ -57,7 +54,8 @@
     <hr/>
     <!-- 提交按钮 -->
     <button id="submitBtn" style="float:right"
-            class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent mdui-m-b-2">发布
+            class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent mdui-m-b-2"
+    >发布
     </button>
 
     <button id="previewBtn" style="float:left"
@@ -79,7 +77,8 @@
       return {
         imgsFile: [],
         postBigBlogUid: null,
-        postMinBlockUid: null
+        postMinBlockUid: null,
+        base64Img: null
       }
     },
     // 修改列表页的meta值，false时再次进入页面会重新请求数据。
@@ -109,9 +108,14 @@
         let content = document.getElementById('content').value.trim()
         let title = document.getElementById('title').value.trim()
 
+        console.log(title, content, this.base64Img)
         // 注意：如果路由里面没有写name属性，而这里却用name的话，会返回到'/'，可以通过name路由传参而不显示在url上
         // 2. 如果配置了path, 没有配置name, 只能通过query传参，这样子会显示在URL上面
-        this.$router.push({name: '/post/preview', params: {title: title, content: content}})
+        this.$router.push({
+            name: '/post/preview',
+            params: {title: title, content: content, base64Img: this.base64Img}
+          }
+        )
         // self.$router.push({path: '/previewpost', params: {text: '# abc'}})
         // self.$router.push('/previewpost')
       },
@@ -152,7 +156,7 @@
               message: '创建成功，3秒后自动跳转到帖子',
               buttonText: '取消',
               onClick: function () {
-                self.$router.push('/post/view/' + obj.data)
+                self.$router.replace('/post/view/' + obj.data)
               },
               onButtonClick: function () {
                 view = false
@@ -162,7 +166,7 @@
             })
             if (view) {
               setTimeout(function () {
-                self.$router.push('/post/view/' + obj.data)
+                self.$router.replace('/post/view/' + obj.data)
               }, 3000)
             }
           }
@@ -171,6 +175,9 @@
           console.log(err)
         })
       }
+    },
+    activated () {
+      this.myglobalfun.cleanBodyComponentClass()
     },
     mounted () {
       let self = this
@@ -198,11 +205,12 @@
             let reader = new FileReader()
             // 监听reader对象的的onload事件，当图片加载完成时，把base64编码賦值给预览图片
             reader.addEventListener('load', function () {
+              let imgData = reader.result
               let div = document.createElement('div')
               let imgEle = document.createElement('img')
               let url = document.createElement('span')
               url.appendChild(document.createTextNode('图片链接：' + f.name))
-              imgEle.setAttribute('src', reader.result)
+              imgEle.setAttribute('src', imgData)
               imgEle.setAttribute('width', '100')
               imgEle.setAttribute('height', '100')
               imgEle.setAttribute('alt', f.name)
@@ -211,6 +219,7 @@
               div.appendChild(url)
               document.getElementById('preview').appendChild(div)
               console.log('append:' + reader)
+              self.base64Img = imgData
               // previewImg.src = reader.result
             }, false)
             // 调用reader.readAsDataURL()方法，把图片转成base64
@@ -222,9 +231,12 @@
 
       // 删除图片文件
       document.getElementById('deleteImg').onclick = function () {
-        fileEle.value = ''
-        fileEle.outerHtml = fileEle.outerHTML
-        previewImg.src = ''
+        let previewImg = document.getElementById('previewImg')
+        if (previewImg !== undefined && previewImg !== null) {
+          fileEle.value = ''
+          fileEle.outerHtml = fileEle.outerHTML
+          previewImg.src = ''
+        }
       }
 
       // 监听提交按钮

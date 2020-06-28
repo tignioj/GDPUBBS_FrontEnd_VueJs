@@ -1,7 +1,8 @@
 <template>
   <div>
     <div class="mdui-toolbar mdui-color-theme">
-      <a @click="$emit('leftTopButtonClick')" href="javascript:;" class="mdui-btn mdui-btn-icon" ><i class="mdui-icon material-icons">{{iconname}}</i></a>
+      <a @click="$emit('leftTopButtonClick')" href="javascript:;" class="mdui-btn mdui-btn-icon" >
+        <i class="mdui-icon material-icons">{{iconname}}</i></a>
       <a href="javascript:;" class="mdui-typo-title">{{title}}</a>
       <div class="mdui-toolbar-spacer"></div>
 

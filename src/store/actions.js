@@ -61,9 +61,12 @@ export default {
   },
   async getpostbyuid ({commit}, {id, callback}) {
     const result = await reqAPostById(id)
-    const apost = result
-    commit(RECEIVE_APOST_BYID, {apost})
-    callback && callback()
+    if (result.code === 0) {
+      const apost = JSON.parse(result.data)
+      console.log(apost)
+      commit(RECEIVE_APOST_BYID, {apost})
+    }
+    callback(result)
   },
   async getcommentsbypostuid ({commit}, {id, callback}) {
     const result = await reqCommentsByPostId(id)

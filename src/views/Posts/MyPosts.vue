@@ -1,6 +1,17 @@
 <template>
   <div id="myposts">
-    <h1>我的帖子</h1>
+<!--    <div id="navigationBar" class="mdui-appbar mdui-appbar-fixed">-->
+<!--      &lt;!&ndash; <div id="navigationBar" class="mdui-appbar mdui-appbar-fixed"> &ndash;&gt;-->
+<!--      &lt;!&ndash; <div id="navigationBar" class="mdui-appbar"> &ndash;&gt;-->
+<!--      <div class="mdui-toolbar mdui-color-theme">-->
+<!--        <a  class="mdui-btn mdui-btn-icon" @click.prevent="$router.back()"><i class="mdui-icon material-icons">arrow_back</i></a>-->
+<!--        <a href="javascript:;" class="mdui-typo-title">我的帖子</a>-->
+<!--        <div class="mdui-toolbar-spacer"></div>-->
+<!--        <a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+<!--        <a href="javascript:;" @click="$router.go(0)" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">refresh</i></a>-->
+<!--        <a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">more_vert</i></a>-->
+<!--      </div>-->
+<!--    </div>-->
     <div id="content" class="mdui-container">
       <div id="contentDoc" class="mdui-row-xs-1 mdui-row-sm-2 mdui-row-xl-3  mdui-grid-list ">
         <div class="mdui-card mdui-col mdui-hoverable mdui-m-y-1 " v-for="(post, index) in myposts"
@@ -45,7 +56,7 @@
           <!-- 卡片的按钮 -->
           <div class="mdui-card-actions">
             <!--            <button class="mdui-btn mdui-ripple">点赞:{{post.postGood}}</button>-->
-            <button @click="this.$router.push(globaRouterURL.POST_EDIT + '/' + id)" class="mdui-btn mdui-ripple">编辑
+            <button @click="$router.push(globaRouterURL.POST_EDIT + '/' + post.postUid)" class="mdui-btn mdui-ripple">编辑
             </button>
             <button @click="deletePost(post.postTitle, post.postUid)" class="mdui-btn mdui-ripple">删除</button>
             <!--            <button class="mdui-btn mdui-ripple">评论:{{post.postComments}}</button>-->
@@ -94,16 +105,13 @@
         })
       },
       async confirmDelete (postUid) {
-        console.log(postUid)
         let post = await deleteOnePost(postUid)
-        console.log(post)
         if (post.code === 0) {
           this.reqposts()
         }
       },
       async reqposts () {
         let posts = await reqMyPosts()
-        console.log(JSON.parse(posts.data))
         this.myposts = JSON.parse(posts.data)
       }
     }

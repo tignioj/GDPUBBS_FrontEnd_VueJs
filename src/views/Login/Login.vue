@@ -163,7 +163,12 @@
           err.push('code')
         }
 
-        this.usernametips = msg.err_username == null ? msg.err_existed : undefined
+        console.log(msg.err_username)
+        this.usernametips = (msg.err_username === undefined ? msg.err_existed : msg.err_username)
+        if (this.usernametips === undefined) {
+          this.usernametips = msg.err_notexits
+        }
+        console.log(this.usernametips)
         if (!(typeof (this.usernametips) === 'undefined')) {
           err.push('username')
         }

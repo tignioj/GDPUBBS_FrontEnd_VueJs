@@ -2,7 +2,8 @@
 
     <div id="content" class="mdui-container">
       <div id="contentDoc" class="mdui-row-xs-1 mdui-row-sm-2 mdui-row-xl-3  mdui-grid-list ">
-        <div class="mdui-card mdui-col mdui-hoverable mdui-m-y-1 " v-for="(post, index) in currentblockposts" :key="index">
+        <div class="mdui-card mdui-col mdui-hoverable mdui-m-y-1 " v-for="(post, index)
+        in currentblockposts" :key="index">
           <a :href="'/document/browse.html?postUid=' + post.postUid" class="docLink" style="display:none;"></a>
           <!-- 卡片头部，包含头像、标题、副标题 -->
           <router-link tag="div" :to="'/userinfoother/' + post.postUser.userAccount">

@@ -14,12 +14,12 @@ import PostAddPreview from '../views/Posts/PostAdd/PostAddPreview.vue'
 import MyPosts from '../views/Posts/MyPosts.vue'
 import routerURL from './routeurl.js'
 
-
 Vue.use(Router)
 Vue.use(routerURL)
 const routerUrl = Vue.prototype.globaRouterURL
 
 export default new Router({
+  // mode: 'history',
   routes: [
     /* 首页 */
     {
@@ -31,27 +31,59 @@ export default new Router({
       }
     },
     {
+      /* 浏览帖子 */
       path: routerUrl.POST_VIEW + '/:id',
-      component: PostView
+      component: PostView,
+      meta: {
+        appBar: {
+          title: '浏览帖子',
+          showSearch: true,
+          showReload: true,
+          showMore: true
+        }
+      }
     },
+    /* 添加帖子 */
     {
       path: routerUrl.POST_ADD,
       component: PostAdd,
-      meta: {keepAlive: true}
+      meta: {
+        keepAlive: true,
+        appBar: {
+          title: '添加帖子',
+          showSearch: true,
+          showReload: true,
+          showMore: false
+        }
+      }
     },
     /* 我的帖子 */
     {
       path: routerUrl.MY_POSTS,
-      component: MyPosts
+      component: MyPosts,
+      meta: {
+        title: '我的帖子',
+        appBar: {
+          showSearch: true,
+          showReload: true,
+          showMore: false
+        }
+      }
     },
+    /* 帖子预览 */
     {
       name: routerUrl.POST_PREVIEW,
       path: routerUrl.POST_PREVIEW,
       component: PostAddPreview
     },
+    /* 帖子编辑 */
     {
+      name: routerUrl.POST_EDIT,
       path: routerUrl.POST_EDIT + '/:id',
-      component: PostEdit
+      component: PostEdit,
+      meta: {
+        keepAlive: true
+      }
     },
     /* 分类 */
     {
@@ -103,7 +135,6 @@ export default new Router({
       path: routerUrl.LOGIN,
       component: Login
     },
-
     /* 主页 */
     {
       path: '/',

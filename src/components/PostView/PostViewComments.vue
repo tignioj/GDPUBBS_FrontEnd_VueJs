@@ -4,14 +4,14 @@
 
     <div id="postComment" class="mdui-collapse" mdui-collapse>
       <div class="mdui-collapse-item  mdui-m-t-1" v-for="(postComment, index) in comments" :key="index">
-
         <div class="mdui-collapse-item-header">
           <div class="mdui-card">
             <!-- 卡片头部，包含头像、标题、副标题 -->
             <!--用户-->
             <div class="mdui-card-header">
               <!--评论者头像-->
-              <img class="mdui-card-header-avatar" :src="myglobalfun.imgBaseUrl(postComment.postCommentFromuser.userAvatar)" />
+              <img class="mdui-card-header-avatar"
+                   :src="myglobalfun.imgBaseUrl(postComment.postCommentFromuser.userAvatar)"/>
               <div class="mdui-card-header-title">{{postComment.postCommentFromuser.userAccount}}</div>
               <!--评论日期-->
               <div class="mdui-card-header-subtitle">{{postComment.postCommentDate | date-format }}</div>
@@ -20,9 +20,8 @@
             <!--评论图片-->
             <!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 -->
             <div class="mdui-card-media mdui-m-l-2 my-img my-img-rounded">
-              <img  :src="myglobalfun.imgBaseUrl(postComment.postCommentImg)" v-if="postComment.postCommentImg" />
+              <img :src="myglobalfun.imgBaseUrl(postComment.postCommentImg)" v-if="postComment.postCommentImg"/>
             </div>
-
 
             <!--评论内容-->
             <!-- 卡片的内容 -->
@@ -33,19 +32,17 @@
               <button class="mdui-btn mdui-ripple">点赞{{postComment.postCommentGood}}</button>
               <button class="mdui-btn mdui-ripple">踩{{postComment.postCommentBad}}</button>
               <button class="mdui-btn mdui-ripple">评论{{postComment.postCommentReply.length}}</button>
-              <button class="mdui-btn mdui-btn-icon mdui-float-right"><i class="mdui-icon material-icons">expand_more</i></button>
+              <button class="mdui-btn mdui-btn-icon mdui-float-right"><i
+                class="mdui-icon material-icons">expand_more</i></button>
             </div>
           </div>
         </div>
 
-<!--二级评论-->
+        <!--二级评论-->
         <PostViewCommentReply :replys="postComment.postCommentReply"/>
       </div>
-
     </div>
   </div>
-
-
 
 
 </template>
@@ -53,6 +50,7 @@
 <script>
   import {mapState} from 'vuex'
   import PostViewCommentReply from './PostViewCommentReply'
+
   export default {
     components: {PostViewCommentReply},
     props: ['apostUid'],
@@ -60,19 +58,36 @@
     computed: {
       ...mapState(['comments'])
     },
-    created () {
-      /**
-       * 创建后，马上请求一篇文章
-       */
-      const id = this.$route.params.id
-      this.$store.dispatch('getcommentsbypostuid', {id: id,
-        // 文章请求完成后，执行回调函数
-        callback: () => {
-          // 执行回调函数时, 此时页面尚未渲染，需要等待渲染完成后，再插入新的Dom
-          this.$nextTick(() => {
-          })
-        }
+    data () {
+      return {
+        id: ''
+      }
+    },
+    methods: {
+      reqComments (callbackfunction) {
+        console.log('评论请求中...')
+        const id = this.id
+        this.$store.dispatch('getcommentsbypostuid', {
+          id: id,
+          // 文章请求完成后，执行回调函数
+          callback: callbackfunction
+        })
+      },
+      commentsUpdate () {
+        // 更新评论
+        this.reqComments(() => {
+          console.log('评论更新成功')
+        })
+      }
+    },
+    mounted () {
+      this.id = this.$route.params.id
+      this.reqComments(() => {
+        console.log('评论请求成功')
       })
+      // Event.$on('commentsUpdate', age => {
+      //   this.reqComments()
+      // })
     }
   }
 </script>
@@ -91,6 +106,7 @@
       width: 60%;
     }
   }
+
   @media screen and (min-width: 768px) {
     .my-img {
       width: 50%;
