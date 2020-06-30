@@ -16,3 +16,5 @@ export const RECEIVE_USER_PROFILE = 'receive_user_profile' // 接收用户概览
 export const RESET_USER_INFO = 'reset_user_info' // 重置用户信息
 
 export const POST_ADD_ONE = 'post_add_one' // 帖子数量+1
+
+export const CHANGE_CURRENT_POSTS_BY_BLOCKMIN = 'change_current_posts_by_blockmin' // 根据小板块uid改变当前帖子

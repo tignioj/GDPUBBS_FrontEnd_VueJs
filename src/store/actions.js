@@ -10,7 +10,8 @@ import {
   RECEIVE_COMMENTS_BY_POSTID,
   RECEIVE_USER_PROFILE,
   RESET_USER_INFO,
-  POST_ADD_ONE
+  POST_ADD_ONE,
+  CHANGE_CURRENT_POSTS_BY_BLOCKMIN
 } from './mutation-types'
 
 import {
@@ -18,7 +19,8 @@ import {
   reqIndexPosts,
   reqAPostById,
   reqCommentsByPostId,
-  reqLogout
+  reqLogout,
+  reqPostsByMinBlockUid
 } from '../api'
 
 export default {
@@ -27,7 +29,11 @@ export default {
     commit(CHANGE_CURRENT_BLOCKBIG, {currentbigblock})
   },
   changecurrentminblock ({commit}, currentminblock) {
+    localStorage.setItem('currentBlockMinUid', currentminblock.blockMinUid)
     commit(CHANGE_CURRENT_BLOCKMIN, {currentminblock})
+  },
+  changepostsbyminblock ({commit}, posts) {
+    commit(CHANGE_CURRENT_POSTS_BY_BLOCKMIN, {posts})
   },
   /**
    * 异步获取主页所有文章
@@ -43,6 +49,12 @@ export default {
     const indexposts = result
     commit(RECEIVE_INDEX_POSTS, {indexposts})
     // }
+  },
+  async getPostsByMinBlockUid ({commit}, {currentblockuid, pagecode, pagesize}) {
+    const result = await reqPostsByMinBlockUid(currentblockuid, pagecode, pagesize)
+    let page = result.data
+    console.log('get:', page)
+    commit(CHANGE_CURRENT_POSTS_BY_BLOCKMIN, {page})
   },
   /**
    * 异步获取主页上的侧栏，顶栏（即分类）信息

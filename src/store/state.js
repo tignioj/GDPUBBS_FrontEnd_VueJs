@@ -20,5 +20,6 @@ export default {
   apost: '', // 一篇帖子
   comments: [], // 一篇帖子的所有评论
   userProfile: '', // 登陆用户部分信息
-  postPreviewText: '' // markdown预览用
+  postPreviewText: '', // markdown预览用
+  currentpostsbyblockmin: {} // 帖子分页
 }

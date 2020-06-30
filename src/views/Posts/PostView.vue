@@ -86,6 +86,7 @@
           // let re = /\n/g
           // let content = this.apost.postContent.replace(re, '\n\n')
           let content = this.apost.postContent
+          this.postCommentCount = this.apost.postComments
           /* 转换markdown为html文本 */
           let contentHtml = this.parseMd(content)
           document.getElementById('postContent').innerHTML = contentHtml
@@ -106,7 +107,7 @@
     },
     mounted () {
       this.myglobalfun.cleanTopTabCard()
-      this.postCommentCount = this.apost.postComments
+
     },
     methods: {
       commentsUpdate () {

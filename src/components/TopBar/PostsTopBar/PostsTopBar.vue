@@ -53,6 +53,7 @@
         // console.log(value)
         // if (typeof (currentminblock) === "undefined") {
         // }
+
         /* mdui的一个bug，删掉该指示器 */
         this.$nextTick(() => {
           let e = document.getElementsByClassName('mdui-tab-indicator')

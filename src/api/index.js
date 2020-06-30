@@ -46,12 +46,10 @@ export const reqPwdRegist = ({username, pwd, code}) => ajax(BASE_URL + '/login/p
   code
 }, 'POST')
 
-
 // 删除一个帖子
 export const deleteOnePost = (postUid) => ajax(BASE_URL + '/post/delete', {
   postUid: postUid
 }, 'POST')
-
 
 // 异步登出
 export const reqLogout = () => ajax(BASE_URL + '/login/logout')
@@ -70,3 +68,6 @@ export const reqOtherUserProfile = (userAccount) => ajax(BASE_URL + `/user/profi
 
 // 请求我的帖子
 export const reqMyPosts = () => ajax(BASE_URL + '/post/myposts')
+
+// 根据当前小板块查询帖子
+export const reqPostsByMinBlockUid = (currentblockuid, pagecode, pagesize) => ajax(BASE_URL + '/posts/byminblock?uid=' + currentblockuid + '&pc=' + pagecode + '&ps=' + pagesize)
