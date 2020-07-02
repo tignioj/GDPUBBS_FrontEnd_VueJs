@@ -107,7 +107,6 @@
     },
     mounted () {
       this.myglobalfun.cleanTopTabCard()
-
     },
     methods: {
       commentsUpdate () {

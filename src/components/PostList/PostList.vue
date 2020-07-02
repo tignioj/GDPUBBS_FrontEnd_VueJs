@@ -2,9 +2,9 @@
 
   <div id="content" class="mdui-container">
     <div v-if="posts.length > 0" id="contentDoc" class="mdui-row-xs-1 mdui-row-sm-2 mdui-row-xl-3  mdui-grid-list ">
-
-      <div class="mdui-card mdui-col mdui-hoverable mdui-m-y-1 " v-for="(post, index)
-        in posts" :key="index">
+      <div class="mdui-card mdui-col mdui-hoverable mdui-m-y-1 "
+           v-for="(post, index)  in posts" :key="index"
+      >
         <a :href="'/document/browse.html?postUid=' + post.postUid" class="docLink" style="display:none;"></a>
         <!-- 卡片头部，包含头像、标题、副标题 -->
         <router-link tag="div" :to="'/userinfoother/' + post.postUser.userAccount">
@@ -55,6 +55,17 @@
       <!--如果没有帖子-->
       <div v-if="!posts.length">暂时没有帖子哈~</div>
     </div>
+
+    <ul id="pageIndicator">
+      <li><a @click="switchPage( 1)">首页</a></li>
+      <li v-show="isShowPrevious"><a @click="switchPage( currentPageCode-1)">上一页</a></li>
+      <li
+        :class="{'hlIndex': p === currentPageCode}"
+        v-for="(p, index)  in indexs" :key="index"
+      ><a @click="switchPage(p)">{{p}}</a></li>
+      <li v-show="isShowNext"><a @click="switchPage( currentPageCode+1)">下一页</a></li>
+      <li><a @click="switchPage(totalPageSize)">尾页</a></li>
+    </ul>
   </div>
 
 </template>
@@ -70,49 +81,125 @@
       return {
         blockminuid: '',
         posts: [],
-        pagecode: 1,
-        pagesize: 1
+        indexs: [],
+        /* 当前第几页 */
+        currentPageCode: 1,
+        /* 一共多少页 */
+        totalPageSize: 1,
+
+        /* 一次请求最多显示多少条记录 */
+        elementMaxSize: 5,
+
+        /* 显示下标数量 */
+        showIndicatorSize: 5,
+
+        /* 是否显示上一页 */
+        isShowPrevious: false,
+
+        /* 是否显示下一页 */
+        isShowNext: false
       }
     },
     methods: {
       setPosts (page) {
         localStorage.setItem('currentBlockMinUid', page.currentBlockMinUid)
-        let arr = []
+        let posts = []
         let content = page.content
         content.forEach(post => {
-          arr.push(post)
+          posts.push(post)
         })
-        this.posts = arr
-        let te = page.totalElements
-        let tp = page.totalPage
+        this.posts = posts
+        this.blockminuid = page.currentBlockMinUid
 
-        let pc = 1
-        let ps = tp / te
-        localStorage.setItem('pageCode', pc)
-        localStorage.setItem('pageSize', ps)
+        /**
+         * 1. 分页必须的元素
+         *  1) 当前页码 currentPageCode
+         *  2） 一共多少页 totalPageSize
+         *  3） 数据库中一共多少条记录 totalElements
+         *
+         */
+        let tp = page.totalPage
+        let te = page.totalElements
+
+        // 1) 当前页码 currentPageCode
+        let currentPageCode = localStorage.getItem('currentPageCode')
+        if (currentPageCode === null) {
+          currentPageCode = 1
+        }
+        this.currentPageCode = parseInt(currentPageCode)
+
+        // 2）一共多少页 totalPageSize
+        this.totalPageSize = tp
+
+        // 3） 数据库中一共多少条记录 totalElements
+        this.totalElements = te
+
+        /**
+         * 如何显示下标？
+         * 1. 显示数量 showIndicatorSize
+         * @type {number}
+         */
+
+        let indexs = []
+
+        this.isShowNext = currentPageCode < tp
+        this.isShowPrevious = currentPageCode > 1
+
+        // 显示5个下标
+        let showMax = parseInt(this.showIndicatorSize) + parseInt(currentPageCode)
+        // 如果超过总页数，则
+        if (showMax >= this.totalPageSize) {
+          for (let i = this.totalPageSize - this.showIndicatorSize; i <= this.totalPageSize; i++) {
+            if (i <= 0) {
+              continue
+            }
+            indexs.push(i)
+          }
+        } else {
+          for (let i = showMax - this.showIndicatorSize; i < showMax; i++) {
+            if (i <= 0) {
+              continue
+            }
+            indexs.push(i)
+          }
+        }
+        this.indexs = indexs
+      },
+      /**
+       * 请求帖子
+       * @param currentPageCode 当前第几页
+       * @param elementMaxSize 最多显示几条记录
+       */
+      switchPage (currentPageCode) {
+        const self = this
+        localStorage.setItem('currentPageCode', currentPageCode)
+        this.$store.dispatch('getPostsByMinBlockUid', {
+          currentblockuid: self.blockminuid,
+          pagecode: currentPageCode,
+          pagesize: self.elementMaxSize
+        })
       },
       reqPosts (blockMinUid) {
-        let pc = localStorage.getItem('pageCode')
-        let ps = localStorage.getItem('pageSize')
+        let currentPageCode = localStorage.getItem('currentPageCode')
+        let elementMaxSize = this.elementMaxSize
+
         if (blockMinUid !== null) {
-          if (pc === null) {
-            pc = 1
+          if (currentPageCode === null) {
+            currentPageCode = 1
+          } else if (currentPageCode < 1) {
+            currentPageCode = 1
           }
-          if (ps === null) {
-            ps = 5
-          }
-          console.log('mounted postlist')
           this.$store.dispatch('getPostsByMinBlockUid', {
             currentblockuid: blockMinUid,
-            pagecode: pc,
-            pagesize: ps
+            pagecode: currentPageCode,
+            pagesize: elementMaxSize
           })
         }
       }
     },
     mounted () {
       let currentBlockMinUid = localStorage.getItem('currentBlockMinUid')
-     this.reqPosts(currentBlockMinUid)
+      this.reqPosts(currentBlockMinUid)
     },
     watch: {
       'currentpostsbyblockmin': {
@@ -124,7 +211,9 @@
       'currentminblock': {
         deep: true,
         handler (val) {
+          localStorage.setItem('currentPageCode', '1')
           this.reqPosts(val.blockMinUid)
+          // 帖子板块变化，则需要重置下标
         }
       }
     },
@@ -141,4 +230,37 @@
 
 <style scoped>
 
+  #pageIndicator {
+    display: flex;
+    display: -webkit-flex; /* Safari */
+    justify-content: center;
+
+    margin: auto;
+    list-style: none;
+    /*border: 1px solid black;*/
+  }
+
+  #pageIndicator > li {
+    padding: 0;
+    margin: 0;
+    border: 1px solid rebeccapurple;
+  }
+
+  #pageIndicator > li:hover {
+    padding: 0;
+    margin: 0;
+    border: 1px solid rebeccapurple;
+  }
+
+  #pageIndicator > li > a {
+    cursor: pointer;
+    padding: 10px;
+    display: block;
+    text-decoration: none;
+  }
+
+  .hlIndex {
+    background: rebeccapurple;
+    color: white;
+  }
 </style>
