@@ -53,7 +53,6 @@ export default {
   async getPostsByMinBlockUid ({commit}, {currentblockuid, pagecode, pagesize}) {
     const result = await reqPostsByMinBlockUid(currentblockuid, pagecode, pagesize)
     let page = result.data
-    console.log('get:', page)
     commit(CHANGE_CURRENT_POSTS_BY_BLOCKMIN, {page})
   },
   /**
@@ -75,7 +74,6 @@ export default {
     const result = await reqAPostById(id)
     if (result.code === 0) {
       const apost = JSON.parse(result.data)
-      console.log(apost)
       commit(RECEIVE_APOST_BYID, {apost})
     }
     callback(result)

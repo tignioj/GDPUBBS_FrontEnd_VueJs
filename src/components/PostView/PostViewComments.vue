@@ -3,8 +3,13 @@
   <div class="mdui-card mdui-hoverable mdui-m-t-1 mdui-p-x-1 mdui-p-y-1">
 
     <div id="postComment" class="mdui-collapse" mdui-collapse>
-      <div class="mdui-collapse-item  mdui-m-t-1" v-for="(postComment, index) in comments" :key="index">
-        <div class="mdui-collapse-item-header">
+      <div class="mdui-collapse-item  mdui-m-t-1" v-for="(postComment, index) in comments" :key="index"
+      >
+        <!--        <a :href="'#' + 1" :name="'#' + postComment.postCommentPlace">#{{postComment.postCommentPlace}}</a>-->
+        <div :id="'#' + postComment.postCommentPlace" class="mdui-collapse-item-header"
+             :class="postComment.postCommentPlace==$route.query.position ? 'active' : null"
+        >
+          <!--          <a :id="'#' + postComment.postCommentPlace" >#{{postComment.postCommentPlace}}</a>-->
           <div class="mdui-card">
             <!-- 卡片头部，包含头像、标题、副标题 -->
             <!--用户-->
@@ -53,7 +58,7 @@
 
   export default {
     components: {PostViewCommentReply},
-    props: ['apostUid'],
+    props: ['apostUid', 'commentPlace'],
     name: 'PostViewComments',
     computed: {
       ...mapState(['comments'])
@@ -84,6 +89,20 @@
       this.id = this.$route.params.id
       this.reqComments(() => {
         console.log('评论请求成功')
+        // this.$nextTick()将回调延迟到下次 DOM 更新循环之后执行。在修改数据之后立即使用它，然后等待 DOM 更新。
+        this.$nextTick(() => {
+          let place = this.$route.query.position
+          if (place !== undefined) {
+            let e = document.getElementById('#' + place)
+            if (e !== null) {
+              e.scrollIntoView({
+                block: 'center',
+                inline: 'center'
+              })
+              // this.$emit('scrollToEle', e)
+            }
+          }
+        })
       })
       // Event.$on('commentsUpdate', age => {
       //   this.reqComments()
@@ -111,5 +130,9 @@
     .my-img {
       width: 50%;
     }
+  }
+
+  .active {
+    box-shadow: 5px 5px 5px #888888;
   }
 </style>

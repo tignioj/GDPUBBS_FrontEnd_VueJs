@@ -19,7 +19,8 @@ Vue.use(routerURL)
 const routerUrl = Vue.prototype.globaRouterURL
 
 export default new Router({
-  // mode: 'history',
+  // 消除路由上面的#
+  mode: 'history',
   routes: [
     /* 首页 */
     {
@@ -39,12 +40,14 @@ export default new Router({
           title: '浏览帖子',
           showSearch: true,
           showReload: true,
-          showMore: true
+          showMore: true,
+          showBack: true
         }
       }
     },
     /* 添加帖子 */
     {
+      name: 'PostsAdd',
       path: routerUrl.POST_ADD,
       component: PostAdd,
       meta: {
@@ -53,7 +56,8 @@ export default new Router({
           title: '添加帖子',
           showSearch: true,
           showReload: true,
-          showMore: false
+          showMore: false,
+          showBack: true
         }
       }
     },
@@ -62,11 +66,12 @@ export default new Router({
       path: routerUrl.MY_POSTS,
       component: MyPosts,
       meta: {
-        title: '我的帖子',
         appBar: {
+          title: '我的帖子',
           showSearch: true,
           showReload: true,
-          showMore: false
+          showMore: false,
+          showBack: true
         }
       }
     },
@@ -74,15 +79,31 @@ export default new Router({
     {
       name: routerUrl.POST_PREVIEW,
       path: routerUrl.POST_PREVIEW,
-      component: PostAddPreview
+      component: PostAddPreview,
+      meta: {
+        appBar: {
+          title: '预览帖子',
+          showBack: true,
+          showReload: false,
+          showMore: false,
+          showSearch: false
+        }
+      }
     },
     /* 帖子编辑 */
     {
-      name: routerUrl.POST_EDIT,
+      name: 'PostEdit',
       path: routerUrl.POST_EDIT + '/:id',
       component: PostEdit,
       meta: {
-        keepAlive: true
+        keepAlive: true,
+        appBar: {
+          title: '编辑帖子',
+          showBack: true,
+          showReload: false,
+          showMore: false,
+          showSearch: false
+        }
       }
     },
     /* 分类 */
@@ -100,7 +121,14 @@ export default new Router({
       component: Messages,
       meta: {
         showBottom: true,
-        showSideBar: true
+        showSideBar: true,
+        appBar: {
+          title: '我的消息',
+          showSearch: false,
+          showReload: false,
+          showMore: false,
+          showBack: false
+        }
       }
     },
     /* 个人中心 */
@@ -109,7 +137,14 @@ export default new Router({
       component: Profile,
       meta: {
         showBottom: true,
-        showSideBar: true
+        showSideBar: false,
+        appBar: {
+          showBack: false,
+          showMore: false,
+          showSearch: false,
+          showReload: false,
+          title: '个人信息'
+        }
       }
     },
     /* 查看我的用户信息 */

@@ -6,7 +6,7 @@
     </div>
 
     <div class="mdui-container">
-<!--      <PostViewAppBar/>-->
+      <!--      <PostViewAppBar/>-->
       <!-- 帖子信息 -->
       <div @click="$router.push('/userinfoother/' + apost.postUser.userAccount)" id="postInfo"
            class="mdui-card mdui-hoverable mdui-m-t-1">
@@ -39,7 +39,8 @@
       />
 
       <PostViewComments ref="comments"
-        :apostUid="apost.postUid" v-show="postCommentCount > 0"
+                        :commentPlace="postCommentPlace"
+                        :apostUid="apost.postUid" v-show="postCommentCount > 0"
       />
       <!--底部栏-->
       <!--      传给组件一个方法-->
@@ -91,7 +92,20 @@
           let contentHtml = this.parseMd(content)
           document.getElementById('postContent').innerHTML = contentHtml
           this.$nextTick(() => {
-            this.setImgSize()
+            // this.setImgSize()
+            let place = this.$route.query.position
+            if (place !== undefined) {
+              let e = document.getElementById('#' + place)
+              if (e !== undefined && e !== null) {
+                // window.scrollTo(0, e.offsetTop - document.getElementsByClassName('header')[0].offsetHeight)
+                //   console.log('scroll to ' + place, e.offsetTop)
+                e.scrollIntoView({
+                  block: 'center',
+                  inline: 'center'
+                })
+                // this.$emit('scrollToEle', e)
+              }
+            }
           })
         }
       })
@@ -102,11 +116,14 @@
     },
     data () {
       return {
-        postCommentCount: 0
+        postCommentCount: 0,
+        postCommentPlace: null
       }
     },
     mounted () {
       this.myglobalfun.cleanTopTabCard()
+      let p = this.$route.query.position
+      this.postCommentPlace = p
     },
     methods: {
       commentsUpdate () {
@@ -119,29 +136,9 @@
         this.$nextTick(() => {
           let ed = document.getElementById('postViewCommentEditor')
           console.log('scroll to view:', ed)
-          ed.scrollIntoView({behavior: "auto", block: "center", inline: "center"})
+          ed.scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'})
           // ed.scrollTo(0, 100)
         })
-      },
-      /**
-       * 防止图片超出屏幕范围
-       * @param imgs
-       */
-      setImgSize () {
-        let imgs = document.getElementsByTagName('img')
-        let clientWidth = document.body.clientWidth
-        for (let i = 0; i < imgs.length; i++) {
-          let nimg = new Image()
-          let img = imgs[i]
-          nimg.src = img.src
-
-          // 获取图片信息, 必须使用onload，否则读取为0
-          nimg.onload = function () {
-            if (img.width > clientWidth) {
-              img.style.width = '100%'
-            }
-          }
-        }
       },
       favourUser (userAccount) {
         console.log('关注', userAccount)
@@ -168,6 +165,15 @@
             ${text}
           </h${level}>`
         }
+        myRender.image = function (href, title, text) {
+          let out = '<img class="img" src="' + href + '" alt="' + text + '"'
+          if (title) {
+            out += ' title="' + title + '"'
+          }
+          out += this.options.xhtml ? '/>' : '>'
+          return out
+        }
+
         // 自定义代码高亮，直接把源码复制过来，在pre标签加入了hljs的class，这样才能使得背景颜色生效
         myRender.code = function (code, infostring, escaped) {
           let lang = (infostring || '').match(/\S*/)[0]
@@ -227,6 +233,11 @@
 
   .img-header {
     height: auto;
-    min-width: 100%;
+    width: 100%;
+  }
+
+  .img {
+    height: auto;
+    width: 100%;
   }
 </style>

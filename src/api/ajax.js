@@ -5,7 +5,14 @@ ajax请求函数模块
 
 import axios from 'axios'
 
-export default function ajax (url, data = {}, type = 'GET') {
+export default function ajax (url, data = {}, type = 'GET', config) {
+  // 初始化配置
+  if (config === undefined) {
+    config = {}
+  }
+  /* 跨域请求 */
+  config.withCredentials = true
+
   return new Promise(function (resolve, reject) {
     // 执行异步ajax请求
     let promise
@@ -20,10 +27,11 @@ export default function ajax (url, data = {}, type = 'GET') {
         url = url + '?' + dataStr
       }
       // 发送get请求
-      promise = axios.get(url)
+      promise = axios.get(url, config)
     } else {
       // 发送post请求
-      promise = axios.post(url, data)
+      /* 跨域请求 */
+      promise = axios.post(url, data, config)
     }
 
     promise.then(function (response) {
@@ -41,7 +49,8 @@ export function reqBase64Img (url) {
     let promise
     promise = axios
       .get(url, {
-        responseType: 'arraybuffer'
+        responseType: 'arraybuffer',
+        withCredentials: true
       })
       // eslint-disable-next-line node/no-deprecated-api
       .then(response => new Buffer(response.data, 'binary').toString('base64'))
@@ -73,7 +82,7 @@ export function reqBlob (url) {
     }).catch(error => {
       reject(error)
     })
-})
+  })
 }
 
 /*

@@ -50,8 +50,8 @@
       console.log('preview deactivated')
     },
     mounted () {
+      this.myglobalfun.cleanTopTabCard()
       console.log(' preview mounted')
-      this.myglobalfun.cleanBodyComponentClass()
       this.title = this.$route.params.title
       this.content = this.parseMd(this.$route.params.content)
       console.log(this.title, this.content)
@@ -122,7 +122,6 @@
             const validLanguage = hljs.getLanguage(language) ? language : 'plaintext'
             return hljs.highlight(validLanguage, code).value
           },
-
           pedantic: false,
           gfm: true,
           breaks: true,

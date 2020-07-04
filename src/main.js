@@ -13,14 +13,15 @@ Vue.use(mdui)
 Vue.use(myglobalfun)
 
 Vue.config.productionTip = false
-
+//
 // router.beforeEach((to, from, next) => {
-//   console.log('之前:', 'to:', to.path, to.meta.keepAlive, ' from:', from.path, from.meta.keepAlive)
-//   // if (to.path === '/post/preview') {
-//   //   from.meta.keepAlive = true
-//   // } else {
-//   //   from.meta.keepAlive = false
-//   // }
+//   // console.log('之前:', 'to:', to.path, to.meta.keepAlive, ' from:', from.path, from.meta.keepAlive)
+//   if (to.path === '/post/preview') {
+//     debugger
+//     from.meta.keepAlive = true
+//   } else {
+//     from.meta.keepAlive = false
+//   }
 //   // console.log('之后:', 'to:', to.path, to.meta.keepAlive, ' from:', from.path, from.meta.keepAlive)
 //   next()
 // })

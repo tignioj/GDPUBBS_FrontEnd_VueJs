@@ -1,17 +1,15 @@
 <template>
   <div class="mdui-container">
     <h1>编辑帖子</h1>
-    <div class="mdui-textfield mdui-textfield-floating-label">
-      <label class="mdui-textfield-label">标题</label>
-      <input v-if="this.post!=null && this.post.postTitle !==null" v-model="postTitle"
-             name="postTitle" id="title" class="mdui-textfield-input" type="text" required/>
-      <div class="mdui-textfield-error">标题不能为空</div>
-    </div>
-
-
     <form id="form" method="post" enctype="multipart/form-data"
-          action="/api/post/update"
     >
+      <div class="mdui-textfield mdui-textfield-floating-label">
+        <label class="mdui-textfield-label">标题</label>
+        <input v-if="this.post!=null && this.post.postTitle !==null" v-model="postTitle"
+               name="postTitle" id="title" class="mdui-textfield-input" type="text" required/>
+        <div class="mdui-textfield-error">标题不能为空</div>
+      </div>
+
       <div class="mdui-textfield">
 
         <input v-if="this.post!=null" name="postUid" type="hidden" v-model="this.apost.postUid"/>
@@ -46,6 +44,8 @@
           </div>
         </div>
       </div>
+
+
     </form>
 
     <!-- 添加图片按钮 -->
@@ -64,15 +64,15 @@
             @click="preview()"
             class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent mdui-m-b-2">预览
     </button>
-
   </div>
 
 </template>
 
 <script>
-  import {reqAPostById} from '../../api'
-  import axios from 'axios'
+  import {reqAPostById, postUpdate} from '../../api'
   import mdui from 'mdui'
+  var fromPath = ''
+  var firstUpdate = false
 
   export default {
     name: 'PostEdit',
@@ -84,8 +84,18 @@
         imgsFile: [],
         rowCount: 1,
         postImg: null,
-        base64Img: null
+        base64Img: null,
+        fromPath: '',
+        toPath: ''
       }
+    },
+    activated () {
+      console.log('activated')
+      if (firstUpdate && fromPath === '/post/myposts') {
+        firstUpdate = false
+        this.getpost()
+      }
+      this.myglobalfun.cleanTopTabCard()
     },
     computed: {
       apost () {
@@ -93,21 +103,20 @@
       }
     },
     // 修改列表页的meta值，false时再次进入页面会重新请求数据。
-    // beforeRouteLeave (to, from, next) {
-    //   console.log('之前:', 'to:', to.path, to.meta.keepAlive, ' from:', from.path, from.meta.keepAlive)
-    //   if (to.path === '/post/preview') {
-    //     from.meta.keepAlive = true
-    //   } else {
-    //     from.meta.keepAlive = false
-    //   }
-    //   console.log('之后:', 'to:', to.path, to.meta.keepAlive, ' from:', from.path, from.meta.keepAlive)
-    //   next()
-    // },
+    beforeRouteLeave (to, from, next) {
+      firstUpdate = true
+      next()
+    },
+    beforeRouteEnter (to, from, next) {
+      fromPath = from.path
+      console.log(fromPath)
+      next()
+    },
+    deactivated () {
+      console.log('deactivated')
+    },
     // created () {
     //   console.log('edit created')
-    // },
-    // activated () {
-    //   console.log('edit activated')
     // },
     // deactivated () {
     //   console.log('edit deactivated')
@@ -118,13 +127,6 @@
     mounted () {
       console.log('edit mounted')
       this.getpost()
-      this.myglobalfun.cleanBodyComponentClass()
-      // debugger
-      this.$nextTick(() => {
-        setTimeout(() => {
-          // const self = this
-        })
-      })
     },
     methods: {
       imgDelete () {
@@ -157,6 +159,7 @@
         fileEle.click()
       },
       async getpost () {
+        console.log('getPost')
         const uid = this.$route.params.id
         let res = await reqAPostById(uid)
         if (res.code === 0) {
@@ -190,11 +193,13 @@
           }
         }
         // vue-resource
-        axios.post('api/post/update', formData, config).then(res => {
+        // axios.post('api/post/update', formData, config)
+        postUpdate(formData, config)
+          .then(res => {
           console.log(res.data)
 
           // success callback
-          let obj = res.data
+          let obj = res
           let view = true
           const self = this
           if (obj.code === 1) {
@@ -216,6 +221,7 @@
                 view = false
               },
               onClose: function () {
+                view = false
               }
             })
             if (view) {

@@ -1,23 +1,23 @@
 <template>
-  <div  id="commentEditor" >
+  <div id="commentEditor">
     <h1>回复</h1>
     <form id="form" method="post" enctype="multipart/form-data"
           action="/api/comments/add"
     >
       <div class="mdui-textfield">
-<!--        所属帖子-->
+        <!--        所属帖子-->
         <input name="postCommentPost.postUid" type="hidden" v-model="postUid"/>
-<!--        回复内容-->
+        <!--        回复内容-->
         <textarea
-                  name="postCommentContent" id="content" class="mdui-textfield-input" maxlength="10000"
-                  placeholder="回复内容" required
-                  rows="3"
-                  v-model="postContent"
+          name="postCommentContent" id="content" class="mdui-textfield-input" maxlength="10000"
+          placeholder="回复内容" required
+          rows="3"
+          v-model="postContent"
         >
         </textarea>
         <div class="mdui-textfield-error">内容不能为空</div>
       </div>
-<!--回复的图片文件-->
+      <!--回复的图片文件-->
       <input @change="fileChange(this)" name="fileupload" id="file" type="file" accept="image/jpeg,image/gif,image/png"
              style="display:none"/>
       <!-- 图片预览 -->
@@ -26,7 +26,7 @@
           <div class="mdui-card mdui-m-t-1">
             <div class="mdui-card-media">
               <img id="previewImg" :src="this.base64Img"/>
-<!--              图片地址-->
+              <!--              图片地址-->
               <input name="postCommentImg" type="hidden" v-model="this.postImg">
               <div class="mdui-card-menu">
                 <!-- 删除图片按钮 -->
@@ -56,8 +56,8 @@
 </template>
 
 <script>
-  import axios from 'axios'
-  import mdui from "mdui"
+  import mdui from 'mdui'
+  import {addComment} from '../../api'
 
   export default {
     name: 'PostViewCommentEditor',
@@ -100,6 +100,10 @@
         fileEle.click()
       },
       submit: function (event) {
+        if (this.postContent.trim().length === 0) {
+          return
+        }
+
         let formData = new FormData(document.getElementById('form'))
         // // 下面是表单绑定的data 数据
         // 根据后台接收参数格式进行修改
@@ -109,33 +113,35 @@
           }
         }
         // vue-resource
-        axios.post('api/comments/add', formData, config).then(res => {
-          console.log(res.data)
-          // success callback
-          let obj = res.data
-          if (obj.code === 1) {
-            // 未登录
-            this.$router.push('/login')
-          }
+        // axios.post('api/comments/add', formData, config)
+        addComment(formData, config)
+          .then(res => {
+            console.log(res.data)
+            // success callback
+            let obj = res
+            if (obj.code === 1) {
+              // 未登录
+              this.$router.push('/login')
+            }
 
-          if (obj.code === 0) {
-            // 回复数量加1
-            // this.$store.dispatch('postCountAddOne', 1)
-            this.$emit('commentsUpdate')
-            this.imgDelete()
-            this.postContent = ''
-            mdui.snackbar({
-              message: '回复成功'
-            })
-            // 刷新页面
-            // 重新请求评论数据
+            if (obj.code === 0) {
+              // 回复数量加1
+              // this.$store.dispatch('postCountAddOne', 1)
+              this.$emit('commentsUpdate')
+              this.imgDelete()
+              this.postContent = ''
+              mdui.snackbar({
+                message: '回复成功'
+              })
+              // 刷新页面
+              // 重新请求评论数据
 
-            // let NewPage = "_empty" + "?time=" + new Date().getTime() / 500
-            // console.log('refresh page')
-            // this.$router.push(NewPage)
-            // this.$router.go(-1)
-          }
-        }).catch(err => {
+              // let NewPage = "_empty" + "?time=" + new Date().getTime() / 500
+              // console.log('refresh page')
+              // this.$router.push(NewPage)
+              // this.$router.go(-1)
+            }
+          }).catch(err => {
           // error callback
           console.log(err)
         })
@@ -145,9 +151,9 @@
 </script>
 
 <style scoped>
- /*#commentEditor {*/
- /*  background: white;*/
- /*  border: 10px solid red;*/
- /*  z-index: 1;*/
- /*}*/
+  /*#commentEditor {*/
+  /*  background: white;*/
+  /*  border: 10px solid red;*/
+  /*  z-index: 1;*/
+  /*}*/
 </style>

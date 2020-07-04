@@ -3,8 +3,9 @@
 函数的返回值: promise对象
  */
 import ajax, {reqBase64Img, reqBlob} from './ajax'
-// const BASE_URL = 'http://localhost:9999'
-const BASE_URL = '/api'
+
+const BASE_URL = 'http://pc.wszjl.com:9999'
+// const BASE_URL = '/api'
 
 /**
  * 获取所有主页所有帖子
@@ -34,12 +35,14 @@ export const judgeAPost = (id, type) => ajax(BASE_URL + `/judgepost`, {type, id}
  */
 export const reqCommentsByPostId = (id) => ajax(BASE_URL + `/comments/${id}`)
 
+// 密码登录
 export const reqPwdLogin = ({username, pwd, code}) => ajax(BASE_URL + '/login/pwdlogin', {
   userAccount: username,
   userPassword: pwd,
   code
 }, 'POST')
 
+// 注册
 export const reqPwdRegist = ({username, pwd, code}) => ajax(BASE_URL + '/login/pwdregist', {
   userAccount: username,
   userPassword: pwd,
@@ -49,6 +52,17 @@ export const reqPwdRegist = ({username, pwd, code}) => ajax(BASE_URL + '/login/p
 // 删除一个帖子
 export const deleteOnePost = (postUid) => ajax(BASE_URL + '/post/delete', {
   postUid: postUid
+}, 'POST')
+
+// 获取别人对我的评论
+export const getCommentsToMe = () => ajax(BASE_URL + '/comments/tome')
+
+// 获取我对别人的评论
+export const getCommentsToOthers = () => ajax(BASE_URL + '/comments/toothers')
+
+// 删除我的一条评论
+export const deleteOneCommentByUid = (uid) => ajax(BASE_URL + '/comments/del', {
+  postCommentUid: uid
 }, 'POST')
 
 // 异步登出
@@ -71,3 +85,12 @@ export const reqMyPosts = () => ajax(BASE_URL + '/post/myposts')
 
 // 根据当前小板块查询帖子
 export const reqPostsByMinBlockUid = (currentblockuid, pagecode, pagesize) => ajax(BASE_URL + '/posts/byminblock?uid=' + currentblockuid + '&pc=' + pagecode + '&ps=' + pagesize)
+
+// 添加帖子
+export const addPost = (formData, config) => ajax(BASE_URL + '/post/add', formData, 'POST', config)
+
+// 添加评论
+export const addComment = (formData, config) => ajax(BASE_URL + '/comments/add', formData, 'POST', config)
+
+// 更新帖子
+export const postUpdate = (formData, config) => ajax(BASE_URL + '/post/update', formData, 'POST', config)

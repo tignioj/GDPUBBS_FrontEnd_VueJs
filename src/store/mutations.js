@@ -45,7 +45,6 @@ export default {
   },
   // 注意参数名称必须和调用时候的一样
   [CHANGE_CURRENT_POSTS_BY_BLOCKMIN] (state, {page}) {
-    console.log('commit:', page)
     state.currentpostsbyblockmin = page
   }
 }

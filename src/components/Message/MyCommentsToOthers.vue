@@ -1,0 +1,157 @@
+<template>
+  <div>
+    <!-- 回复 -->
+    <div v-if="myCommentsToOthers.length >0" class="mdui-card mdui-hoverable mdui-m-t-1 mdui-p-x-1 mdui-p-y-1">
+      <div id="postComment" class="mdui-collapse" mdui-collapse>
+        <div class="mdui-collapse-item  mdui-m-t-1" v-for="(comment, index) in myCommentsToOthers" :key="index"
+             @click="goToPost(comment.postCommentPost.postUid, comment.postCommentPlace)"
+        >
+          <div class="mdui-collapse-item-header">
+            <div class="mdui-card">
+              <!-- 卡片头部，包含头像、标题、副标题 -->
+              <!--用户-->
+              <div class="mdui-card-header">
+                <!--评论者头像-->
+                <img class="mdui-card-header-avatar"
+                     :src="myglobalfun.imgBaseUrl(comment.postCommentFromuser.userAvatar)"/>
+                <div class="mdui-card-header-title"
+                >
+                  {{comment.postCommentFromuser.userAccount}}
+                  回复帖子:
+                  {{comment.postCommentPost.postTitle}}
+                </div>
+                <!--评论日期-->
+                <div class="mdui-card-header-subtitle">{{comment.postCommentDate | date-format }}</div>
+              </div>
+
+              <!--评论图片-->
+              <!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 -->
+              <div class="mdui-card-media mdui-m-l-2 my-img my-img-rounded">
+                <img :src="myglobalfun.imgBaseUrl(comment.postCommentImg)"
+                     v-if="comment.postCommentImg"/>
+              </div>
+
+              <!--评论内容-->
+              <!-- 卡片的内容 -->
+              <div class="mdui-card-content">{{comment.postCommentContent}}</div>
+
+              <!-- 卡片的按钮 -->
+              <div class="mdui-card-actions">
+                <button class="mdui-btn mdui-ripple">赞{{comment.postCommentGood}}</button>
+                <button class="mdui-btn mdui-ripple">踩{{comment.postCommentBad}}</button>
+                <!--                <button class="mdui-btn mdui-ripple">编辑</button>-->
+                <button @click.stop="deleteComment(comment.postCommentUid)" class="mdui-btn mdui-ripple">删除</button>
+                <button class="mdui-btn mdui-btn-icon mdui-float-right"><i
+                  class="mdui-icon material-icons">expand_more</i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-else>
+      没有评论哈
+    </div>
+  </div>
+</template>
+<script>
+
+  import {getCommentsToOthers, deleteOneCommentByUid} from '../../api'
+  import {dialog, snackbar} from 'mdui'
+  const myCommentsToOtherLocation = 'my_comments_to_other_location'
+
+  export default {
+    name: 'MyCommentsToOthers',
+    data () {
+      return {
+        myCommentsToOthers: []
+      }
+    },
+    methods: {
+      async reqComments () {
+        let re = await getCommentsToOthers()
+        console.log(re)
+        if (re.code === 0) {
+          let d = JSON.parse(re.data)
+          console.log(d.comments)
+          this.myCommentsToOthers = d.comments
+          this.$nextTick(() => {
+            let pos = sessionStorage.getItem(myCommentsToOtherLocation)
+            console.log('scrollto', pos)
+            if (pos !== null) {
+              window.scrollTo(0, pos)
+            }
+          })
+        }
+      },
+      goToPost (id, place) {
+        let pos = window.pageYOffset
+        sessionStorage.setItem(myCommentsToOtherLocation, pos)
+        console.log('pos:', pos)
+        this.$router.push('/post/view/' + id + '?position=' + place)
+      },
+      async confirmDelete (uid) {
+        let re = await deleteOneCommentByUid(uid)
+        console.log(re)
+        if (re.code === 0) {
+          console.log(re.data)
+
+          snackbar({
+            message: '删除成功'
+          })
+
+          let pos = window.pageYOffset
+          sessionStorage.setItem(myCommentsToOtherLocation, pos)
+
+          for (let i = 0; i < this.myCommentsToOthers.length; i++) {
+            if (this.myCommentsToOthers[i].postCommentUid === uid) {
+              this.myCommentsToOthers.splice(i, 1)
+            }
+          }
+        }
+      },
+      deleteComment (uid) {
+        const self = this
+        dialog({
+          title: '确认删除吗',
+          buttons: [
+            {
+              text: '取消'
+            },
+            {
+              text: '确认',
+              onClick: function () {
+                self.confirmDelete(uid)
+              }
+            }
+          ]
+        })
+      }
+    },
+    mounted () {
+      this.reqComments()
+    }
+  }
+</script>
+
+<style scoped>
+  .my-img {
+    width: 50% !important;
+  }
+
+  .my-img-rounded img {
+    border-radius: 10px;
+  }
+
+  @media screen and (min-width: 600px) {
+    .my-img {
+      width: 60%;
+    }
+  }
+
+  @media screen and (min-width: 768px) {
+    .my-img {
+      width: 50%;
+    }
+  }
+</style>

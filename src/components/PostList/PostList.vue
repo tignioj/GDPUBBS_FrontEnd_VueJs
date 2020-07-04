@@ -58,12 +58,12 @@
 
     <ul id="pageIndicator">
       <li><a @click="switchPage( 1)">首页</a></li>
-      <li v-show="isShowPrevious"><a @click="switchPage( currentPageCode-1)">上一页</a></li>
+      <li v-show="isShowPrevious"><a @click="switchPage( currentPageCode-1)">&lt;</a></li>
       <li
-        :class="{'hlIndex': p === currentPageCode}"
+        :class="{'mdui-color-theme': p === currentPageCode}"
         v-for="(p, index)  in indexs" :key="index"
       ><a @click="switchPage(p)">{{p}}</a></li>
-      <li v-show="isShowNext"><a @click="switchPage( currentPageCode+1)">下一页</a></li>
+      <li v-show="isShowNext"><a @click="switchPage( currentPageCode+1)">&gt;</a></li>
       <li><a @click="switchPage(totalPageSize)">尾页</a></li>
     </ul>
   </div>
@@ -235,21 +235,21 @@
     display: -webkit-flex; /* Safari */
     justify-content: center;
 
-    margin: auto;
+    margin:0 auto 50px auto;
+    padding: 0;
     list-style: none;
     /*border: 1px solid black;*/
+
   }
 
   #pageIndicator > li {
     padding: 0;
     margin: 0;
-    border: 1px solid rebeccapurple;
   }
 
   #pageIndicator > li:hover {
     padding: 0;
     margin: 0;
-    border: 1px solid rebeccapurple;
   }
 
   #pageIndicator > li > a {

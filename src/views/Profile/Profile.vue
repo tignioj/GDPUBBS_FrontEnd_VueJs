@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ProfileTopBar/>
+<!--    <ProfileTopBar/>-->
     <div v-if="userProfile">
       <!-- 内容 -->
       <div class="mdui-container">
