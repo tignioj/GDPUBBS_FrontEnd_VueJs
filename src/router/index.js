@@ -112,7 +112,14 @@ export default new Router({
       component: Categories,
       meta: {
         showBottom: true,
-        showSideBar: true
+        showSideBar: true,
+        appBar: {
+          title: '搜索',
+          showSearch: false,
+          showReload: false,
+          showMore: false,
+          showBack: false
+        }
       }
     },
     /* 消息 */

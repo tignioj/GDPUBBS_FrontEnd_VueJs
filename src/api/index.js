@@ -11,6 +11,8 @@ const BASE_URL = 'http://pc.wszjl.com:9999'
  * 获取所有主页所有帖子
  */
 export const reqIndexPosts = () => ajax(BASE_URL + '/index/posts')
+
+// 获取所有的大板块
 export const reqIndexblockbigs = () => ajax(BASE_URL + '/index/blockbigs')
 
 /**
@@ -94,3 +96,6 @@ export const addComment = (formData, config) => ajax(BASE_URL + '/comments/add',
 
 // 更新帖子
 export const postUpdate = (formData, config) => ajax(BASE_URL + '/post/update', formData, 'POST', config)
+
+// 搜索帖子
+export const getPostsBySearch = (blockBig, blockMin, searchInput, pageCode, pageSize) => ajax(BASE_URL + '/posts/search?in=' + searchInput + '&pc=' + pageCode + '&ps=' + pageSize + '&bm=' + blockMin + '&bb=' + blockBig)
