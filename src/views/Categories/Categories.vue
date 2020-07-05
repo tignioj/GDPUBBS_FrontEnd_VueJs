@@ -2,21 +2,28 @@
   <div class="mdui-container">
 
     <!--        分类-->
-    <select @change="bigSelectionChange" class="mdui-select" id="blockBigSelect">
-      <option :value="category.bBlockUid"
-              v-for="(category, index)  in this.categories" :key="index"
-      >{{category.bBlockName}}
-      </option>
-    </select>
 
-    <select v-if="blockMinOptionsArr.length > 0" @change="minSelectionChange" class="mdui-select" id="blockMinSelect"
-    >
-      <option :value="blockMin.blockMinUid"
-              v-for="(blockMin, index)  in this.blockMinOptionsArr" :key="index"
-      >{{blockMin.blockMinName}}
-      </option>
+    <div id="categoryDiv">
+      <div id="categoryBB">
+        <select @change="bigSelectionChange" class="mdui-select" id="blockBigSelect">
+          <option :value="category.bBlockUid"
+                  v-for="(category, index)  in this.categories" :key="index"
+          >{{category.bBlockName}}
+          </option>
+        </select>
+      </div>
 
-    </select>
+      <div v-if="blockMinOptionsArr.length >0" id="categoryBM">
+        <select @change="minSelectionChange" class="mdui-select" id="blockMinSelect"
+        >
+          <option :value="blockMin.blockMinUid"
+                  v-for="(blockMin, index)  in this.blockMinOptionsArr" :key="index"
+          >{{blockMin.blockMinName}}
+          </option>
+        </select>
+      </div>
+
+    </div>
 
 
     <div class="mdui-textfield">
@@ -184,29 +191,35 @@
         for (let i = 0; i < this.indexcategory.length; i++) {
           if (this.indexcategory[i].bBlockUid === value) {
             this.blockMinOptionsArr = this.indexcategory[i].bBlockMblocks
-            if (this.blockMinOptionsArr.length > 0) {
-              if (self.bm == null) {
-                this.$nextTick(() => {
-                  let bmEle = document.getElementById('blockMinSelect')
-                  self.bm = new Select(bmEle)
-                })
-              } else {
-                this.$nextTick(() => {
-                  self.bm.handleUpdate()
-                })
-              }
-              mutation()
-            }
-            return
+            break
           }
         }
+
+        console.log(this.blockMinOptionsArr)
+        if (this.blockMinOptionsArr.length > 0) {
+          if (self.bm == null) {
+            this.$nextTick(() => {
+              let bmEle = document.getElementById('blockMinSelect')
+              self.bm = new Select(bmEle)
+            })
+          } else {
+            this.$nextTick(() => {
+              self.bm.handleUpdate()
+            })
+          }
+        } else {
+          self.bm = null
+        }
+        mutation()
       },
       minSelectionChange (e) {
         let ele = document.getElementById('blockMinSelect')
-        let options = ele.options
-        let selectedIndex = options.selectedIndex
-        let value = options[selectedIndex].value
-        this.blockMinUid = value
+        if (ele != null) {
+          let options = ele.options
+          let selectedIndex = options.selectedIndex
+          let value = options[selectedIndex].value
+          this.blockMinUid = value
+        }
       },
       search () {
       },
@@ -312,4 +325,8 @@
 
 <style scoped>
 
+  #categoryDiv {
+    display: flex;
+    justify-content: space-around;
+  }
 </style>
