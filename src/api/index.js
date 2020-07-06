@@ -99,3 +99,12 @@ export const postUpdate = (formData, config) => ajax(BASE_URL + '/post/update', 
 
 // 搜索帖子
 export const getPostsBySearch = (blockBig, blockMin, searchInput, pageCode, pageSize) => ajax(BASE_URL + '/posts/search?in=' + searchInput + '&pc=' + pageCode + '&ps=' + pageSize + '&bm=' + blockMin + '&bb=' + blockBig)
+
+// 根据一级评论的ID获取二级评论
+export const getCommentRepliesByCommentUid = (commentUid) => ajax(BASE_URL + '/commentreply/getbycommentuid?uid=' + commentUid)
+
+// 添加二级评论
+export const addCommentReply = (formDate, config) => ajax(BASE_URL + '/commentreply/add', formDate, 'POST', config)
+
+// 删除二级评论
+export const delCommentReply = (uid) => ajax(BASE_URL + '/commentreply/del?uid=' + uid)

@@ -82,9 +82,6 @@
 </template>
 <script>
   import {getPostsBySearch} from '../../api'
-
-  const keyCurrentSearchPageCode = 'keyCurrentSearchPageCode'
-
   export default {
     name: 'SearchResult',
     data () {
