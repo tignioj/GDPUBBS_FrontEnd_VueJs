@@ -40,6 +40,7 @@ const install = function (Vue, option) {
     PROFILE: '/profile',
     MESSAGE: '/messages',
     CATEGORIES: '/categories',
+    CATEGORIES_RESULT: '/categories/result',
     POST_EDIT: '/post/edit',
     POST_PREVIEW: '/post/preview',
     MY_POSTS: '/post/myposts',

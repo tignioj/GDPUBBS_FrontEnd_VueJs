@@ -13,6 +13,7 @@ import UserInfoOther from '../views/UserInfo/UserInfoOther/UserInfoOther.vue'
 import PostAddPreview from '../views/Posts/PostAdd/PostAddPreview.vue'
 import MyPosts from '../views/Posts/MyPosts.vue'
 import routerURL from './routeurl.js'
+import SearchResult from '../components/Category/SearchResult.vue'
 
 Vue.use(Router)
 Vue.use(routerURL)
@@ -114,11 +115,26 @@ export default new Router({
         showBottom: true,
         showSideBar: true,
         appBar: {
-          title: '搜索',
+          title: '分类查询',
           showSearch: false,
           showReload: false,
           showMore: false,
           showBack: false
+        }
+      }
+    },
+    /* 查询结果 */
+    {
+      name: 'SearchResult',
+      path: routerUrl.CATEGORIES_RESULT,
+      component: SearchResult,
+      meta: {
+        appBar: {
+          title: '搜索结果',
+          showSearch: false,
+          showReload: false,
+          showMore: false,
+          showBack: true
         }
       }
     },
@@ -172,7 +188,7 @@ export default new Router({
         showSideBar: true
       }
     },
-
+    /* 登录 */
     {
       path: routerUrl.LOGIN,
       component: Login

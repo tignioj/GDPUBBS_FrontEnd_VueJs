@@ -1,6 +1,7 @@
 <template>
   <div class="mdui-container">
-    <h1>添加帖子</h1>
+    <h1>添加帖子到:</h1>
+    <span>{{currentbigblock.bBlockName}}->{{currentminblock.blockMinName}}</span>
     <form id="form" method="post" enctype="multipart/form-data"
           action="/api/post/add"
     >
@@ -150,7 +151,6 @@
           let obj = res
           let view = true
           const self = this
-          debugger
           if (obj.code === 1) {
             // 未登录
             this.$router.push('/login')
@@ -206,7 +206,7 @@
         }, false)
         // 调用reader.readAsDataURL()方法，把图片转成base64
         reader.readAsDataURL(f)
-      },
+      }
     },
     activated () {
       this.myglobalfun.cleanTopTabCard()

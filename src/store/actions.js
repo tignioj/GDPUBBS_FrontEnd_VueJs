@@ -29,11 +29,14 @@ export default {
     commit(CHANGE_CURRENT_BLOCKBIG, {currentbigblock})
   },
   changecurrentminblock ({commit}, currentminblock) {
-    localStorage.setItem('currentBlockMinUid', currentminblock.blockMinUid)
-    commit(CHANGE_CURRENT_BLOCKMIN, {currentminblock})
-  },
-  changepostsbyminblock ({commit}, posts) {
-    commit(CHANGE_CURRENT_POSTS_BY_BLOCKMIN, {posts})
+    console.log(currentminblock)
+    if (typeof currentminblock === "undefined" || currentminblock == null) {
+      localStorage.removeItem('currentBlockMinUid')
+      commit(CHANGE_CURRENT_BLOCKMIN, {})
+    } else {
+      localStorage.setItem('currentBlockMinUid', currentminblock.blockMinUid)
+      commit(CHANGE_CURRENT_BLOCKMIN, {currentminblock})
+    }
   },
   /**
    * 异步获取主页所有文章
