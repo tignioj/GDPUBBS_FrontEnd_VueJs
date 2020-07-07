@@ -1,61 +1,130 @@
 <template>
   <div @click.stop class="mdui-collapse-item-body mdui-shadow-1 mdui-m-x-1">
-    <div class="mdui-container">
-      <form :id="'form' + postCommentId" method="post" enctype="multipart/form-data"
-      >
-        <!--        所属帖子id-->
-        <input name="commentReplyComment.postCommentUid" type="hidden" :value="postCommentId"/>
-        <!--        回复谁:回复这个评论的发起者-->
-        <input type="hidden" name="commentReplyTouser.userUid" :value="postComment.postCommentFromuser.userUid"/>
-        <!--        所在楼层-->
-        <input type="hidden" name="commentReplyComment" :value="postComment.postCommentPlace">
-        <!--        -->
-        <div class="mdui-textfield">
-          <!--        回复内容-->
-          <textarea
-            name="commentReplyContent" class="mdui-textfield-input" maxlength="10000"
-            :placeholder="'回复' + postComment.postCommentFromuser.userAccount" required
-            rows="3"
-            v-model="replyContent"
-          >
-        </textarea>
-          <div class="mdui-textfield-error">内容不能为空</div>
-        </div>
-        <!--回复的图片文件-->
-        <input :id="'file' + this.postCommentId" @change="fileChange(this)" name="fileupload" type="file"
-               accept="image/jpeg,image/gif,image/png"
-               style="display:none"/>
-        <!-- 图片预览 -->
-        <div v-show="this.postImg" class="mdui-row-xs-1 mdui-row-md-3">
-          <div class="mdui-col">
-            <div class="mdui-card mdui-m-t-1">
-              <div class="mdui-card-media">
-                <img :src="this.base64Img"/>
-                <!--              图片地址-->
-                <input name="commentReplyImg" type="hidden" v-model="this.postImg">
-                <div class="mdui-card-menu">
-                  <!-- 删除图片按钮 -->
-                  <button type="button" @click="imgDelete()"
-                          class="mdui-btn mdui-btn-icon mdui-text-color-white"><i
-                    class="mdui-icon material-icons">close</i></button>
+    <div :id="'dialog'+ postCommentId" class="mdui-dialog">
+      <div class="mdui-container">
+        <form :id="'form' + postComment.postCommentUid" method="post" enctype="multipart/form-data"
+        >
+          <!--        所属帖子id-->
+          <input name="commentReplyComment.postCommentUid" type="hidden" :value="postComment.postCommentUid"/>
+          <!--        回复谁:回复这个评论的发起者-->
+          <input type="hidden" name="commentReplyTouser.userUid"/>
+          <!--        所在楼层-->
+          <input type="hidden" name="commentReplyComment" :value="postComment.postCommentPlace">
+          <!--        -->
+          <div class="mdui-textfield">
+            <!--        回复内容-->
+            <textarea
+              name="commentReplyContent" class="mdui-textfield-input" maxlength="10000"
+              :placeholder="'回复' + postComment.postCommentFromuser.userAccount" required
+              rows="3"
+              v-model="replyContent"
+            >
+                </textarea>
+            <div class="mdui-textfield-error">内容不能为空</div>
+          </div>
+          <!--回复的图片文件-->
+          <input :id="'file' + postComment.postCommentUid" @change="fileChange(this)" name="fileupload" type="file"
+                 accept="image/jpeg,image/gif,image/png"
+                 style="display:none"/>
+          <!-- 图片预览 -->
+          <div v-show="this.postImg" class="mdui-row-xs-1 mdui-row-md-3">
+            <div class="mdui-col">
+              <div class="mdui-card mdui-m-t-1">
+                <div class="mdui-card-media">
+                  <img :src="this.base64Img"/>
+                  <!--              图片地址-->
+                  <input name="commentReplyImg" type="hidden" v-model="this.postImg">
+                  <div class="mdui-card-menu">
+                    <!-- 删除图片按钮 -->
+                    <button type="button" @click="imgDelete()"
+                            class="mdui-btn mdui-btn-icon mdui-text-color-white"><i
+                      class="mdui-icon material-icons">close</i></button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </form>
-      <!-- 添加图片按钮 -->
-      <button @click="addFile()" class="mdui-fab mdui-color-theme mdui-ripple "><i
-        class="mdui-icon material-icons">add</i>
-      </button>
-      <hr/>
-      <br/>
-      <!-- 提交按钮 -->
-      <button
-        @click="submit()" style="float:right"
-        class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent mdui-m-b-2">保存
-      </button>
+        </form>
+        <!-- 添加图片按钮 -->
+        <button @click="addFile()" class="mdui-fab mdui-color-theme mdui-ripple "><i
+          class="mdui-icon material-icons">add</i>
+        </button>
+        <hr/>
+        <br/>
+        <!-- 关闭按钮 -->
+        <button
+          @click="dialog.close()" style="float:left"
+          class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent mdui-m-b-2">关闭
+        </button>
+        <!-- 提交按钮 -->
+        <button
+          @click="submit()" style="float:right"
+          class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent mdui-m-b-2">回复
+        </button>
+      </div>
+      <div>
+      </div>
     </div>
+
+    <div style="visibility: hidden">.</div>
+    <!--    <div class="mdui-container">-->
+    <!--      <form :id="'form' + postComment.postCommentUid" method="post" enctype="multipart/form-data"-->
+    <!--      >-->
+    <!--        &lt;!&ndash;        所属帖子id&ndash;&gt;-->
+    <!--        <input name="commentReplyComment.postCommentUid" type="hidden" :value="postComment.postCommentUid"/>-->
+    <!--        &lt;!&ndash;        回复谁:回复这个评论的发起者&ndash;&gt;-->
+    <!--        <input type="hidden" name="commentReplyTouser.userUid" :value="postComment.postCommentFromuser.userUid"/>-->
+    <!--        &lt;!&ndash;        所在楼层&ndash;&gt;-->
+    <!--        <input type="hidden" name="commentReplyComment" :value="postComment.postCommentPlace">-->
+    <!--        &lt;!&ndash;        &ndash;&gt;-->
+    <!--        <div class="mdui-textfield">-->
+    <!--          &lt;!&ndash;        回复内容&ndash;&gt;-->
+    <!--          <textarea-->
+    <!--            name="commentReplyContent" class="mdui-textfield-input" maxlength="10000"-->
+    <!--            :placeholder="'回复' + postComment.postCommentFromuser.userAccount" required-->
+    <!--            rows="3"-->
+    <!--            v-model="replyContent"-->
+    <!--          >-->
+    <!--            </textarea>-->
+    <!--          <div class="mdui-textfield-error">内容不能为空</div>-->
+    <!--        </div>-->
+    <!--        &lt;!&ndash;回复的图片文件&ndash;&gt;-->
+    <!--        <input :id="'file' + postComment.postCommentUid" @change="fileChange(this)" name="fileupload" type="file"-->
+    <!--               accept="image/jpeg,image/gif,image/png"-->
+    <!--               style="display:none"/>-->
+    <!--        &lt;!&ndash; 图片预览 &ndash;&gt;-->
+    <!--        <div v-show="this.postImg" class="mdui-row-xs-1 mdui-row-md-3">-->
+    <!--          <div class="mdui-col">-->
+    <!--            <div class="mdui-card mdui-m-t-1">-->
+    <!--              <div class="mdui-card-media">-->
+    <!--                <img :src="this.base64Img"/>-->
+    <!--                &lt;!&ndash;              图片地址&ndash;&gt;-->
+    <!--                <input name="commentReplyImg" type="hidden" v-model="this.postImg">-->
+    <!--                <div class="mdui-card-menu">-->
+    <!--                  &lt;!&ndash; 删除图片按钮 &ndash;&gt;-->
+    <!--                  <button type="button" @click="imgDelete()"-->
+    <!--                          class="mdui-btn mdui-btn-icon mdui-text-color-white"><i-->
+    <!--                    class="mdui-icon material-icons">close</i></button>-->
+    <!--                </div>-->
+    <!--              </div>-->
+    <!--            </div>-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--      </form>-->
+    <!--      &lt;!&ndash; 添加图片按钮 &ndash;&gt;-->
+    <!--      <button @click="addFile()" class="mdui-fab mdui-color-theme mdui-ripple "><i-->
+    <!--        class="mdui-icon material-icons">add</i>-->
+    <!--      </button>-->
+    <!--      <hr/>-->
+    <!--      <br/>-->
+    <!--      &lt;!&ndash; 提交按钮 &ndash;&gt;-->
+    <!--      <button-->
+    <!--        @click="submit()" style="float:right"-->
+    <!--        class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent mdui-m-b-2">保存-->
+    <!--      </button>-->
+    <!--    </div>-->
+
+
     <div>
       <div v-for="(commentReply,index) in comments" :key="index" class="mdui-card">
         <!-- 卡片头部，包含头像、标题、副标题 -->
@@ -77,9 +146,15 @@
         <div class="mdui-card-content">{{commentReply.commentReplyContent}}</div>
 
         <!-- 卡片的按钮 -->
-        <div v-if="commentReply.commentReplyFromuser.userUid == loggedInuserUid" class="mdui-card-actions">
-          <button @click.stop="deleteCommentReply(commentReply.commentReplyUid)"
-                  class="mdui-btn mdui-btn-icon mdui-float-right"><i class="mdui-icon material-icons">delete</i>
+        <div class="mdui-card-actions">
+          <button
+            v-if="commentReply.commentReplyFromuser.userUid == loggedInuserUid"
+            @click.stop="deleteCommentReply(commentReply.commentReplyUid)"
+            class="mdui-btn mdui-btn-icon mdui-float-right"><i class="mdui-icon material-icons">delete</i>
+          </button>
+          <button
+            @click="replyTo(postCommentId, commentReply.commentReplyFromuser.userUid, commentReply.commentReplyFromuser.userAccount)"
+            class="mdui-btn mdui-ripple">回复
           </button>
         </div>
       </div>
@@ -88,7 +163,7 @@
 </template>
 
 <script>
-  import {mutation, snackbar, dialog} from 'mdui'
+  import {mutation, snackbar, dialog, Dialog} from 'mdui'
   import {mapState} from 'vuex'
   import {getCommentRepliesByCommentUid, delCommentReply, addCommentReply} from '../../api'
 
@@ -107,7 +182,9 @@
         replyContent: '',
         imgsFile: [],
         postImg: null,
-        base64Img: null
+        base64Img: null,
+        dialog: null,
+        dialogEle: null
       }
     },
     watch: {
@@ -121,11 +198,19 @@
       }
     },
     methods: {
+      replyTo (postCommentUid, toUserUid, toUserName) {
+        this.dialogEle = document.getElementById('dialog' + postCommentUid)
+        document.getElementById('form' + postCommentUid)['commentReplyTouser.userUid'].value = toUserUid
+        // debugger
+        document.getElementById('form' + postCommentUid)['commentReplyContent'].placeholder = '回复:' + toUserName
+        this.dialog = new Dialog(this.dialogEle)
+        this.dialog.open()
+        // 监听关闭
+        this.dialogEle.addEventListener('close.mdui.dialog', function (e) {
+          console.log(e)
+        })
+      },
       deleteCommentReply (uid) {
-        if (this.replyContent.trim().length === 0) {
-          return
-        }
-
         const self = this
         dialog({
           title: '确认删除吗',
@@ -167,6 +252,9 @@
         fileEle.outerHtml = fileEle.outerHTML
         this.base64Img = null
         this.postImg = null
+        this.$nextTick(() => {
+          this.dialog.handleUpdate()
+        })
       },
       fileChange () {
         let fileEle = document.getElementById('file' + this.postCommentId)
@@ -180,6 +268,11 @@
           self.base64Img = reader.result
           self.postImg = f.name
           console.log(f.name)
+          self.$nextTick(() => {
+            setTimeout(function () {
+              self.dialog.handleUpdate()
+            }, 0)
+          })
           // previewImg.src = reader.result
         }, false)
         // 调用reader.readAsDataURL()方法，把图片转成base64
@@ -217,14 +310,16 @@
               // 回复数量加1
               // this.$store.dispatch('postCountAddOne', 1)
               // this.$emit('commentsUpdate')
-              this.imgDelete()
-              this.postContent = ''
+              self.imgDelete()
+              self.replyContent = ''
               snackbar({
                 message: '回复成功'
               })
               // 刷新页面
               // 重新请求评论数据
               self.getCommentReplies()
+
+              self.dialog.close()
 
               // let NewPage = "_empty" + "?time=" + new Date().getTime() / 500
               // console.log('refresh page')

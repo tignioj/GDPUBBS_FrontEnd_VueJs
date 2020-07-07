@@ -2,11 +2,13 @@
   <!-- 回复 -->
   <div class="mdui-card mdui-hoverable mdui-m-t-1 mdui-p-x-1 mdui-p-y-1">
 
+
     <div id="postComment" class="mdui-collapse" mdui-collapse>
-      <div  @click="reply(postComment.postCommentUid)" :id="'#' + postComment.postCommentPlace" class="mdui-collapse-item  mdui-m-t-1" v-for="(postComment, index) in comments" :key="index"
+      <div @click="showReply(postComment.postCommentUid)" :id="'#' + postComment.postCommentPlace"
+           class="mdui-collapse-item  mdui-m-t-1" v-for="(postComment, index) in comments" :key="index"
       >
         <!--        <a :href="'#' + 1" :name="'#' + postComment.postCommentPlace">#{{postComment.postCommentPlace}}</a>-->
-        <div  class="mdui-collapse-item-header"
+        <div class="mdui-collapse-item-header"
              :class="postComment.postCommentPlace==$route.query.position ? 'active' : null"
         >
           <!--          <a :id="'#' + postComment.postCommentPlace" >#{{postComment.postCommentPlace}}</a>-->
@@ -36,7 +38,10 @@
             <div class="mdui-card-actions">
               <button class="mdui-btn mdui-ripple">点赞{{postComment.postCommentGood}}</button>
               <button class="mdui-btn mdui-ripple">踩{{postComment.postCommentBad}}</button>
-              <button  class="mdui-btn mdui-ripple">评论{{postComment.postCommentReply.length}}</button>
+              <button class="mdui-btn mdui-ripple"
+                      @click.stop="replyTo(postComment.postCommentUid, postComment.postCommentFromuser.userUid, postComment.postCommentFromuser.userAccount)">
+                评论{{postComment.postCommentReply.length}}
+              </button>
               <button class="mdui-btn mdui-btn-icon mdui-float-right"><i
                 class="mdui-icon material-icons">expand_more</i></button>
             </div>
@@ -44,8 +49,8 @@
         </div>
 
         <!--二级评论-->
-<!--        <PostViewCommentReply :replys="postComment.postCommentReply" :postComment="postComment"/>-->
-        <PostViewCommentReply :ref="'commentReply' + postComment.postCommentUid"  :postComment="postComment" />
+        <!--        <PostViewCommentReply :replys="postComment.postCommentReply" :postComment="postComment"/>-->
+        <PostViewCommentReply :ref="'commentReply' + postComment.postCommentUid" :postComment="postComment"/>
       </div>
     </div>
   </div>
@@ -74,10 +79,15 @@
       doNothing () {
 
       },
-      reply (uid) {
+      replyTo (postUid, userUid, userName) {
+        let refname = 'commentReply' + postUid
+        let ref = this.$refs[refname][0]
+        ref.replyTo(postUid, userUid, userName)
+      },
+      showReply (postUid) {
         // this.$refs.commentReply.getCommentReplies()
         // this.$refs['commentReply'].getCommentReplies()
-        let refname = 'commentReply' + uid
+        let refname = 'commentReply' + postUid
         let ref = this.$refs[refname][0]
         ref.showReply()
       },
