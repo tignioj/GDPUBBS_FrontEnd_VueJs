@@ -13,7 +13,9 @@
             <!--        <img class="mdui-card-header-avatar" src="./user/avatar/default.jpg" />-->
             <!--        <img class="mdui-card-header-avatar" :src="post.postUser.userAvatar" />-->
             <div class="mdui-card-header-title">{{post.postUser.userAccount}}</div>
-            <div class="mdui-card-header-subtitle">{{post.postDate | date-format}}</div>
+            <div class="mdui-card-header-subtitle">{{post.postDate | date-format}}
+              <span>{{post.postPrivilege.postPrivilegeDesc}}</span>
+            </div>
           </div>
         </router-link>
         <router-link :to="'/post/view/' + post.postUid" tag="div">
@@ -46,6 +48,15 @@
           <button class="mdui-btn mdui-ripple">点赞:{{post.postGood}}</button>
           <button class="mdui-btn mdui-ripple">踩:{{post.postBad}}</button>
           <button class="mdui-btn mdui-ripple">评论:{{post.postComments}}</button>
+          <!--            <button class="mdui-btn mdui-ripple">点赞:{{post.postGood}}</button>-->
+          <button
+            v-if="post.postUser.userUid ===  loggedInuserUid"
+            @click="$router.push(globaRouterURL.POST_EDIT + '/' + post.postUid)" class="mdui-btn mdui-ripple">编辑
+          </button>
+          <button
+            v-if="(post.postUser.userUid ===  loggedInuserUid) || (userProfile && userProfile.userPri.userPrivilegeId === 2)"
+            @click="deletePost(post.postTitle, post.postUid)" class="mdui-btn mdui-ripple">删除</button>
+          <!--            <button class="mdui-btn mdui-ripple">评论:{{post.postComments}}</button>-->
           <button class="mdui-btn mdui-btn-icon mdui-float-right"><i class="mdui-icon material-icons">expand_more</i>
           </button>
         </div>
@@ -65,13 +76,17 @@
 <script>
   import {mapState} from 'vuex'
   import PostViewTag from '../PostView/PostViewTag'
+  import {dialog} from "mdui"
+  import {deleteOnePost} from '../../api'
 
   const keyCurrentPageCode = 'key_current_page_code_in_postlist'
   export default {
     name: 'PostList',
     components: {PostViewTag},
+
     data () {
       return {
+        loggedInuserUid: '',
         blockminuid: '',
         posts: [],
         indexs: [],
@@ -97,6 +112,43 @@
       }
     },
     methods: {
+      deletePost (postTitle, postUid) {
+        const self = this
+        dialog({
+          title: '确认删除"' + postTitle + '"吗?',
+          buttons: [
+            {
+              text: '取消'
+            },
+            {
+              text: '确认',
+              onClick: function () {
+                self.confirmDelete(postUid)
+              }
+            }
+          ]
+        })
+      },
+      async confirmDelete (postUid) {
+        let post = await deleteOnePost(postUid)
+        if (post.code === 0) {
+          this.refreshPosts()
+        }
+      },
+      refreshPosts () {
+        let currentBlockMinUid = localStorage.getItem('currentBlockMinUid')
+        this.blockminuid = currentBlockMinUid
+        let currentPageCode = parseInt(localStorage.getItem(keyCurrentPageCode))
+        if (typeof currentPageCode !== "number") {
+          currentPageCode = 1
+        }
+        this.currentPageCode = currentPageCode
+        if (this.userProfile !== '') {
+          this.loggedInuserUid = this.userProfile.userUid
+        }
+        console.log(this.loggedInuserUid)
+        this.reqPosts(currentPageCode, this.elementMaxSize)
+      },
       parseIndicator (pageObj) {
         let totalPageSize = this.totalPageSize
         let currentPageCode = this.currentPageCode
@@ -149,7 +201,6 @@
           let aEle = document.createElement('button')
           // aEle.classList.add('indicator-link')
           aEle.classList.add('mdui-btn')
-          console.log(currentPageCode, pageNum)
           if (currentPageCode === pageNum) {
             aEle.classList.add('mdui-btn-active')
             // aEle.classList.add('mdui-color-pink')
@@ -230,7 +281,6 @@
             currentPageCode = 1
           }
           this.currentPageCode = currentPageCode
-          console.log('pc', this.currentPageCode)
           this.$store.dispatch('getPostsByMinBlockUid', {
             currentblockuid: blockMinUid,
             pagecode: currentPageCode,
@@ -240,17 +290,18 @@
       }
     },
     mounted () {
-      let currentBlockMinUid = localStorage.getItem('currentBlockMinUid')
-      this.blockminuid = currentBlockMinUid
-      let currentPageCode = parseInt(localStorage.getItem(keyCurrentPageCode))
-      if (typeof currentPageCode !== "number") {
-        currentPageCode = 1
-      }
-      this.currentPageCode = currentPageCode
-      console.log('mounted', this.currentPageCode, this.blockMinUid)
-      this.reqPosts(currentPageCode, this.elementMaxSize)
+      this.refreshPosts()
     },
     watch: {
+      'userProfile': {
+        deep: true,
+        handler (val) {
+          if (val !== '') {
+            console.log(val)
+            this.loggedInuserUid = val.userUid
+          }
+        }
+      },
       'currentpostsbyblockmin': {
         deep: true,
         handler (val) {
@@ -261,7 +312,6 @@
         deep: true,
         handler (val) {
           // 处理空帖子的情况
-          console.log(val)
           if (val === undefined || val === null) {
             this.blockminuid = ''
             this.posts = []
@@ -276,7 +326,7 @@
       }
     },
     computed: {
-      ...mapState(['currentminblock', 'currentpostsbyblockmin'])
+      ...mapState(['currentminblock', 'currentpostsbyblockmin', 'userProfile'])
     },
     created () {
       this.myglobalfun.addBodyComponentClass()

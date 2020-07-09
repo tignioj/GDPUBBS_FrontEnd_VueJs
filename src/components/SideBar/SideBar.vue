@@ -54,7 +54,6 @@
         let currentMinBlockIndex = localStorage.getItem('currentMinBlockIndex')
         currentMinBlockIndex = (currentMinBlockIndex === null ? 0 : currentMinBlockIndex)
         let bm = this.indexcategory[currentBigBlockIndex].bBlockMblocks[currentMinBlockIndex]
-        console.log('sb', bm)
         this.$store.dispatch('changecurrentminblock', bm)
       }
     },

@@ -42,6 +42,11 @@
                       @click.stop="replyTo(postComment.postCommentUid, postComment.postCommentFromuser.userUid, postComment.postCommentFromuser.userAccount)">
                 评论{{postComment.postCommentReply.length}}
               </button>
+              <button
+                v-if="postComment.postCommentFromuser.userUid ===  loggedInuserUid"
+                @click.stop="deleteComment(postComment.postCommentUid)" class="mdui-btn mdui-btn-icon mdui-float-right">
+                <i
+                  class="mdui-icon material-icons">delete</i></button>
               <button class="mdui-btn mdui-btn-icon mdui-float-right"><i
                 class="mdui-icon material-icons">expand_more</i></button>
             </div>
@@ -61,23 +66,50 @@
 <script>
   import {mapState} from 'vuex'
   import PostViewCommentReply from './PostViewCommentReply'
-  import {mutation} from 'mdui'
+  import {dialog, snackbar} from 'mdui'
+  import {deleteOneCommentByUid} from '../../api'
 
   export default {
     components: {PostViewCommentReply},
     props: ['apostUid', 'commentPlace'],
     name: 'PostViewComments',
     computed: {
-      ...mapState(['comments'])
+      ...mapState(['comments', 'userProfile'])
     },
     data () {
       return {
+        loggedInuserUid: '',
         id: ''
       }
     },
     methods: {
-      doNothing () {
-
+      async confirmDelete (uid) {
+        let re = await deleteOneCommentByUid(uid)
+        console.log(re)
+        if (re.code === 0) {
+          console.log(re.data)
+          snackbar({
+            message: '删除成功'
+          })
+          this.reqComments()
+        }
+      },
+      deleteComment (uid) {
+        const self = this
+        dialog({
+          title: '确认删除吗',
+          buttons: [
+            {
+              text: '取消'
+            },
+            {
+              text: '确认',
+              onClick: function () {
+                self.confirmDelete(uid)
+              }
+            }
+          ]
+        })
       },
       replyTo (postUid, userUid, userName) {
         let refname = 'commentReply' + postUid
@@ -109,6 +141,9 @@
     },
     mounted () {
       this.id = this.$route.params.id
+      if (this.userProfile !== '') {
+        this.loggedInuserUid = this.userProfile.userUid
+      }
       this.reqComments(() => {
         console.log('评论请求成功')
         // this.$nextTick()将回调延迟到下次 DOM 更新循环之后执行。在修改数据之后立即使用它，然后等待 DOM 更新。

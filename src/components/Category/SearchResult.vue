@@ -39,7 +39,7 @@
             <!-- 卡片的标题和副标题 -->
             <div class="mdui-card-primary">
               <div class="mdui-card-primary-title">{{post.postTitle}}</div>
-              <div v-if="post.postTag" class="mdui-card-primary-subtitle">
+              <div v-if="post.postTag && post.postTag.length > 0" class="mdui-card-primary-subtitle">
                 <PostViewTag :tags="post.postTag" v-if="post.postTag.length"/>
               </div>
             </div>

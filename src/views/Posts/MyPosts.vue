@@ -87,7 +87,7 @@
       this.reqposts()
     },
     methods: {
-      async deletePost (postTitle, postUid) {
+      deletePost (postTitle, postUid) {
         const self = this
         dialog({
           title: '确认删除' + postTitle + '吗',

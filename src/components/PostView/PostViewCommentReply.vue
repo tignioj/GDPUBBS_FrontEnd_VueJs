@@ -1,7 +1,8 @@
 <template>
   <div @click.stop class="mdui-collapse-item-body mdui-shadow-1 mdui-m-x-1">
+    <!--    TODO:: 添加二级回复时，一级回复的数量增加-->
     <div :id="'dialog'+ postCommentId" class="mdui-dialog">
-      <div class="mdui-container">
+      <div class="mdui-dialog-content">
         <form :id="'form' + postComment.postCommentUid" method="post" enctype="multipart/form-data"
         >
           <!--        所属帖子id-->
@@ -31,7 +32,7 @@
             <div class="mdui-col">
               <div class="mdui-card mdui-m-t-1">
                 <div class="mdui-card-media">
-                  <img :src="this.base64Img"/>
+                  <img class="dialog-img" :src="this.base64Img"/>
                   <!--              图片地址-->
                   <input name="commentReplyImg" type="hidden" v-model="this.postImg">
                   <div class="mdui-card-menu">
@@ -62,69 +63,10 @@
           class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent mdui-m-b-2">回复
         </button>
       </div>
-      <div>
-      </div>
     </div>
 
-    <div style="visibility: hidden">.</div>
-    <!--    <div class="mdui-container">-->
-    <!--      <form :id="'form' + postComment.postCommentUid" method="post" enctype="multipart/form-data"-->
-    <!--      >-->
-    <!--        &lt;!&ndash;        所属帖子id&ndash;&gt;-->
-    <!--        <input name="commentReplyComment.postCommentUid" type="hidden" :value="postComment.postCommentUid"/>-->
-    <!--        &lt;!&ndash;        回复谁:回复这个评论的发起者&ndash;&gt;-->
-    <!--        <input type="hidden" name="commentReplyTouser.userUid" :value="postComment.postCommentFromuser.userUid"/>-->
-    <!--        &lt;!&ndash;        所在楼层&ndash;&gt;-->
-    <!--        <input type="hidden" name="commentReplyComment" :value="postComment.postCommentPlace">-->
-    <!--        &lt;!&ndash;        &ndash;&gt;-->
-    <!--        <div class="mdui-textfield">-->
-    <!--          &lt;!&ndash;        回复内容&ndash;&gt;-->
-    <!--          <textarea-->
-    <!--            name="commentReplyContent" class="mdui-textfield-input" maxlength="10000"-->
-    <!--            :placeholder="'回复' + postComment.postCommentFromuser.userAccount" required-->
-    <!--            rows="3"-->
-    <!--            v-model="replyContent"-->
-    <!--          >-->
-    <!--            </textarea>-->
-    <!--          <div class="mdui-textfield-error">内容不能为空</div>-->
-    <!--        </div>-->
-    <!--        &lt;!&ndash;回复的图片文件&ndash;&gt;-->
-    <!--        <input :id="'file' + postComment.postCommentUid" @change="fileChange(this)" name="fileupload" type="file"-->
-    <!--               accept="image/jpeg,image/gif,image/png"-->
-    <!--               style="display:none"/>-->
-    <!--        &lt;!&ndash; 图片预览 &ndash;&gt;-->
-    <!--        <div v-show="this.postImg" class="mdui-row-xs-1 mdui-row-md-3">-->
-    <!--          <div class="mdui-col">-->
-    <!--            <div class="mdui-card mdui-m-t-1">-->
-    <!--              <div class="mdui-card-media">-->
-    <!--                <img :src="this.base64Img"/>-->
-    <!--                &lt;!&ndash;              图片地址&ndash;&gt;-->
-    <!--                <input name="commentReplyImg" type="hidden" v-model="this.postImg">-->
-    <!--                <div class="mdui-card-menu">-->
-    <!--                  &lt;!&ndash; 删除图片按钮 &ndash;&gt;-->
-    <!--                  <button type="button" @click="imgDelete()"-->
-    <!--                          class="mdui-btn mdui-btn-icon mdui-text-color-white"><i-->
-    <!--                    class="mdui-icon material-icons">close</i></button>-->
-    <!--                </div>-->
-    <!--              </div>-->
-    <!--            </div>-->
-    <!--          </div>-->
-    <!--        </div>-->
-    <!--      </form>-->
-    <!--      &lt;!&ndash; 添加图片按钮 &ndash;&gt;-->
-    <!--      <button @click="addFile()" class="mdui-fab mdui-color-theme mdui-ripple "><i-->
-    <!--        class="mdui-icon material-icons">add</i>-->
-    <!--      </button>-->
-    <!--      <hr/>-->
-    <!--      <br/>-->
-    <!--      &lt;!&ndash; 提交按钮 &ndash;&gt;-->
-    <!--      <button-->
-    <!--        @click="submit()" style="float:right"-->
-    <!--        class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent mdui-m-b-2">保存-->
-    <!--      </button>-->
-    <!--    </div>-->
-
-
+    <span v-if="comments.length>0">所有回复</span>
+    <span v-else>暂无回复</span>
     <div>
       <div v-for="(commentReply,index) in comments" :key="index" class="mdui-card">
         <!-- 卡片头部，包含头像、标题、副标题 -->
@@ -190,7 +132,6 @@
     watch: {
       openReply: {
         handler (isShow) {
-          console.log(isShow)
           // if (!isShow) {
           // }
         },
@@ -207,7 +148,6 @@
         this.dialog.open()
         // 监听关闭
         this.dialogEle.addEventListener('close.mdui.dialog', function (e) {
-          console.log(e)
         })
       },
       deleteCommentReply (uid) {
@@ -295,6 +235,7 @@
           }
         }
         const self = this
+        self.dialog.close()
         // vue-resource
         // axios.post('api/comments/add', formData, config)
         addCommentReply(formData, config)
@@ -319,8 +260,6 @@
               // 重新请求评论数据
               self.getCommentReplies()
 
-              self.dialog.close()
-
               // let NewPage = "_empty" + "?time=" + new Date().getTime() / 500
               // console.log('refresh page')
               // this.$router.push(NewPage)
@@ -328,7 +267,7 @@
             }
           }).catch(err => {
           // error callback
-          console.log(err)
+          console.error(err)
         })
       },
       showReply () {
@@ -346,14 +285,11 @@
           self.loggedInuserUid = self.userProfile.userUid
         }
         this.postCommentId = uid
-        console.log(uid)
         if (self.openReply) {
           getCommentRepliesByCommentUid(uid).then((re) => {
-            console.log(re)
             if (re.code === 0) {
               self.$nextTick(() => {
                 self.comments = re.data
-                console.log(self.comments)
               })
               mutation()
             }
@@ -366,7 +302,6 @@
     mounted () {
       // var inst = new Collapse(selector, options);
       this.$nextTick(() => {
-        console.log(this.postComment)
         this.getCommentReplies()
       })
       mutation()
@@ -393,6 +328,10 @@
     .my-img {
       width: 50%;
     }
+  }
+
+  .dialog-img {
+    max-height: 100%;
   }
 
 </style>

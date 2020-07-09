@@ -2,9 +2,32 @@
   <div class="mdui-container">
     <h1>添加帖子到:</h1>
     <span>{{currentbigblock.bBlockName}}->{{currentminblock.blockMinName}}</span>
+
+
     <form id="form" method="post" enctype="multipart/form-data"
           action="/api/post/add"
     >
+      <p>帖子谁可以看见？</p>
+      <label class="mdui-radio">
+        <input type="radio" name="postPrivilege.postPrivilegeId" v-bind:value="1" checked/>
+        <i class="mdui-radio-icon"></i>
+        所有人
+      </label>
+      <br/>
+
+      <label class="mdui-radio">
+        <input type="radio" name="postPrivilege.postPrivilegeId" v-bind:value="2" />
+        <i class="mdui-radio-icon"></i>
+        仅登录用户
+      </label>
+      <br/>
+
+      <label class="mdui-radio">
+        <input type="radio" name="postPrivilege.postPrivilegeId" v-bind:value="3" />
+        <i class="mdui-radio-icon"></i>
+        只有我
+      </label>
+
       <!--      <input name="post_bblock.bbl_name" type="hidden" id="bblock"/>-->
       <!--      <input name="post_mblock.mb_name" type="hidden" id="mblock"/>-->
       <input name="postMBlock.belongToBigBlock.bBlockUid" type="hidden" id="bblock"/>
@@ -78,6 +101,8 @@
         postTitle: '',
         postContent: '',
         postBigBlogUid: null,
+        // 帖子权限
+        postPri: 1,
         postImg: '',
         postMinBlockUid: null,
         base64Img: null

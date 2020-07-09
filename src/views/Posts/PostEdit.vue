@@ -3,12 +3,37 @@
     <h1>编辑帖子</h1>
     <form id="form" method="post" enctype="multipart/form-data"
     >
+
+
+      <p>帖子谁可以看见？</p>
+      <label class="mdui-radio">
+        <input type="radio" name="postPrivilege.postPrivilegeId" v-bind:value="1" checked/>
+        <i class="mdui-radio-icon"></i>
+        所有人
+      </label>
+      <br/>
+
+      <label class="mdui-radio">
+        <input type="radio" name="postPrivilege.postPrivilegeId" v-bind:value="2" />
+        <i class="mdui-radio-icon"></i>
+        仅登录用户
+      </label>
+      <br/>
+
+      <label class="mdui-radio">
+        <input type="radio" name="postPrivilege.postPrivilegeId" v-bind:value="3" />
+        <i class="mdui-radio-icon"></i>
+        只有我
+      </label>
+
       <div class="mdui-textfield mdui-textfield-floating-label">
         <label class="mdui-textfield-label">标题</label>
         <input v-if="this.post!=null && this.post.postTitle !==null" v-model="postTitle"
                name="postTitle" id="title" class="mdui-textfield-input" type="text" required/>
         <div class="mdui-textfield-error">标题不能为空</div>
       </div>
+
+
 
       <div class="mdui-textfield">
 

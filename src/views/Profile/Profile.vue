@@ -9,7 +9,7 @@
           <!-- 卡片头部，包含头像、标题、副标题 -->
           <div class="mdui-card-header">
             <img class="mdui-card-header-avatar" :src="myglobalfun.imgBaseUrl(userProfile.userAvatar)"/>
-            <div class="mdui-card-header-title">{{userProfile.userAccount}}</div>
+            <div class="mdui-card-header-title">{{userProfile.userAccount}}[{{userProfile.userPri.userPrivilegeDesc}}]</div>
             <div class="mdui-card-header-subtitle" @click="$router.push('/userinfome/' + userProfile.userAccount)">
               查看主页或编辑资料
             </div>
@@ -109,6 +109,7 @@
     mounted () {
       mutation()
       this.myglobalfun.cleanTopTabCard()
+      console.log(this.userProfile)
     }
   }
 </script>

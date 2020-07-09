@@ -29,7 +29,6 @@ export default {
     commit(CHANGE_CURRENT_BLOCKBIG, {currentbigblock})
   },
   changecurrentminblock ({commit}, currentminblock) {
-    console.log(currentminblock)
     if (typeof currentminblock === "undefined" || currentminblock == null) {
       localStorage.removeItem('currentBlockMinUid')
       commit(CHANGE_CURRENT_BLOCKMIN, {})
