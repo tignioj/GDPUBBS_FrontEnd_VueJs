@@ -1,9 +1,13 @@
 <template>
-
   <div>
+
     <div id="img-header-div" v-if="apost && apost.postImg">
       <img class="img-header" :src="apost.postImg"/>
     </div>
+    <div class="mdui-container">
+      当前位置： {{apost.postMBlock.blockMinName}} -> {{apost.postTitle}}
+    </div>
+
     <div class="mdui-container">
       <!--      <PostViewAppBar/>-->
       <!-- 帖子信息 -->
@@ -25,6 +29,8 @@
           </div>
         </li>
       </div>
+
+
 
 
       <!-- 内容 -->

@@ -108,3 +108,6 @@ export const addCommentReply = (formDate, config) => ajax(BASE_URL + '/commentre
 
 // 删除二级评论
 export const delCommentReply = (uid) => ajax(BASE_URL + '/commentreply/del?uid=' + uid)
+
+// 帖子权限
+export const reqPostPrivilege = () => ajax(BASE_URL + '/pri/all')

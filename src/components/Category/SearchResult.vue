@@ -54,6 +54,14 @@
             <button class="mdui-btn mdui-ripple">点赞:{{post.postGood}}</button>
             <button class="mdui-btn mdui-ripple">踩:{{post.postBad}}</button>
             <button class="mdui-btn mdui-ripple">评论:{{post.postComments}}</button>
+            <button
+              v-if="post.postUser.userUid ===  loggedInuserUid"
+              @click="$router.push(globaRouterURL.POST_EDIT + '/' + post.postUid)" class="mdui-btn mdui-ripple">编辑
+            </button>
+            <button
+              v-if="(post.postUser.userUid ===  loggedInuserUid) || (userProfile && userProfile.userPri.userPrivilegeId === 2)"
+              @click="deletePost(post.postTitle, post.postUid)" class="mdui-btn mdui-ripple">删除</button>
+
             <button class="mdui-btn mdui-btn-icon mdui-float-right"><i class="mdui-icon material-icons">expand_more</i>
             </button>
           </div>
@@ -82,6 +90,8 @@
 </template>
 <script>
   import {getPostsBySearch} from '../../api'
+  import {mapState} from 'vuex'
+
   export default {
     name: 'SearchResult',
     data () {
@@ -89,7 +99,7 @@
         searchInput: '',
         blockMinUid: '',
         blockBigUid: '',
-
+        loggedInuserUid: null,
         posts: [],
         indicatorsIndex: [],
         /* 当前第几页 */
@@ -108,13 +118,34 @@
         isShowNext: false
       }
     },
+    computed: {
+      ...mapState(['userProfile'])
+    },
+    watch: {
+      'userProfile': {
+        deep: true,
+        handler (val) {
+          if (val !== '') {
+            console.log(val)
+            this.loggedInuserUid = val.userUid
+          }
+        },
+        immediate: true
+      }
+    },
     mounted () {
       this.searchInput = this.$route.query.searchInput
       this.blockMinUid = this.$route.query.blockMinUid
       this.blockBigUid = this.$route.query.blockBigUid
+
       this.reqPosts(this.currentPageCode, this.elementMaxSize)
     },
     methods: {
+
+      /**
+       * 分页
+       * @param pageObj
+       */
       parseIndicator (pageObj) {
         let totalPageSize = this.totalPageSize
         let currentPageCode = this.currentPageCode
@@ -138,8 +169,8 @@
 
         let indicatorEle = document.getElementById('indicator')
         indicatorEle.innerHTML = ''
-        let buttonGroup = document.createElement("div")
-        buttonGroup.classList.add("mdui-btn-group")
+        let buttonGroup = document.createElement('div')
+        buttonGroup.classList.add('mdui-btn-group')
 
         let first = document.createElement('button')
         first.classList.add('mdui-btn')
@@ -245,7 +276,7 @@
 
         this.parseIndicator(page)
       },
-      reqPosts (currentPageCode, elementMaxSize) {
+      async reqPosts (currentPageCode, elementMaxSize) {
         if (currentPageCode === null) {
           currentPageCode = 1
         } else if (currentPageCode < 1) {
@@ -255,11 +286,14 @@
         this.currentPageCode = currentPageCode
         console.log('currentPageCode:', currentPageCode)
 
-        getPostsBySearch(this.blockBigUid, this.blockMinUid, this.searchInput, currentPageCode, elementMaxSize)
-          .then((re) => {
-            this.setResultPosts(re)
-          }).catch((e) => {
-        })
+        let re = await getPostsBySearch(this.blockBigUid, this.blockMinUid, this.searchInput, currentPageCode, elementMaxSize)
+        console.log(re)
+        if (re.code === 0) {
+          console.log(re.code)
+          this.setResultPosts(re.data)
+        } else {
+          this.$router.replace('/login')
+        }
 
         // this.$store.dispatch('getPostsByMinBlockUid', {
         //   currentblockuid: blockMinUid,

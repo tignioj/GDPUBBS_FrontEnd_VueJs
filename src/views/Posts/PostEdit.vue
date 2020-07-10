@@ -4,27 +4,19 @@
     <form id="form" method="post" enctype="multipart/form-data"
     >
 
-
       <p>帖子谁可以看见？</p>
-      <label class="mdui-radio">
-        <input type="radio" name="postPrivilege.postPrivilegeId" v-bind:value="1" checked/>
-        <i class="mdui-radio-icon"></i>
-        所有人
-      </label>
-      <br/>
-
-      <label class="mdui-radio">
-        <input type="radio" name="postPrivilege.postPrivilegeId" v-bind:value="2" />
-        <i class="mdui-radio-icon"></i>
-        仅登录用户
-      </label>
-      <br/>
-
-      <label class="mdui-radio">
-        <input type="radio" name="postPrivilege.postPrivilegeId" v-bind:value="3" />
-        <i class="mdui-radio-icon"></i>
-        只有我
-      </label>
+      <div
+        v-for="(pri, index)  in postPriList" :key="index"
+      >
+        <label class="mdui-radio" >
+          <input type="radio" name="postPrivilege.postPrivilegeId" v-bind:value="pri.postPrivilegeId"
+                 :checked="pri.postPrivilegeId === postPri"
+          />
+          <i class="mdui-radio-icon"></i>
+          {{pri.postPrivilegeDesc}}
+        </label>
+        <br/>
+      </div>
 
       <div class="mdui-textfield mdui-textfield-floating-label">
         <label class="mdui-textfield-label">标题</label>
@@ -32,7 +24,6 @@
                name="postTitle" id="title" class="mdui-textfield-input" type="text" required/>
         <div class="mdui-textfield-error">标题不能为空</div>
       </div>
-
 
 
       <div class="mdui-textfield">
@@ -69,8 +60,6 @@
           </div>
         </div>
       </div>
-
-
     </form>
 
     <!-- 添加图片按钮 -->
@@ -94,8 +83,9 @@
 </template>
 
 <script>
-  import {reqAPostById, postUpdate} from '../../api'
+  import {reqAPostById, postUpdate, reqPostPrivilege} from '../../api'
   import mdui from 'mdui'
+
   var fromPath = ''
   var firstUpdate = false
 
@@ -108,6 +98,8 @@
         postContent: '',
         imgsFile: [],
         rowCount: 1,
+        postPriList: [],
+        postPri: 1,
         postImg: null,
         base64Img: null,
         fromPath: '',
@@ -116,9 +108,11 @@
     },
     activated () {
       console.log('activated')
-      if (firstUpdate && fromPath === '/post/myposts') {
-        firstUpdate = false
-        this.getpost()
+      if (firstUpdate) {
+        if (fromPath === '/post/myposts' || fromPath === '/posts') {
+          firstUpdate = false
+          this.getpost()
+        }
       }
       this.myglobalfun.cleanTopTabCard()
     },
@@ -186,12 +180,19 @@
       async getpost () {
         console.log('getPost')
         const uid = this.$route.params.id
+        let resPri = await reqPostPrivilege()
+        if (resPri.code === 0) {
+          this.postPriList = resPri.data
+        }
+
         let res = await reqAPostById(uid)
         if (res.code === 0) {
           this.post = JSON.parse(res.data)
           this.postImg = this.post.postImg
           this.postTitle = this.post.postTitle
           this.postContent = this.post.postContent
+          // console.log(this.post.postPri)
+          this.postPri = this.post.postPrivilege.postPrivilegeId
           if (this.post.postImg !== undefined && this.post.postImg !== null) {
             this.base64Img = this.post.postImg
           }
@@ -221,41 +222,41 @@
         // axios.post('api/post/update', formData, config)
         postUpdate(formData, config)
           .then(res => {
-          console.log(res.data)
+            console.log(res.data)
 
-          // success callback
-          let obj = res
-          let view = true
-          const self = this
-          if (obj.code === 1) {
-            // 未登录
-            this.$router.push('/login')
-          }
-
-          if (obj.code === 0) {
-            // 帖子数量加1
-            // this.$store.dispatch('postCountAddOne', 1)
-
-            mdui.snackbar({
-              message: '修改成功，3秒后自动跳转到帖子',
-              buttonText: '取消',
-              onClick: function () {
-                self.$router.push('/post/view/' + obj.data)
-              },
-              onButtonClick: function () {
-                view = false
-              },
-              onClose: function () {
-                view = false
-              }
-            })
-            if (view) {
-              setTimeout(function () {
-                self.$router.push('/post/view/' + obj.data)
-              }, 3000)
+            // success callback
+            let obj = res
+            let view = true
+            const self = this
+            if (obj.code === 1) {
+              // 未登录
+              this.$router.push('/login')
             }
-          }
-        }).catch(err => {
+
+            if (obj.code === 0) {
+              // 帖子数量加1
+              // this.$store.dispatch('postCountAddOne', 1)
+
+              mdui.snackbar({
+                message: '修改成功，3秒后自动跳转到帖子',
+                buttonText: '取消',
+                onClick: function () {
+                  self.$router.push('/post/view/' + obj.data)
+                },
+                onButtonClick: function () {
+                  view = false
+                },
+                onClose: function () {
+                  view = false
+                }
+              })
+              if (view) {
+                setTimeout(function () {
+                  self.$router.push('/post/view/' + obj.data)
+                }, 3000)
+              }
+            }
+          }).catch(err => {
           // error callback
           console.log(err)
         })

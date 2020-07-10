@@ -8,25 +8,19 @@
           action="/api/post/add"
     >
       <p>帖子谁可以看见？</p>
-      <label class="mdui-radio">
-        <input type="radio" name="postPrivilege.postPrivilegeId" v-bind:value="1" checked/>
-        <i class="mdui-radio-icon"></i>
-        所有人
-      </label>
-      <br/>
+      <div
+        v-for="(pri, index)  in postPriList" :key="index"
+      >
+        <label class="mdui-radio" >
+          <input type="radio" name="postPrivilege.postPrivilegeId" v-bind:value="pri.postPrivilegeId"
+                 :checked="pri.postPrivilegeId === postPri"
+          />
+          <i class="mdui-radio-icon"></i>
+          {{pri.postPrivilegeDesc}}
+        </label>
+        <br/>
+      </div>
 
-      <label class="mdui-radio">
-        <input type="radio" name="postPrivilege.postPrivilegeId" v-bind:value="2" />
-        <i class="mdui-radio-icon"></i>
-        仅登录用户
-      </label>
-      <br/>
-
-      <label class="mdui-radio">
-        <input type="radio" name="postPrivilege.postPrivilegeId" v-bind:value="3" />
-        <i class="mdui-radio-icon"></i>
-        只有我
-      </label>
 
       <!--      <input name="post_bblock.bbl_name" type="hidden" id="bblock"/>-->
       <!--      <input name="post_mblock.mb_name" type="hidden" id="mblock"/>-->
@@ -91,7 +85,7 @@
 <script>
   import {mapState} from 'vuex'
   import mdui from 'mdui'
-  import {addPost} from '../../../api'
+  import {addPost,reqPostPrivilege} from '../../../api'
 
   export default {
     name: 'PostsAdd',
@@ -102,6 +96,7 @@
         postContent: '',
         postBigBlogUid: null,
         // 帖子权限
+        postPriList: [],
         postPri: 1,
         postImg: '',
         postMinBlockUid: null,
@@ -234,6 +229,12 @@
       }
     },
     activated () {
+      reqPostPrivilege().then((re) => {
+        if (re.code === 0) {
+          this.postPriList = re.data
+          console.log(this.postPriList)
+        }
+      })
       this.myglobalfun.cleanTopTabCard()
     },
     mounted () {

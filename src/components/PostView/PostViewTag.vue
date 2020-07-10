@@ -1,6 +1,6 @@
 <template>
-    <div>
-      <div class="mdui-chip" v-for="(tag, index) in tags" :key="index" @click.prevent="goTagCategories(tag.tagId)">
+    <div >
+      <div class="mdui-chip" v-for="(tag, index) in taglist" :key="index" @click.prevent="goTagCategories(tag.tagId)">
         <span class="mdui-chip-title">{{tag.tagName}}</span>
       </div>
     </div>
