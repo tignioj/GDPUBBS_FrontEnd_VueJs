@@ -4,7 +4,7 @@
     <div id="img-header-div" v-if="apost && apost.postImg">
       <img class="img-header" :src="apost.postImg"/>
     </div>
-    <div class="mdui-container">
+    <div v-if="apost" class="mdui-container">
       当前位置： {{apost.postMBlock.blockMinName}} -> {{apost.postTitle}}
     </div>
 

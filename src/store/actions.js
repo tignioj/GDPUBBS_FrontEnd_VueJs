@@ -75,7 +75,7 @@ export default {
   async getpostbyuid ({commit}, {id, callback}) {
     const result = await reqAPostById(id)
     if (result.code === 0) {
-      const apost = JSON.parse(result.data)
+      const apost = result.data
       commit(RECEIVE_APOST_BYID, {apost})
     }
     callback(result)

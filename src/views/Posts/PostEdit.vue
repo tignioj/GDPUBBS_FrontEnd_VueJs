@@ -187,7 +187,7 @@
 
         let res = await reqAPostById(uid)
         if (res.code === 0) {
-          this.post = JSON.parse(res.data)
+          this.post = res.data
           this.postImg = this.post.postImg
           this.postTitle = this.post.postTitle
           this.postContent = this.post.postContent

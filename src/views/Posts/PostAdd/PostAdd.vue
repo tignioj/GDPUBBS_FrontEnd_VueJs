@@ -11,7 +11,7 @@
       <div
         v-for="(pri, index)  in postPriList" :key="index"
       >
-        <label class="mdui-radio" >
+        <label class="mdui-radio">
           <input type="radio" name="postPrivilege.postPrivilegeId" v-bind:value="pri.postPrivilegeId"
                  :checked="pri.postPrivilegeId === postPri"
           />
@@ -85,7 +85,7 @@
 <script>
   import {mapState} from 'vuex'
   import mdui from 'mdui'
-  import {addPost,reqPostPrivilege} from '../../../api'
+  import {addPost, reqPostPrivilege} from '../../../api'
 
   export default {
     name: 'PostsAdd',
