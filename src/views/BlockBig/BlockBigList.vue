@@ -1,6 +1,6 @@
 <template>
   <div class="mdui-container">
-    <div id="content" class="mdui-container">
+    <div id="content" >
       <div v-if="blockbigs.length > 0" id="contentDoc"
            class="mdui-row-xs-1 mdui-row-sm-2 mdui-row-xl-3  mdui-grid-list ">
         <div class="mdui-card mdui-col mdui-hoverable mdui-m-y-1 "
@@ -43,8 +43,6 @@
             </button>
           </div>
         </div>
-
-
         <!--如果没有帖子-->
         <div v-if="!blockbigs.length">暂时没有帖子哈~</div>
       </div>

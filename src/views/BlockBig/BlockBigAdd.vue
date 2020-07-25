@@ -18,16 +18,15 @@
 
 
       <!-- 在超小屏幕设备上，第一列 100% 宽度，第二列 50% 宽度。在小屏幕及以上设备上，第一列为 66.6% 宽度，第二列为 33.3% 宽度。 -->
-      <div class="mdui-p-t-2">授权给用户：
-        <div class="mdui-chip"
-             v-for="(user, index)  in grantedUsers" :key="index"
-        >
-          <img class="mdui-chip-icon" :src="myglobalfun.imgBaseUrl(user.userAvatar)"/>
-          <span class="mdui-chip-title">{{user.userAccount}}</span>
-          <span class="mdui-chip-delete" @click.prevent="grantedUsers.splice(index,1)"><i
-            class="mdui-icon material-icons">cancel</i></span>
-          <!--          <input :name="'users[' + index + ']'" :value="user.userUid" type="hidden" />-->
-        </div>
+      <div class="mdui-p-t-2">授权给用户：</div>
+      <div class="mdui-chip"
+           v-for="(user, index)  in grantedUsers" :key="index"
+      >
+        <img class="mdui-chip-icon" :src="myglobalfun.imgBaseUrl(user.userAvatar)"/>
+        <span class="mdui-chip-title">{{user.userAccount}}</span>
+        <span class="mdui-chip-delete" @click.prevent="grantedUsers.splice(index,1)"><i
+          class="mdui-icon material-icons">cancel</i></span>
+        <!--          <input :name="'users[' + index + ']'" :value="user.userUid" type="hidden" />-->
       </div>
       <input name="bBlockUser.userUid" type="hidden"/>
       <div class="mdui-row  mdui-p-b-2">
@@ -145,7 +144,7 @@
               message: '创建成功，3秒后自动跳转到该板块',
               buttonText: '取消',
               onClick: function () {
-                self.$router.replace('/bigblock/detail/' + obj.data.bBlockUid)
+                self.$router.replace('/blockbig/detail/' + obj.data.bBlockUid)
               },
               onButtonClick: function () {
                 view = false
@@ -155,7 +154,7 @@
             })
             if (view) {
               setTimeout(function () {
-                self.$router.replace('/bigblock/detail/' + obj.data.bBlockUid)
+                self.$router.replace('/blockbig/detail/' + obj.data.bBlockUid)
               }, 3000)
             }
           }
@@ -167,6 +166,11 @@
       toggleGrantUser (user, e) {
         console.log(user, e.target.checked)
         if (e.target.checked) {
+          for (let i = 0; i < this.grantedUsers.length; i++) {
+            if (this.grantedUsers[i].userUid === user.userUid) {
+              return
+            }
+          }
           this.grantedUsers.push(user)
         } else {
           this.grantedUsers.forEach(function (item, index, arr) {
@@ -179,14 +183,20 @@
       getUsers () {
         getUsersByName(this.userAccount).then(re => {
           console.log(re)
-          this.users = re.data
+
+          if (re.code === 1) {
+            // 未登录
+            this.$router.push('/login')
+          }
+          if (re.code === 0) {
+            this.users = re.data
+          }
         }).catch(e => {
           console.error(e)
         })
       }
     },
     mounted () {
-      this.getUsers()
     }
 
   }

@@ -1,7 +1,7 @@
 <template>
   <div class="mdui-container">
     <h1>添加帖子到:</h1>
-    <span>{{currentbigblock.bBlockName}}->{{currentminblock.blockMinName}}</span>
+    <span v-if="currentminblock && currentminblock">{{currentbigblock.bBlockName}}->{{currentminblock.blockMinName}}</span>
 
     <form id="form" method="post" enctype="multipart/form-data"
           action="/api/post/add"

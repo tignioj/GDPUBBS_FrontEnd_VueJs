@@ -36,6 +36,7 @@
 // }
 const install = function (Vue, option) {
   Vue.prototype.globaRouterURL = {
+    APP_HOME: '/posts',
     LOGIN: '/login',
     PROFILE: '/profile',
     MESSAGE: '/messages',
@@ -54,10 +55,12 @@ const install = function (Vue, option) {
     BLOCKMIN_LIST: '/blockmin/list',
     BLOCKMIN_UPDATE: '/blockmin/update',
     BLOCKMIN_DETAIL: '/blockmin/detail',
-    PRIVILEGE_LIST: '/privilege/list'
+    PRIVILEGE_LIST: '/privilege/list',
+    PROFILE_OTHER: '/userinfoother',
+    PROFILE_ME: '/userinfome',
   }
 }
 
 export default {
-  install
+  install,
 }

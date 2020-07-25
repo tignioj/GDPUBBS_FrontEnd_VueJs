@@ -117,6 +117,9 @@ export const delCommentReply = (uid) => ajax(BASE_URL + '/commentreply/del?uid='
 // 帖子权限
 export const reqPostPrivilege = () => ajax(BASE_URL + '/pri/all')
 
+
+// ===================== 大板块 =======================
+
 // 添加大板块
 export const addBlockBig = (formDate, config) => ajax(BASE_URL + '/blockbig/add', formDate, 'POST', config)
 
@@ -132,4 +135,26 @@ export const delBlockBig = (uid) => ajax(BASE_URL + '/blockbig/delete?uid=' + ui
 // 大板块详情
 export const reqBlockDetail = (uid) => ajax(BASE_URL + '/blockbig/detail?uid=' + uid)
 
+// 大板块根据UID查询(包含子列表）
+export const reqBlockBigByUid = (uid) => ajax(BASE_URL + '/blockbig/get?uid=' + uid)
 
+
+// ==================== 小板块 ===============
+// 添加小板块
+export const addBlockMin = (formDate, config) => ajax(BASE_URL + '/blockmin/add', formDate, 'POST', config)
+
+// 小板块分页
+export const blockMinListByBlockBigUid = (bbuid, searchInput, pageCode, pageSize) => ajax(
+  BASE_URL + '/blockmin/listbybbuid?uid=' + bbuid + '&in=' + searchInput + '&pc=' + pageCode + '&ps=' + pageSize)
+
+// 更新小板块
+export const updateBlockMin = (formDate, config) => ajax(BASE_URL + '/blockmin/update', formDate, 'POST', config)
+// 删除小板块
+export const delBlockMin = (uid) => ajax(BASE_URL + '/blockmin/delete?uid=' + uid)
+
+// 小板块详情
+export const reqBlockMinDetail = (uid) => ajax(BASE_URL + '/blockmin/detail?uid=' + uid)
+
+// 小板块编辑回显
+// export const reqBlockMinBeforUpdate = (uid) => ajax(BASE_URL + '/blockmin/get?uid=' + uid)
+export const reqBlockMinByBlockUid = (uid) => ajax(BASE_URL + '/blockmin/listbybbuid?uid=' + uid)

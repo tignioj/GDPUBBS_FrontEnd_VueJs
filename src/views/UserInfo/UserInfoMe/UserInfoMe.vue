@@ -1,8 +1,8 @@
 <template>
   <div>
-    <UserInfoTopBar
-      :user-profile="userProfile"
-    />
+<!--    <UserInfoTopBar-->
+<!--      :user-profile="userProfile"-->
+<!--    />-->
 
     <div class="mdui-container">
       <!-- 头像等信息 -->

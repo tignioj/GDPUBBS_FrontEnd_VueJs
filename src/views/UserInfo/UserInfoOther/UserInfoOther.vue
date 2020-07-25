@@ -1,8 +1,8 @@
 <template>
   <div>
-    <UserInfoTopBar
-      :user-profile="userProfile"
-    />
+<!--    <UserInfoTopBar-->
+<!--      :user-profile="userProfile"-->
+<!--    />-->
     <div class="mdui-container">
       <!-- 头像等信息 -->
       <div class="mdui-card mdui-hoverable mdui-m-t-2">
@@ -37,7 +37,7 @@
   import {reqOtherUserProfile} from '../../../api'
 
   export default {
-    name: 'UserInfoMe',
+    name: 'UserInfoOther',
     components: {UserInfoTopBar},
     data () {
       return {

@@ -2,7 +2,7 @@
   <div>
 
     <div class="mdui-tab mdui-color-theme" mdui-tab>
-      <a href="#posts" class="mdui-ripple mdui-ripple-white myclass"
+      <a href="#posts" class="mdui-ripple mdui-ripple-white "
          v-for="(mblock, index) in currentbigblock.bBlockMblocks" :key="index"
          :class="{'mdui-tab-active': currentminblock.blockMinName == mblock.blockMinName}"
          @click="$emit('changeMinBlock', mblock)"

@@ -34,9 +34,10 @@ export default new Router({
   routes: [
     /* 首页 */
     {
-      path: '/posts',
+      path: routerUrl.APP_HOME,
       component: Posts,
       meta: {
+        keepAlive: false,
         showBottom: true,
         showSideBar: true
       }
@@ -139,7 +140,7 @@ export default new Router({
     /* 添加小板块 */
     {
       name: 'BlockBigMin',
-      path: routerUrl.BLOCKMIN_ADD,
+      path: routerUrl.BLOCKMIN_ADD + '/:id',
       component: BlockMinAdd,
       meta: {
         keepAlive: false,
@@ -155,7 +156,7 @@ export default new Router({
     /* 小板块列表 */
     {
       name: 'BlockMinList',
-      path: routerUrl.BLOCKMIN_LIST,
+      path: routerUrl.BLOCKMIN_LIST + '/:id',
       component: BlockMinList,
       meta: {
         keepAlive: false,
@@ -325,22 +326,34 @@ export default new Router({
         }
       }
     },
-    /* 查看我的用户信息 */
+    /* 查看其它用户信息 */
     {
-      path: '/userinfome/:id',
+      path: routerUrl.PROFILE_ME + '/:id',
       component: UserInfoMe,
       meta: {
-        showBottom: true,
-        showSideBar: true
+        keepAlive: false,
+        appBar: {
+          title: '查看我的用户信息',
+          showBack: true,
+          showReload: false,
+          showMore: false,
+          showSearch: false
+        }
       }
     },
     /* 查看其它用户信息 */
     {
-      path: '/userinfoother/:id',
+      path: routerUrl.PROFILE_OTHER + '/:id',
       component: UserInfoOther,
       meta: {
-        showBottom: true,
-        showSideBar: true
+        keepAlive: false,
+        appBar: {
+          title: '查看用户信息',
+          showBack: true,
+          showReload: false,
+          showMore: false,
+          showSearch: false
+        }
       }
     },
     /* 登录 */

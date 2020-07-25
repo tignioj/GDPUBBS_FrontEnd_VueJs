@@ -50,10 +50,10 @@
 
       <div class="mdui-row-xs-2 mdui-m-b-1">
         <div class="mdui-col">
-          <button class="mdui-btn mdui-btn-block mdui-color-theme-accent mdui-ripple" @click="regist()">注册</button>
+          <button class="mdui-btn mdui-btn-block mdui-color-theme-accent mdui-ripple" @click="regist($event)">注册</button>
         </div>
         <div class="mdui-col">
-          <button class="mdui-btn mdui-btn-block mdui-color-theme-accent mdui-ripple" @click="login()">登陆</button>
+          <button class="mdui-btn mdui-btn-block mdui-color-theme-accent mdui-ripple" @click="login($event)">登陆</button>
         </div>
       </div>
 
@@ -82,15 +82,18 @@
       }
     },
     methods: {
-      async regist () {
+      async regist (e) {
+        e.target.disabled = true
         // 1. 表单校验
         if (!this.checkInput()) {
+          e.target.disabled = false
           return
         }
         const {username, pwd, code} = this
 
         // 2. 异步注册
         let result = await reqPwdRegist({username, pwd, code})
+
         if (result.code === 0) {
           const user = result.data
           console.log(result.data)
@@ -104,10 +107,13 @@
           // 错误信息
           this.showLoginError(result.msg)
         }
+        e.target.disabled = false
       },
-      async login () {
+      async login (e) {
+        e.target.disabled = true
         // 1. 表单校验
         if (!this.checkInput()) {
+          e.target.disabled = false
           return
         }
 
@@ -130,6 +136,8 @@
           // 错误信息
           this.showLoginError(result.msg)
         }
+
+        e.target.disabled = false
       },
       /**
        * ajax请求base64的图片

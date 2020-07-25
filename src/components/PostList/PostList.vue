@@ -1,90 +1,104 @@
 <template>
 
-  <div id="content" class="mdui-container">
-    <div v-if="posts.length > 0" id="contentDoc" class="mdui-row-xs-1 mdui-row-sm-2 mdui-row-xl-3  mdui-grid-list ">
-      <div class="mdui-card mdui-col mdui-hoverable mdui-m-y-1 "
-           v-for="(post, index)  in posts" :key="index"
-      >
-        <a :href="'/document/browse.html?postUid=' + post.postUid" class="docLink" style="display:none;"></a>
-        <!-- 卡片头部，包含头像、标题、副标题 -->
-        <router-link tag="div" :to="'/userinfoother/' + post.postUser.userAccount">
-          <div class="mdui-card-header">
-            <img class="mdui-card-header-avatar" :src="myglobalfun.imgBaseUrl(post.postUser.userAvatar)"/>
-            <!--        <img class="mdui-card-header-avatar" src="./user/avatar/default.jpg" />-->
-            <!--        <img class="mdui-card-header-avatar" :src="post.postUser.userAvatar" />-->
-            <div class="mdui-card-header-title">{{post.postUser.userAccount}}</div>
-            <div class="mdui-card-header-subtitle">{{post.postDate | date-format}}
-              <span>{{post.postPrivilege.postPrivilegeDesc}}</span>
+  <div class="mdui-container">
+
+    <div id="content">
+      <div v-if="posts.length > 0" id="contentDoc" class="mdui-row-xs-1 mdui-row-sm-2 mdui-row-xl-3  mdui-grid-list ">
+        <div class="mdui-card mdui-col mdui-hoverable mdui-m-y-1 "
+             v-for="(post, index)  in posts" :key="index"
+        >
+          <a :href="'/document/browse.html?postUid=' + post.postUid" class="docLink" style="display:none;"></a>
+          <!-- 卡片头部，包含头像、标题、副标题 -->
+          <router-link tag="div" :to="'/userinfoother/' + post.postUser.userAccount">
+            <div class="mdui-card-header">
+              <img class="mdui-card-header-avatar" :src="myglobalfun.imgBaseUrl(post.postUser.userAvatar)"/>
+              <!--        <img class="mdui-card-header-avatar" src="./user/avatar/default.jpg" />-->
+              <!--        <img class="mdui-card-header-avatar" :src="post.postUser.userAvatar" />-->
+              <div class="mdui-card-header-title">{{post.postUser.userAccount}}</div>
+              <div class="mdui-card-header-subtitle">{{post.postDate | date-format}}
+                <span>{{post.postPrivilege.postPrivilegeDesc}}</span>
+              </div>
             </div>
-          </div>
-        </router-link>
-        <router-link :to="'/post/view/' + post.postUid" tag="div">
+          </router-link>
+          <router-link :to="'/post/view/' + post.postUid" tag="div">
 
-          <!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 -->
-          <div class="mdui-card-media">
-            <!--图片地址 -->
-            <img v-if="post.postImg" :src="myglobalfun.imgBaseUrl(post.postImg)"/>
-            <!-- 卡片中可以包含一个或多个菜单按钮 -->
-            <!--        <div class="mdui-card-menu">-->
-            <!--          <button class="mdui-btn mdui-btn-icon mdui-text-color-white"><i class="mdui-icon material-icons">share</i></button>-->
-            <!--        </div>-->
-          </div>
-
-          <!-- 卡片的标题和副标题 -->
-          <div class="mdui-card-primary">
-            <div class="mdui-card-primary-title">{{post.postTitle}}</div>
-            <div v-if="post.postTag" class="mdui-card-primary-subtitle">
-              <PostViewTag :tags="post.postTag" v-if="post.postTag.length"/>
+            <!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 -->
+            <div class="mdui-card-media">
+              <!--图片地址 -->
+              <img v-if="post.postImg" :src="myglobalfun.imgBaseUrl(post.postImg)"/>
+              <!-- 卡片中可以包含一个或多个菜单按钮 -->
+              <!--        <div class="mdui-card-menu">-->
+              <!--          <button class="mdui-btn mdui-btn-icon mdui-text-color-white"><i class="mdui-icon material-icons">share</i></button>-->
+              <!--        </div>-->
             </div>
+
+            <!-- 卡片的标题和副标题 -->
+            <div class="mdui-card-primary">
+              <div class="mdui-card-primary-title">{{post.postTitle}}</div>
+              <div v-if="post.postTag" class="mdui-card-primary-subtitle">
+                <PostViewTag :tags="post.postTag" v-if="post.postTag.length"/>
+              </div>
+            </div>
+
+            <!-- 卡片的内容 -->
+            <div class="mdui-card-content">{{post.postContent}}</div>
+
+          </router-link>
+
+          <!-- 卡片的按钮 -->
+          <div class="mdui-card-actions">
+            <button class="mdui-btn mdui-ripple">点赞:{{post.postGood}}</button>
+            <button class="mdui-btn mdui-ripple">踩:{{post.postBad}}</button>
+            <button class="mdui-btn mdui-ripple">评论:{{post.postComments}}</button>
+            <!--            <button class="mdui-btn mdui-ripple">点赞:{{post.postGood}}</button>-->
+            <button
+              v-if="post.postUser.userUid ===  loggedInuserUid"
+              @click="$router.push(globaRouterURL.POST_EDIT + '/' + post.postUid)" class="mdui-btn mdui-ripple">编辑
+            </button>
+            <button
+              v-if="(post.postUser.userUid ===  loggedInuserUid) || (userProfile && userProfile.userPri.userPrivilegeId === 2)"
+              @click="deletePost(post.postTitle, post.postUid)" class="mdui-btn mdui-ripple">删除
+            </button>
+            <!--            <button class="mdui-btn mdui-ripple">评论:{{post.postComments}}</button>-->
+            <button class="mdui-btn mdui-btn-icon mdui-float-right"><i class="mdui-icon material-icons">expand_more</i>
+
+            </button>
           </div>
-
-          <!-- 卡片的内容 -->
-          <div class="mdui-card-content">{{post.postContent}}</div>
-
-        </router-link>
-
-        <!-- 卡片的按钮 -->
-        <div class="mdui-card-actions">
-          <button class="mdui-btn mdui-ripple">点赞:{{post.postGood}}</button>
-          <button class="mdui-btn mdui-ripple">踩:{{post.postBad}}</button>
-          <button class="mdui-btn mdui-ripple">评论:{{post.postComments}}</button>
-          <!--            <button class="mdui-btn mdui-ripple">点赞:{{post.postGood}}</button>-->
-          <button
-            v-if="post.postUser.userUid ===  loggedInuserUid"
-            @click="$router.push(globaRouterURL.POST_EDIT + '/' + post.postUid)" class="mdui-btn mdui-ripple">编辑
-          </button>
-          <button
-            v-if="(post.postUser.userUid ===  loggedInuserUid) || (userProfile && userProfile.userPri.userPrivilegeId === 2)"
-            @click="deletePost(post.postTitle, post.postUid)" class="mdui-btn mdui-ripple">删除</button>
-          <!--            <button class="mdui-btn mdui-ripple">评论:{{post.postComments}}</button>-->
-          <button class="mdui-btn mdui-btn-icon mdui-float-right"><i class="mdui-icon material-icons">expand_more</i>
-
-          </button>
         </div>
+        <!--如果没有帖子-->
       </div>
 
-      <!--如果没有帖子-->
-      <div v-if="!posts.length">暂时没有帖子哈~</div>
-    </div>
+      <div v-if="currentminblock === ''">
+        <h1>
+          还没有板块，暂时不开放
+        </h1>
+      </div>
+      <div v-else-if="posts.length === 0">
+        <h1>
+          此处一片荒凉，快来发第一篇帖子~
+        </h1>
+        <button class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple mdui-color-theme-accent"
+                @click="$router.push('/post/add/')"
+        >发帖
+        </button>
+      </div>
 
-    <div id="indicator">
-
+      <div v-show="posts.length>0" id="indicator">
+      </div>
     </div>
   </div>
-
 </template>
 
 <script>
   import {mapState} from 'vuex'
   import PostViewTag from '../PostView/PostViewTag'
-  import {dialog} from "mdui"
+  import {dialog} from 'mdui'
   import {deleteOnePost} from '../../api'
 
   const keyCurrentPageCode = 'key_current_page_code_in_postlist'
   export default {
     name: 'PostList',
     components: {PostViewTag},
-
     data () {
       return {
         loggedInuserUid: '',
@@ -140,7 +154,7 @@
         let currentBlockMinUid = localStorage.getItem('currentBlockMinUid')
         this.blockminuid = currentBlockMinUid
         let currentPageCode = parseInt(localStorage.getItem(keyCurrentPageCode))
-        if (typeof currentPageCode !== "number") {
+        if (typeof currentPageCode !== 'number') {
           currentPageCode = 1
         }
         this.currentPageCode = currentPageCode
@@ -172,8 +186,8 @@
 
         let indicatorEle = document.getElementById('indicator')
         indicatorEle.innerHTML = ''
-        let buttonGroup = document.createElement("div")
-        buttonGroup.classList.add("mdui-btn-group")
+        let buttonGroup = document.createElement('div')
+        buttonGroup.classList.add('mdui-btn-group')
 
         let first = document.createElement('button')
         first.classList.add('mdui-btn')
