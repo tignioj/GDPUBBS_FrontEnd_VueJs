@@ -5,6 +5,7 @@
 import ajax, {reqBase64Img, reqBlob} from './ajax'
 
 const BASE_URL = 'http://pc.wszjl.com:9999'
+// const BASE_URL = 'http://www.wszjl.top:9999'
 // const BASE_URL = '/api'
 
 /**
@@ -82,6 +83,9 @@ export const requserProfile = () => ajax(BASE_URL + '/login/userProfile')
 // 请求其它用户信息
 export const reqOtherUserProfile = (userAccount) => ajax(BASE_URL + `/user/profile/${userAccount}`)
 
+// 根据名称查询用户
+export const getUsersByName = (userAccount) => ajax(BASE_URL + `/user/search?account=${userAccount}`)
+
 // 请求我的帖子
 export const reqMyPosts = () => ajax(BASE_URL + '/post/myposts')
 
@@ -98,7 +102,8 @@ export const addComment = (formData, config) => ajax(BASE_URL + '/comments/add',
 export const postUpdate = (formData, config) => ajax(BASE_URL + '/post/update', formData, 'POST', config)
 
 // 搜索帖子
-export const getPostsBySearch = (blockBig, blockMin, searchInput, pageCode, pageSize) => ajax(BASE_URL + '/posts/search?in=' + searchInput + '&pc=' + pageCode + '&ps=' + pageSize + '&bm=' + blockMin + '&bb=' + blockBig)
+export const getPostsBySearch = (blockBig, blockMin, searchInput, pageCode, pageSize) => ajax(
+  BASE_URL + '/posts/search?in=' + searchInput + '&pc=' + pageCode + '&ps=' + pageSize + '&bm=' + blockMin + '&bb=' + blockBig)
 
 // 根据一级评论的ID获取二级评论
 export const getCommentRepliesByCommentUid = (commentUid) => ajax(BASE_URL + '/commentreply/getbycommentuid?uid=' + commentUid)
@@ -111,3 +116,20 @@ export const delCommentReply = (uid) => ajax(BASE_URL + '/commentreply/del?uid='
 
 // 帖子权限
 export const reqPostPrivilege = () => ajax(BASE_URL + '/pri/all')
+
+// 添加大板块
+export const addBlockBig = (formDate, config) => ajax(BASE_URL + '/blockbig/add', formDate, 'POST', config)
+
+// 大板块分页
+export const blockBigList = (searchInput, pageCode, pageSize) => ajax(
+  BASE_URL + '/blockbig/list?in=' + searchInput + '&pc=' + pageCode + '&ps=' + pageSize)
+
+// 更新大板块
+export const updateBlockBig = (formDate, config) => ajax(BASE_URL + '/blockbig/update', formDate, 'POST', config)
+// 删除大板块
+export const delBlockBig = (uid) => ajax(BASE_URL + '/blockbig/delete?uid=' + uid)
+
+// 大板块详情
+export const reqBlockDetail = (uid) => ajax(BASE_URL + '/blockbig/detail?uid=' + uid)
+
+

@@ -24,7 +24,9 @@ module.exports = {
     // Various Dev Server settings
     // 前端的地址
     host: 'pc.wszjl.com', // can be overwritten by process.env.HOST
-    port: 7777, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+    // host: 'www.wszjl.top', // can be overwritten by process.env.HOST
+    // port: 7777, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+    port: 80, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: true,
     errorOverlay: true,
     notifyOnErrors: true,

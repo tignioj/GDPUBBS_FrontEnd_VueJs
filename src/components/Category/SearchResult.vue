@@ -70,9 +70,7 @@
         <!--如果没有帖子-->
         <div v-if="!posts.length">暂时没有帖子哈~</div>
       </div>
-
       <div id="indicator">
-
       </div>
 
       <!--      <ul id="pageIndicator">-->

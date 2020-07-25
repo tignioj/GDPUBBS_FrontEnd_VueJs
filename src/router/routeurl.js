@@ -45,11 +45,18 @@ const install = function (Vue, option) {
     POST_PREVIEW: '/post/preview',
     MY_POSTS: '/post/myposts',
     POST_ADD: '/post/add',
-    POST_VIEW: '/post/view'
+    POST_VIEW: '/post/view',
+    BLOCKBIG_ADD: '/blockbig/add',
+    BLOCKBIG_LIST: '/blockbig/list',
+    BLOCKBIG_UPDATE: '/blockbig/update',
+    BLOCKBIG_DETAIL: '/blockbig/detail',
+    BLOCKMIN_ADD: '/blockmin/add',
+    BLOCKMIN_LIST: '/blockmin/list',
+    BLOCKMIN_UPDATE: '/blockmin/update',
+    BLOCKMIN_DETAIL: '/blockmin/detail',
+    PRIVILEGE_LIST: '/privilege/list'
   }
 }
-
-
 
 export default {
   install

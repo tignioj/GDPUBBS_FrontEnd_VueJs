@@ -42,7 +42,7 @@
         <div class="mdui-col">
           <div class="mdui-textfield mdui-textfield-floating-label mdui-m-a-0 mdui-p-t-0 mdui-p-r-2">
             <label class="mdui-textfield-label">验证码</label>
-            <input id="code" v-model="code" class="mdui-textfield-input" type="text" required/>
+            <input id="code" v-model="code" class="mdui-textfield-input"  type="text" required/>
             <div class="mdui-textfield-error" v-text="codetips"></div>
           </div>
         </div>
@@ -72,7 +72,7 @@
     data () {
       return {
         pwd: '123456', /* 密码 */
-        username: '张三', /* 用户名 */
+        username: '站长', /* 用户名 */
         code: '', /* 验证码 */
         usernametips: '',
         pwdtips: '',

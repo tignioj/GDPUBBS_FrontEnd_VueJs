@@ -14,6 +14,15 @@ import PostAddPreview from '../views/Posts/PostAdd/PostAddPreview.vue'
 import MyPosts from '../views/Posts/MyPosts.vue'
 import routerURL from './routeurl.js'
 import SearchResult from '../components/Category/SearchResult.vue'
+import BlockBigAdd from '../views/BlockBig/BlockBigAdd'
+import BlockBigUpdate from '../views/BlockBig/BlockBigUpdate'
+import BlockMinAdd from '../views/BlockMin/BlockMinAdd'
+import BlockMinList from '../views/BlockMin/BlockMinList'
+import PrivilegeList from '../views/Privilege/PrivilegeList'
+import BlockBigList from '../views/BlockBig/BlockBigList'
+import BlockBigDetail from '../views/BlockBig/BlockBigDetail'
+import BlockMinUpdate from '../views/BlockMin/BlockMinUpdate'
+import BlockMinDetail from '../views/BlockMin/BlockMinDetail'
 
 Vue.use(Router)
 Vue.use(routerURL)
@@ -46,6 +55,152 @@ export default new Router({
         }
       }
     },
+    /* 权限管理 */
+    {
+      name: 'PrivilegeList',
+      path: routerUrl.PRIVILEGE_LIST,
+      component: PrivilegeList,
+      meta: {
+        keepAlive: false,
+        appBar: {
+          title: '权限管理',
+          showSearch: true,
+          showReload: true,
+          showMore: false,
+          showBack: true
+        }
+      }
+    },
+    /* 大板块列表 */
+    {
+      name: 'BlockBigList',
+      path: routerUrl.BLOCKBIG_LIST,
+      component: BlockBigList,
+      meta: {
+        keepAlive: false,
+        appBar: {
+          title: '大板块列表',
+          showSearch: true,
+          showReload: true,
+          showMore: false,
+          showBack: true
+        }
+      }
+    },
+    /* 大板块详情 */
+    {
+      name: 'BlockBigDetail',
+      path: routerUrl.BLOCKBIG_DETAIL + '/:id',
+      component: BlockBigDetail,
+      meta: {
+        keepAlive: false,
+        appBar: {
+          title: '大板块详情',
+          showSearch: true,
+          showReload: true,
+          showMore: false,
+          showBack: true
+        }
+      }
+    },
+    /* 更新大板块 */
+    {
+      name: 'BlockBigUpdate',
+      path: routerUrl.BLOCKBIG_UPDATE + '/:id',
+      component: BlockBigUpdate,
+      meta: {
+        keepAlive: false,
+        appBar: {
+          title: '更新大板块',
+          showSearch: false,
+          showReload: false,
+          showMore: false,
+          showBack: true
+        }
+      }
+    },
+    /* 添加大板块 */
+    {
+      name: 'BlockBigAdd',
+      path: routerUrl.BLOCKBIG_ADD,
+      component: BlockBigAdd,
+      meta: {
+        keepAlive: false,
+        appBar: {
+          title: '添加大板块',
+          showSearch: false,
+          showReload: false,
+          showMore: false,
+          showBack: true
+        }
+      }
+    },
+
+    /* 添加小板块 */
+    {
+      name: 'BlockBigMin',
+      path: routerUrl.BLOCKMIN_ADD,
+      component: BlockMinAdd,
+      meta: {
+        keepAlive: false,
+        appBar: {
+          title: '添加小板块',
+          showSearch: false,
+          showReload: false,
+          showMore: false,
+          showBack: true
+        }
+      }
+    },
+    /* 小板块列表 */
+    {
+      name: 'BlockMinList',
+      path: routerUrl.BLOCKMIN_LIST,
+      component: BlockMinList,
+      meta: {
+        keepAlive: false,
+        appBar: {
+          title: '小板块列表',
+          showSearch: true,
+          showReload: true,
+          showMore: false,
+          showBack: true
+        }
+      }
+    },
+    /* 更新小板块 */
+    {
+      name: 'BlockMinUpdate',
+      path: routerUrl.BLOCKMIN_UPDATE + '/:id',
+      component: BlockMinUpdate,
+      meta: {
+        keepAlive: false,
+        appBar: {
+          title: '更新小板块',
+          showSearch: false,
+          showReload: false,
+          showMore: false,
+          showBack: true
+        }
+      }
+    },
+    /* 小板块详情 */
+    {
+      name: 'BlockMinDetail',
+      path: routerUrl.BLOCKMIN_DETAIL + '/:id',
+      component: BlockMinDetail,
+      meta: {
+        keepAlive: false,
+        appBar: {
+          title: '小板块详情',
+          showSearch: false,
+          showReload: false,
+          showMore: false,
+          showBack: true
+        }
+      }
+    },
+
     /* 添加帖子 */
     {
       name: 'PostsAdd',

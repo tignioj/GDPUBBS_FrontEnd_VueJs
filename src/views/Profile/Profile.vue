@@ -57,8 +57,8 @@
             <label>我的收藏</label>
           </a>
           <a href="#example6-tab3" class="mdui-ripple">
-            <i class="mdui-icon material-icons">apps</i>
-            <label>我的分类</label>
+            <i class="mdui-icon material-icons">notifications</i>
+            <label>我的消息</label>
           </a>
           <a href="#example6-tab3" class="mdui-ripple">
             <i class="mdui-icon material-icons">perm_contact_calendar</i>
@@ -83,7 +83,51 @@
             <label>更多设置</label>
           </a>
         </div>
+
+        <!--        管理-->
+
+        <div v-if="userProfile !== ''" class="mdui-row mdui-row-gapless">
+          <div class="mdui-col-xs-3 mdui-center" v-if="userProfile.userPri.userPrivilegeId >= 5">
+            <div class="mdui-tab mdui-tab-full-width mdui-color-theme-0" mdui-tab>
+              <a @click="$router.push('/privilege/list')" href="#example6-tab2" class="mdui-ripple">
+                <i class="mdui-icon material-icons">assignment_ind</i>
+                <label>权限管理</label>
+              </a>
+            </div>
+          </div>
+
+
+          <div class="mdui-col-xs-3 mdui-center" v-if="userProfile.userPri.userPrivilegeId >= 4" >
+            <div class="mdui-tab mdui-tab-full-width mdui-color-theme-0" mdui-tab>
+              <a @click="$router.push('/blockbig/list')" href="#example6-tab2" class="mdui-ripple">
+                <i class="mdui-icon material-icons">web</i>
+                <label>管理大板块</label>
+              </a>
+            </div>
+          </div>
+
+          <div class="mdui-col-xs-3 mdui-center" v-if="userProfile.userPri.userPrivilegeId >= 3">
+            <div class="mdui-tab mdui-tab-full-width mdui-color-theme-0" mdui-tab>
+              <a @click="$router.push('/blickmin/list')" href="#example6-tab2" class="mdui-ripple">
+                <i class="mdui-icon material-icons">dashboard</i>
+                <label>管理小板块</label>
+              </a>
+            </div>
+          </div>
+
+          <div class="mdui-col-xs-3 mdui-center" v-if="userProfile.userPri.userPrivilegeId >= 2">
+            <div class="mdui-tab mdui-tab-full-width mdui-color-theme-0" mdui-tab>
+              <a @click="$router.push('/posts/list')" href="#example6-tab2" class="mdui-ripple">
+                <i class="mdui-icon material-icons">apps</i>
+                <label>管理帖子</label>
+              </a>
+            </div>
+          </div>
+
+        </div>
+
       </div>
+
     </div>
     <div class="mdui-container mdui-p-t-2" v-else>
       <button @click="$router.push(globaRouterURL.LOGIN)"
