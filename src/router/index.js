@@ -333,7 +333,7 @@ export default new Router({
       meta: {
         keepAlive: false,
         appBar: {
-          title: '查看我的用户信息',
+          title: '查看我的信息',
           showBack: true,
           showReload: false,
           showMore: false,

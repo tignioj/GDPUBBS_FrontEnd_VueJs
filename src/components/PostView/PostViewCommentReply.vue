@@ -65,8 +65,13 @@
       </div>
     </div>
 
-    <span v-if="comments.length>0">所有回复</span>
-    <span v-else>暂无回复</span>
+    <button class="mdui-btn mdui-ripple mdui-btn-block "
+            @click.stop="replyTo(
+                        postComment.postCommentUid,
+                        postComment.postCommentFromuser.userUid,
+                        postComment.postCommentFromuser.userAccount)">
+      回复层主: {{ postComment.postCommentFromuser.userAccount}}
+    </button>
     <div>
       <div v-for="(commentReply,index) in comments" :key="index" class="mdui-card">
         <!-- 卡片头部，包含头像、标题、副标题 -->
@@ -118,6 +123,7 @@
     data () {
       return {
         loggedInuserUid: '',
+        repleyObj: {},
         openReply: false,
         comments: [],
         postCommentId: '',
@@ -142,7 +148,6 @@
       replyTo (postCommentUid, toUserUid, toUserName) {
         this.dialogEle = document.getElementById('dialog' + postCommentUid)
         document.getElementById('form' + postCommentUid)['commentReplyTouser.userUid'].value = toUserUid
-        // debugger
         document.getElementById('form' + postCommentUid)['commentReplyContent'].placeholder = '回复:' + toUserName
         this.dialog = new Dialog(this.dialogEle)
         this.dialog.open()
@@ -290,6 +295,7 @@
             if (re.code === 0) {
               self.$nextTick(() => {
                 self.comments = re.data
+                self.$emit('changeReplycount', self.comments.length)
               })
               mutation()
             }

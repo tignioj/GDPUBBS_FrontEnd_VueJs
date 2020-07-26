@@ -38,6 +38,12 @@ export const judgeAPost = (id, type) => ajax(BASE_URL + `/judgepost`, {type, id}
  */
 export const reqCommentsByPostId = (id) => ajax(BASE_URL + `/comments/${id}`)
 
+/**
+ * 评论分页查询
+ */
+export const reqCommentsPageByPostId = (text, id, pc, ps) => ajax(BASE_URL + '/commentspage?text=' + text + '&postuid=' + id + '&pc=' + pc + '&ps=' + ps)
+
+
 // 密码登录
 export const reqPwdLogin = ({username, pwd, code}) => ajax(BASE_URL + '/login/pwdlogin', {
   userAccount: username,
