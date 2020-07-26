@@ -43,7 +43,6 @@ export const reqCommentsByPostId = (id) => ajax(BASE_URL + `/comments/${id}`)
  */
 export const reqCommentsPageByPostId = (text, id, pc, ps) => ajax(BASE_URL + '/commentspage?text=' + text + '&postuid=' + id + '&pc=' + pc + '&ps=' + ps)
 
-
 // 密码登录
 export const reqPwdLogin = ({username, pwd, code}) => ajax(BASE_URL + '/login/pwdlogin', {
   userAccount: username,
@@ -64,7 +63,10 @@ export const deleteOnePost = (postUid) => ajax(BASE_URL + '/post/delete', {
 }, 'POST')
 
 // 获取别人对我的评论
-export const getCommentsToMe = () => ajax(BASE_URL + '/comments/tome')
+// export const getCommentsToMe = () => ajax(BASE_URL + '/comments/tome')
+export const reqCommentsPageToMe = (text, pc, ps) => ajax(BASE_URL + '/commentspage/tome?in=' + text + '&pc=' + pc + '&ps=' + ps)
+// 获取我对别人评论
+export const reqCommentsPageToOthers = (text, pc, ps) => ajax(BASE_URL + '/commentspage/toothers?in=' + text + '&pc=' + pc + '&ps=' + ps)
 
 // 获取我对别人的评论
 export const getCommentsToOthers = () => ajax(BASE_URL + '/comments/toothers')
@@ -93,7 +95,9 @@ export const reqOtherUserProfile = (userAccount) => ajax(BASE_URL + `/user/profi
 export const getUsersByName = (userAccount) => ajax(BASE_URL + `/user/search?account=${userAccount}`)
 
 // 请求我的帖子
-export const reqMyPosts = () => ajax(BASE_URL + '/post/myposts')
+// export const reqMyPosts = () => ajax(BASE_URL + '/post/myposts')
+export const reqMyPostsPage = (text, pc, ps) => ajax(BASE_URL + '/post/mypostspage?in=' + text + '&pc=' + pc + '&ps=' + ps)
+
 
 // 根据当前小板块查询帖子
 export const reqPostsByMinBlockUid = (currentblockuid, pagecode, pagesize) => ajax(BASE_URL + '/posts/byminblock?uid=' + currentblockuid + '&pc=' + pagecode + '&ps=' + pagesize)
@@ -123,7 +127,6 @@ export const delCommentReply = (uid) => ajax(BASE_URL + '/commentreply/del?uid='
 // 帖子权限
 export const reqPostPrivilege = () => ajax(BASE_URL + '/pri/all')
 
-
 // ===================== 大板块 =======================
 
 // 添加大板块
@@ -143,7 +146,6 @@ export const reqBlockDetail = (uid) => ajax(BASE_URL + '/blockbig/detail?uid=' +
 
 // 大板块根据UID查询(包含子列表）
 export const reqBlockBigByUid = (uid) => ajax(BASE_URL + '/blockbig/get?uid=' + uid)
-
 
 // ==================== 小板块 ===============
 // 添加小板块

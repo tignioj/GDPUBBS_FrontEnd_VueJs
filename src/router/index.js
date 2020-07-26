@@ -27,7 +27,6 @@ import BlockMinDetail from '../views/BlockMin/BlockMinDetail'
 Vue.use(Router)
 Vue.use(routerURL)
 const routerUrl = Vue.prototype.globaRouterURL
-
 export default new Router({
   // 消除路由上面的#
   mode: 'history',

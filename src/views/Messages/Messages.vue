@@ -1,6 +1,6 @@
 <template>
   <div class="mdui-container">
-    <ul id="indicator">
+    <ul id="indicator-tap">
       <li class="mdui-btn " style="width: 100%" v-for="(tab,index) in tabs" :key="index" @click="toggle(index)"
           :class="{'mdui-btn-active mdui-btn-bold':active==index}">
         {{tab.type}}
@@ -66,7 +66,7 @@
 
 <style scoped>
 
-  #indicator {
+  #indicator-tap {
     display: flex;
     padding: 0;
   }

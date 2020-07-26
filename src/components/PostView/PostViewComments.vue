@@ -23,7 +23,6 @@
               <!--评论日期-->
               <div class="mdui-card-header-subtitle">{{postComment.postCommentDate | date-format }}</div>
             </div>
-
             <!--评论图片-->
             <!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 -->
             <div class="mdui-card-media mdui-m-l-2 my-img my-img-rounded">
@@ -66,7 +65,7 @@
       </div>
 
     </div>
-    <div id="indicator">
+    <div class="mdui-m-t-2" id="indicator">
     </div>
   </div>
 
@@ -191,7 +190,6 @@
         this.parseIndicator(page)
       },
       async reqPosts (currentPageCode, elementMaxSize) {
-
         if (currentPageCode === null) {
           currentPageCode = 1
         } else if (currentPageCode < 1) {

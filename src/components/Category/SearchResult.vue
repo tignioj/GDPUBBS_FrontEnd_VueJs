@@ -89,11 +89,9 @@
 <script>
   import {getPostsBySearch} from '../../api'
   import {mapState} from 'vuex'
-  import PostViewTag from '../PostView/PostViewTag'
 
   export default {
     name: 'SearchResult',
-    components: {PostViewTag},
     data () {
       return {
         searchInput: '',

@@ -1,8 +1,6 @@
 <template>
   <div class="mdui-container">
-
     <!--        分类-->
-
     <div>
       <div id="categoryBB">
         <span>大板块：</span>

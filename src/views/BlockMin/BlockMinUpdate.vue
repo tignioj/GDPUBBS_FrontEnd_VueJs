@@ -6,10 +6,7 @@
       <!--      <input name="bBlockIcon" type="hidden" id="mblock"/>-->
 
       <h1>编辑小板块 {{blockBigName}}</h1>
-
       <input name="blockMinUid" v-model="blockMinUid" type="hidden"/>
-
-
       <div class="mdui-textfield">
         <label class="mdui-textfield-label">小板块名称</label>
         <input name="blockMinName" v-model="blockMinName" id="title" class="mdui-textfield-input" type="text" required/>
@@ -70,7 +67,7 @@
             <div class="mdui-list-item-content">{{user.userAccount}} | {{user.userPri.userPrivilegeDesc}}</div>
             <div class="mdui-checkbox">
               <input type="checkbox"
-                    :checked="isChecked(user)"
+                     :checked="isChecked(user)"
                      @click="toggleGrantUser(user, $event)"/>
               <i class="mdui-checkbox-icon"></i>
             </div>
@@ -102,7 +99,6 @@
         blockMinUid: '',
         blockMinName: '',
         blockMinDesc: '',
-
         blockBigName: '',
         userAccount: '',
         blockBigUid: ''
@@ -233,9 +229,7 @@
       this.blockBigUid = this.$route.params.id
       this.blockBigName = this.$route.query.bbname
       this.loadBlockMinDetails(this.blockBigUid)
-
     }
-
   }
 </script>
 
