@@ -38,13 +38,16 @@
       </div>
 
       <PostViewCommentEditor
+        v-if="apost"
         class="mdui-card mdui-hoverable mdui-m-t-1 mdui-p-x-3 mdui-p-y-1" id="postViewCommentEditor"
         @commentsUpdate="commentsUpdate"
+        :postUserUid="apost.postUser.userUid"
         :post-uid="this.$route.params.id"
       />
 
       <PostViewComments ref="comments"
                         :commentPlace="postCommentPlace"
+
                         :apostUid="apost.postUid" v-show="postCommentCount > 0"
       />
       <!--底部栏-->
@@ -243,6 +246,6 @@
 
   .img {
     height: auto;
-    width: 100%;
+    max-width: 100%;
   }
 </style>

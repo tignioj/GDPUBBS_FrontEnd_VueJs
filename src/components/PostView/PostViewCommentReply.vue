@@ -229,6 +229,9 @@
       },
       submit: function (event) {
         if (this.replyContent.trim().length === 0) {
+          snackbar({
+            message: '内容不能为空！'
+          })
           return
         }
         let formData = new FormData(document.getElementById('form' + this.postCommentId))

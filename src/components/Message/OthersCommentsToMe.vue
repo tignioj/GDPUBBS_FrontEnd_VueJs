@@ -5,7 +5,8 @@
       <div v-if="othersCommentsToMe.length >0" class="mdui-card mdui-hoverable mdui-m-t-1 mdui-p-x-1 mdui-p-y-1">
         <div id="postComment" class="mdui-collapse" mdui-collapse>
           <div class="mdui-collapse-item  mdui-m-t-1" v-for="(comment, index) in othersCommentsToMe" :key="index"
-               @click="goToPost(comment.postCommentPost.postUid, comment.postCommentPlace)"
+               @click="comment.postCommentPost?goToPost(comment.postCommentPost.postUid, comment.postCommentPlace):''"
+
           >
             <div class="mdui-collapse-item-header">
               <div class="mdui-card">
@@ -19,7 +20,7 @@
                   >
                     {{comment.postCommentFromuser.userAccount}}
                     回复帖子:
-                    {{comment.postCommentPost.postTitle}}
+                    {{comment.postCommentPost?comment.postCommentPost.postTitle : '帖子已删除'}}
                   </div>
                   <!--评论日期-->
                   <div class="mdui-card-header-subtitle">{{comment.postCommentDate | date-format }}</div>
@@ -41,7 +42,7 @@
                   <button class="mdui-btn mdui-ripple">赞{{comment.postCommentGood}}</button>
                   <button class="mdui-btn mdui-ripple">踩{{comment.postCommentBad}}</button>
                   <!--                <button class="mdui-btn mdui-ripple">编辑</button>-->
-<!--                  <button @click.stop="deleteComment(comment.postCommentUid)" class="mdui-btn mdui-ripple">删除</button>-->
+                  <!--                  <button @click.stop="deleteComment(comment.postCommentUid)" class="mdui-btn mdui-ripple">删除</button>-->
                   <button class="mdui-btn mdui-btn-icon mdui-float-right"><i
                     class="mdui-icon material-icons">expand_more</i></button>
                 </div>
@@ -59,6 +60,7 @@
 
 <script>
   import {getCommentsToMe} from '../../api'
+
   const otherCommentsToMeLocation = 'other_comments_to_me_location'
 
   export default {
@@ -73,7 +75,7 @@
         let re = await getCommentsToMe()
         console.log(re)
         if (re.code === 0) {
-          let d = JSON.parse(re.data)
+          let d = re.data
           console.log(d.comments)
           this.othersCommentsToMe = d.comments
           this.$nextTick(() => {

@@ -59,9 +59,14 @@
             <button @click="$router.push(globaRouterURL.POST_EDIT + '/' + post.postUid)" class="mdui-btn mdui-ripple">编辑
             </button>
             <button @click="deletePost(post.postTitle, post.postUid)" class="mdui-btn mdui-ripple">删除</button>
+
+            <button class="mdui-btn mdui-ripple">评论数量:{{post.postComments}}</button>
             <!--            <button class="mdui-btn mdui-ripple">评论:{{post.postComments}}</button>-->
             <button class="mdui-btn mdui-btn-icon mdui-float-right"><i class="mdui-icon material-icons">expand_more</i>
             </button>
+
+
+
           </div>
         </div>
 
@@ -75,9 +80,11 @@
 <script>
   import {reqMyPosts, deleteOnePost} from '../../api'
   import {dialog} from 'mdui'
+  import PostViewTag from '../../components/PostView/PostViewTag'
 
   export default {
     name: 'MyPosts',
+    components: {PostViewTag},
     data () {
       return {
         myposts: []

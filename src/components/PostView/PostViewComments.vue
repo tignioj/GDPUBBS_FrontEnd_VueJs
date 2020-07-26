@@ -84,7 +84,7 @@
     props: ['apostUid', 'commentPlace'],
     name: 'PostViewComments',
     computed: {
-      ...mapState(['comments', 'userProfile'])
+      ...mapState(['userProfile'])
     },
     data () {
       return {

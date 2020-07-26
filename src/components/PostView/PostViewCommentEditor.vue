@@ -7,6 +7,7 @@
       <div class="mdui-textfield">
         <!--        所属帖子-->
         <input name="postCommentPost.postUid" type="hidden" v-model="postUid"/>
+        <input name="postCommentToUser.userUid" type="hidden" v-model="postUserUid"/>
         <!--        回复内容-->
         <textarea
           name="postCommentContent" id="content" class="mdui-textfield-input" maxlength="10000"
@@ -61,7 +62,7 @@
 
   export default {
     name: 'PostViewCommentEditor',
-    props: ['postUid'],
+    props: ['postUid', 'postUserUid'],
     data () {
       return {
         postContent: '',
@@ -101,6 +102,9 @@
       },
       submit: function (event) {
         if (this.postContent.trim().length === 0) {
+          mdui.snackbar({
+            message: '回复不能为空！'
+          })
           return
         }
 

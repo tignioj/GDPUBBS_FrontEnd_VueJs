@@ -4,7 +4,7 @@
     <div v-if="myCommentsToOthers.length >0" class="mdui-card mdui-hoverable mdui-m-t-1 mdui-p-x-1 mdui-p-y-1">
       <div id="postComment" class="mdui-collapse" mdui-collapse>
         <div class="mdui-collapse-item  mdui-m-t-1" v-for="(comment, index) in myCommentsToOthers" :key="index"
-             @click="goToPost(comment.postCommentPost.postUid, comment.postCommentPlace)"
+             @click="comment.postCommentPost?goToPost(comment.postCommentPost.postUid, comment.postCommentPlace):''"
         >
           <div class="mdui-collapse-item-header">
             <div class="mdui-card">
@@ -18,7 +18,7 @@
                 >
                   {{comment.postCommentFromuser.userAccount}}
                   回复帖子:
-                  {{comment.postCommentPost.postTitle}}
+                  {{comment.postCommentPost?comment.postCommentPost.postTitle : '帖子已删除'}}
                 </div>
                 <!--评论日期-->
                 <div class="mdui-card-header-subtitle">{{comment.postCommentDate | date-format }}</div>
@@ -72,7 +72,7 @@
         let re = await getCommentsToOthers()
         console.log(re)
         if (re.code === 0) {
-          let d = JSON.parse(re.data)
+          let d = re.data
           console.log(d.comments)
           this.myCommentsToOthers = d.comments
           this.$nextTick(() => {

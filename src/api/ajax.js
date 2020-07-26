@@ -10,7 +10,6 @@ export default function ajax (url, data = {}, type = 'GET', config) {
   if (config === undefined) {
     config = {}
   }
-  console.log(config)
   /* 跨域请求 */
   config.withCredentials = true
 

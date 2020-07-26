@@ -4,6 +4,7 @@
 
     <div id="content">
       <div v-if="posts.length > 0" id="contentDoc" class="mdui-row-xs-1 mdui-row-sm-2 mdui-row-xl-3  mdui-grid-list ">
+
         <div class="mdui-card mdui-col mdui-hoverable mdui-m-y-1 "
              v-for="(post, index)  in posts" :key="index"
         >
