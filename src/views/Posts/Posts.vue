@@ -25,7 +25,7 @@
 <script>
   import PostsTopBar from '../../components/TopBar/PostsTopBar/PostsTopBar.vue'
   import PostList from '../../components/PostList/PostList.vue'
-  import mdui from 'mdui'
+  import mdui, {Drawer} from 'mdui'
 
   export default {
     name: 'Posts',
@@ -38,6 +38,17 @@
       // 必须执行这个方法才会创建Fab的悬浮按钮
       // eslint-disable-next-line no-unused-vars
       let fab = new mdui.Fab('#fab')
+    },
+    // 点击后拿到数据返回给下单地址
+    beforeRouteLeave (to, from, next) {
+      if (to.name === 'home') {
+        to.query.temp = '这里是参数，选中后的地址'
+      }
+      var inst = new Drawer('#main-drawer')
+      inst.close()
+      console.log(to)
+      console.log(from)
+      next() // 一定不要忘记写
     }
   }
 </script>

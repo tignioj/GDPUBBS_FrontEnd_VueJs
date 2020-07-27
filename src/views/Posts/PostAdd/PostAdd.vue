@@ -177,7 +177,7 @@
 
           if (obj.code === 0) {
             // 帖子数量加1
-            this.$store.dispatch('postCountAddOne', 1)
+            // this.$store.dispatch('postCountAddOne', 1)
 
             self.imgsFile = []
             self.postBigBlogUid = null

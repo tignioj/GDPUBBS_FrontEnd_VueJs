@@ -69,7 +69,7 @@
         <!--如果没有帖子-->
       </div>
 
-      <div v-if="currentminblock === ''">
+      <div v-if="currentminblock === undefined">
         <h1>
           还没有板块，暂时不开放
         </h1>
@@ -100,6 +100,7 @@
   export default {
     name: 'PostList',
     components: {PostViewTag},
+
     data () {
       return {
         loggedInuserUid: '',

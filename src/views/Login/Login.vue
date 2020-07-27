@@ -72,7 +72,8 @@
     data () {
       return {
         pwd: '123456', /* 密码 */
-        username: '站长', /* 用户名 */
+        // username: '站长', /* 用户名 */
+        username: '李四', /* 用户名 */
         code: '', /* 验证码 */
         usernametips: '',
         pwdtips: '',

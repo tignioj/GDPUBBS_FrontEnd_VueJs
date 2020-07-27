@@ -1,15 +1,15 @@
 <template>
   <div>
-<!--    <UserInfoTopBar-->
-<!--      :user-profile="userProfile"-->
-<!--    />-->
+    <!--    <UserInfoTopBar-->
+    <!--      :user-profile="userProfile"-->
+    <!--    />-->
 
     <div class="mdui-container">
       <!-- 头像等信息 -->
       <div class="mdui-card mdui-hoverable mdui-m-t-2">
         <!-- 卡片头部，包含头像、标题、副标题 -->
         <div class="mdui-card-header">
-          <img class="mdui-card-header-avatar" :src="myglobalfun.imgBaseUrl(userProfile.userAvatar)"/>
+          <img  class="mdui-card-header-avatar" :src="myglobalfun.imgBaseUrl(userProfile.userAvatar)"/>
           <div class="mdui-card-header-title">
             {{userProfile.userAccount}}
             <span v-text="gender(userProfile.userGender)"></span>
@@ -20,7 +20,7 @@
             {{userProfile.posts}} 帖子
           </div>
           <div class="mdui-card-menu" style="float:right">
-            <div class="mdui-chip">
+            <div class="mdui-chip" @click="$router.push(globaRouterURL.PROFILE_EDIT)">
               <span class="mdui-chip-title">编辑资料</span>
             </div>
           </div>
@@ -64,11 +64,11 @@
        */
       gender (genderText) {
         if (genderText === '男') {
-          return "🚹"
+          return '🚹'
         } else if (genderText === '女') {
-          return "🚺"
+          return '🚺'
         } else {
-          return ""
+          return ''
         }
       },
       logout () {

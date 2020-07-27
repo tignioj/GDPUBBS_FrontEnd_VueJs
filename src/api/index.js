@@ -88,6 +88,12 @@ export const reqblob = (url) => reqBlob(BASE_URL + url)
 // 实时获取用户信息，保持登陆
 export const requserProfile = () => ajax(BASE_URL + '/login/userProfile')
 
+// 编辑用户信息回显
+export const getUserInfo = () => ajax(BASE_URL + '/user/getinfo')
+
+// 保存用户编辑信息
+export const saveUserInfo = (formData, config) => ajax(BASE_URL + '/user/saveinfo', formData, 'POST', config)
+
 // 请求其它用户信息
 export const reqOtherUserProfile = (userAccount) => ajax(BASE_URL + `/user/profile/${userAccount}`)
 
@@ -166,3 +172,5 @@ export const reqBlockMinDetail = (uid) => ajax(BASE_URL + '/blockmin/detail?uid=
 // 小板块编辑回显
 // export const reqBlockMinBeforUpdate = (uid) => ajax(BASE_URL + '/blockmin/get?uid=' + uid)
 export const reqBlockMinByBlockUid = (uid) => ajax(BASE_URL + '/blockmin/listbybbuid?uid=' + uid)
+
+export const avatar404 = () => ajax(BASE_URL + '/image/avatar404')

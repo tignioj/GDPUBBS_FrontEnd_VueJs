@@ -9,7 +9,6 @@
       v-on:leftTopButtonClick="toggleSideBar"
     />
 
-
     <TopTabCard
       :currentbigblock="currentbigblock"
       :currentminblock="currentminblock"
@@ -26,7 +25,7 @@
   import TopHeaderBar from '../TopHeaderBar'
 
   export default {
-    name: 'HeaderTop',
+    name: 'PostsTopBar',
     components: {TopHeaderBar, TopTabCard},
     computed: {
       // 把状态属性拿来，如果属性变化，则相应的数据也会变化

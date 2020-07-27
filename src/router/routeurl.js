@@ -57,7 +57,8 @@ const install = function (Vue, option) {
     BLOCKMIN_DETAIL: '/blockmin/detail',
     PRIVILEGE_LIST: '/privilege/list',
     PROFILE_OTHER: '/userinfoother',
-    PROFILE_ME: '/userinfome'
+    PROFILE_ME: '/userinfome',
+    PROFILE_EDIT: '/userinfoedit'
   }
 }
 export default {

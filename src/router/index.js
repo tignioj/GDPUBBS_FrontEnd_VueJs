@@ -23,6 +23,7 @@ import BlockBigList from '../views/BlockBig/BlockBigList'
 import BlockBigDetail from '../views/BlockBig/BlockBigDetail'
 import BlockMinUpdate from '../views/BlockMin/BlockMinUpdate'
 import BlockMinDetail from '../views/BlockMin/BlockMinDetail'
+import UserInfoEdit from '../views/UserInfo/UserInfoMe/UserInfoEdit'
 
 Vue.use(Router)
 Vue.use(routerURL)
@@ -350,6 +351,21 @@ export default new Router({
           title: '查看用户信息',
           showBack: true,
           showReload: false,
+          showMore: false,
+          showSearch: false
+        }
+      }
+    },
+    /* 编辑用户信息 */
+    {
+      path: routerUrl.PROFILE_EDIT,
+      component: UserInfoEdit,
+      meta: {
+        keepAlive: false,
+        appBar: {
+          title: '编辑用户信息',
+          showBack: true,
+          showReload: true,
           showMore: false,
           showSearch: false
         }

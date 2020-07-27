@@ -5,8 +5,11 @@
       <div class="mdui-dialog-content">
         <form :id="'form' + postComment.postCommentUid" method="post" enctype="multipart/form-data"
         >
+          <!--        所属楼层id-->
+          <input name="commentReplyComment.postCommentUid"  type="hidden" :value="postComment.postCommentUid"/>
+
           <!--        所属帖子id-->
-          <input name="belongToPost.postUid" type="hidden" :value="postComment.postCommentUid"/>
+          <input  name="belongToPost.postUid"   type="hidden" :value="postComment.postCommentPost"/>
           <!--        回复谁:回复这个评论的发起者-->
           <input type="hidden" name="commentReplyTouser.userUid"/>
           <!--        所在楼层-->
