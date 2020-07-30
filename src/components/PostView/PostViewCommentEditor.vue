@@ -49,7 +49,8 @@
     <!-- 提交按钮 -->
     <button id="submitBtn"
             @click="submit()" style="float:right"
-            class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent mdui-m-b-2">保存
+            class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent mdui-m-b-2">
+      回复
     </button>
 
   </div>
@@ -58,7 +59,8 @@
 
 <script>
   import mdui from 'mdui'
-  import {addComment} from '../../api'
+  import {addComment, saveUserInfo} from '../../api'
+  const postCommentsPageCode = 'post_comments_pagecode'
 
   export default {
     name: 'PostViewCommentEditor',
@@ -130,14 +132,15 @@
 
             if (obj.code === 0) {
               // 回复数量加1
-              // this.$store.dispatch('postCountAddOne', 1)
-              this.$emit('commentsUpdate')
+              debugger
+              this.$emit('commentsUpdate', {
+                goToLastPage: true
+              })
               this.imgDelete()
               this.postContent = ''
               mdui.snackbar({
                 message: '回复成功'
               })
-              // 刷新页面
               // 重新请求评论数据
 
               // let NewPage = "_empty" + "?time=" + new Date().getTime() / 500

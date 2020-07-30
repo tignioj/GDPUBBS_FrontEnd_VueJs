@@ -30,7 +30,7 @@ Vue.use(routerURL)
 const routerUrl = Vue.prototype.globaRouterURL
 export default new Router({
   // 消除路由上面的#
-  mode: 'history',
+  // mode: 'history',
   routes: [
     /* 首页 */
     {

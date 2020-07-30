@@ -168,6 +168,7 @@
         let indicatorEle = document.getElementById('indicator')
         indicatorEle.innerHTML = ''
         let buttonGroup = document.createElement('div')
+        buttonGroup.classList.add('mdui-row')
         buttonGroup.classList.add('mdui-btn-group')
 
         let first = document.createElement('button')
@@ -283,6 +284,7 @@
         // sessionStorage.setItem(keyCurrentSearchPageCode, this.currentPageCode)
         this.currentPageCode = currentPageCode
         console.log('currentPageCode:', currentPageCode)
+
 
         let re = await getPostsBySearch(this.blockBigUid, this.blockMinUid, this.searchInput, currentPageCode, elementMaxSize)
         console.log(re)

@@ -6,10 +6,13 @@
         <form :id="'form' + postComment.postCommentUid" method="post" enctype="multipart/form-data"
         >
           <!--        所属楼层id-->
-          <input name="commentReplyComment.postCommentUid"  type="hidden" :value="postComment.postCommentUid"/>
+          <input name="commentReplyComment.postCommentUid" type="hidden" :value="postComment.postCommentUid"/>
+
+<!--          所属楼层内容概览-->
+          <input name="commentReplyCommentSummary" type="hidden" :value="postComment.postCommentContent"/>
 
           <!--        所属帖子id-->
-          <input  name="belongToPost.postUid"   type="hidden" :value="postComment.postCommentPost"/>
+          <input name="belongToPost.postUid" type="hidden" :value="postComment.postCommentPost"/>
           <!--        回复谁:回复这个评论的发起者-->
           <input type="hidden" name="commentReplyTouser.userUid"/>
           <!--        所在楼层-->
@@ -78,14 +81,16 @@
     <div>
       <div v-for="(commentReply,index) in comments" :key="index" class="mdui-card">
         <!-- 卡片头部，包含头像、标题、副标题 -->
-        <div class="mdui-card-header">
-          <img class="mdui-card-header-avatar"
-               :src="myglobalfun.imgBaseUrl(commentReply.commentReplyFromuser.userAvatar)"/>
-          <div class="mdui-card-header-title">{{commentReply.commentReplyFromuser.userAccount}} 回复
-            {{commentReply.commentReplyTouser.userAccount}}
+        <router-link tag="div" :to="'/userinfoother/' + commentReply.commentReplyFromuser.userAccount">
+          <div class="mdui-card-header">
+            <img class="mdui-card-header-avatar"
+                 :src="myglobalfun.imgBaseUrl(commentReply.commentReplyFromuser.userAvatar)"/>
+            <div class="mdui-card-header-title">{{commentReply.commentReplyFromuser.userAccount}} 回复
+              {{commentReply.commentReplyTouser.userAccount}}
+            </div>
+            <div class="mdui-card-header-subtitle">{{commentReply.commentReplyDate | date-format }}</div>
           </div>
-          <div class="mdui-card-header-subtitle">{{commentReply.commentReplyDate | date-format }}</div>
-        </div>
+        </router-link>
         <!--评论图片-->
         <!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 -->
         <div class="mdui-card-media mdui-m-l-2 my-img my-img-rounded">
@@ -301,7 +306,6 @@
             if (re.code === 0) {
               self.$nextTick(() => {
                 self.comments = re.data
-                self.$emit('changeReplycount', self.comments.length)
               })
               mutation()
             }

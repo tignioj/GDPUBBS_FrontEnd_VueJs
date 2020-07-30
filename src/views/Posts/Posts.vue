@@ -1,7 +1,7 @@
 <template>
   <div>
     <PostsTopBar/>
-    <PostList/>
+    <PostList ref="postlist"/>
 
     <!--      添加帖子按钮-->
     <div class="mdui-fab-wrapper mdui-m-b-5" id="fab">
@@ -45,6 +45,7 @@
         to.query.temp = '这里是参数，选中后的地址'
       }
       var inst = new Drawer('#main-drawer')
+      this.$refs.postlist.saveCurrentInfo()
       inst.close()
       console.log(to)
       console.log(from)

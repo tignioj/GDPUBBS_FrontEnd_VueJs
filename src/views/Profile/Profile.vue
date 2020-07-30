@@ -154,7 +154,6 @@
     mounted () {
       mutation()
       this.myglobalfun.cleanTopTabCard()
-      this.avatarNotFoundImgUrl = avatar404()
       console.log(this.userProfile)
     }
   }

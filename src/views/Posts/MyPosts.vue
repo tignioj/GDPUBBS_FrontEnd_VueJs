@@ -13,6 +13,24 @@
     <!--      </div>-->
     <!--    </div>-->
     <div id="content" class="mdui-container">
+
+      <div class="mdui-row  mdui-p-b-2">
+        <div class="mdui-col-xs-12 mdui-col-sm-8">
+          <div class="mdui-textfield mdui-p-b-2 mdui-p-t-2">
+            <input
+              v-model="searchInput"
+              class="mdui-textfield-input" type="text" placeholder="搜索回复内容"/>
+          </div>
+        </div>
+        <div class="mdui-col-xs-12 mdui-col-sm-4 mdui-p-b-2 mdui-p-t-2">
+          <button
+            class="mdui-btn mdui-color-theme-accent mdui-ripple  mdui-btn-block"
+            @click.prevent="search()"
+          >搜索
+          </button>
+        </div>
+      </div>
+
       <div id="contentDoc" class="mdui-row-xs-1 mdui-row-sm-2 mdui-row-xl-3  mdui-grid-list ">
         <div class="mdui-card mdui-col mdui-hoverable mdui-m-y-1 " v-for="(post, index) in myposts"
              :key="index">
@@ -69,7 +87,7 @@
 
         <!--如果没有帖子-->
         <div v-if="myposts.length === 0">暂时没有帖子哈~</div>
-        </div>
+      </div>
       <div v-show="myposts.length >0" class="mdui-m-t-2" id="indicator">
       </div>
     </div>
@@ -78,10 +96,14 @@
 </template>
 
 <script>
-  import {reqMyPostsPage, deleteOnePost, getPostsBySearch} from '../../api'
+  import {reqMyPostsPage, deleteOnePost} from '../../api'
   import {dialog} from 'mdui'
   import PostViewTag from '../../components/PostView/PostViewTag'
   import {mapState} from 'vuex'
+
+  const myPostsLocation = 'myposts_location'
+  const myPostsSearchText = 'myposts_search_text'
+  const myPostsPageCode = 'myposts_pagecode'
 
   export default {
     name: 'MyPosts',
@@ -126,10 +148,37 @@
       }
     },
     mounted () {
-      this.reqPosts(this.currentPageCode, this.elementMaxSize)
+      this.loadMyPosts()
     },
     methods: {
+      search () {
+        sessionStorage.setItem(myPostsSearchText, this.searchInput)
+        sessionStorage.removeItem(myPostsLocation)
+        sessionStorage.removeItem(myPostsPageCode)
+        this.currentPageCode = 1
+        this.loadMyPosts()
+      },
+      async loadMyPosts () {
+        let pc = sessionStorage.getItem(myPostsPageCode)
+        this.currentPageCode = (pc === null) ? this.currentPageCode : parseInt(pc)
+        let text = sessionStorage.getItem(myPostsSearchText)
+        this.searchInput = (text === null) ? '' : text
 
+        await this.reqPosts(this.currentPageCode, this.elementMaxSize)
+        this.$nextTick(() => {
+          let pos = sessionStorage.getItem(myPostsLocation)
+          console.log('scrollto', pos)
+          if (pos !== null) {
+            window.scrollTo(0, pos)
+          }
+        })
+      },
+      saveCurrentInfo () {
+        let pos = window.pageYOffset
+        sessionStorage.setItem(myPostsLocation, pos)
+        sessionStorage.setItem(myPostsSearchText, this.searchInput)
+        sessionStorage.setItem(myPostsPageCode, this.currentPageCode)
+      },
       deletePost (postTitle, postUid) {
         const self = this
         dialog({
@@ -150,7 +199,7 @@
       async confirmDelete (postUid) {
         let post = await deleteOnePost(postUid)
         if (post.code === 0) {
-          this.reqposts()
+          this.reqPosts()
         }
       },
       /**
@@ -312,6 +361,10 @@
         //   pagesize: elementMaxSize
         // })
       }
+    },
+    beforeRouteLeave (to, from, next) {
+      this.saveCurrentInfo()
+      next()
     }
   }
 </script>

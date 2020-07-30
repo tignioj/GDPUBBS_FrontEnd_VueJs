@@ -1,5 +1,4 @@
 import common from './common.js'
-import {avatar404} from '../api'
 
 /**
  * 清除应用栏，侧栏，顶栏的空位
@@ -48,7 +47,7 @@ const install = function (Vue, option) {
     cleanTopTabCard,
     addBodyComponentClass,
     imgBaseUrl,
-    onlyTopHeaderBar,
+    onlyTopHeaderBar
   }
 }
 

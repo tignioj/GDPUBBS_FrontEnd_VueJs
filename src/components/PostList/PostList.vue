@@ -15,9 +15,10 @@
               <img class="mdui-card-header-avatar" :src="myglobalfun.imgBaseUrl(post.postUser.userAvatar)"/>
               <!--        <img class="mdui-card-header-avatar" src="./user/avatar/default.jpg" />-->
               <!--        <img class="mdui-card-header-avatar" :src="post.postUser.userAvatar" />-->
-              <div class="mdui-card-header-title">{{post.postUser.userAccount}}</div>
-              <div class="mdui-card-header-subtitle">{{post.postDate | date-format}}
+              <div class="mdui-card-header-title">{{post.postUser.userAccount}}
                 <span>{{post.postPrivilege.postPrivilegeDesc}}</span>
+              </div>
+              <div class="mdui-card-header-subtitle">最后修改时间：{{post.postDate | date-format}}
               </div>
             </div>
           </router-link>
@@ -96,17 +97,21 @@
   import {dialog} from 'mdui'
   import {deleteOnePost} from '../../api'
 
-  const keyCurrentPageCode = 'key_current_page_code_in_postlist'
+  const postsCurrentPageCode = 'key_current_page_code_in_postlist'
+
+  const postsReadingLocation = 'posts_readingLocation'
+  const postsSearchText = 'posts_searchText'
+
   export default {
     name: 'PostList',
     components: {PostViewTag},
-
     data () {
       return {
         loggedInuserUid: '',
         blockminuid: '',
         posts: [],
         indexs: [],
+        searchInput: '',
 
         /* 是否显示分页 */
         isShowIndicator: false,
@@ -128,7 +133,14 @@
         isShowNext: false
       }
     },
+
     methods: {
+      saveCurrentInfo () {
+        let pos = window.pageYOffset
+        sessionStorage.setItem(postsReadingLocation, pos)
+        sessionStorage.setItem(postsSearchText, this.searchInput)
+        sessionStorage.setItem(postsCurrentPageCode, this.currentPageCode)
+      },
       deletePost (postTitle, postUid) {
         const self = this
         dialog({
@@ -153,9 +165,9 @@
         }
       },
       refreshPosts () {
-        let currentBlockMinUid = localStorage.getItem('currentBlockMinUid')
+        let currentBlockMinUid = sessionStorage.getItem('currentBlockMinUid')
         this.blockminuid = currentBlockMinUid
-        let currentPageCode = parseInt(localStorage.getItem(keyCurrentPageCode))
+        let currentPageCode = parseInt(sessionStorage.getItem(postsCurrentPageCode))
         if (typeof currentPageCode !== 'number') {
           currentPageCode = 1
         }
@@ -189,6 +201,7 @@
         let indicatorEle = document.getElementById('indicator')
         indicatorEle.innerHTML = ''
         let buttonGroup = document.createElement('div')
+        buttonGroup.classList.add('mdui-row')
         buttonGroup.classList.add('mdui-btn-group')
 
         let first = document.createElement('button')
@@ -254,7 +267,7 @@
         indicatorEle.appendChild(buttonGroup)
       },
       setPosts (page) {
-        localStorage.setItem('currentBlockMinUid', page.currentBlockMinUid)
+        sessionStorage.setItem('currentBlockMinUid', page.currentBlockMinUid)
         let posts = []
         let content = page.content
         content.forEach(post => {
@@ -289,7 +302,7 @@
         this.parseIndicator(page)
       },
       reqPosts (currentPageCode, elementMaxSize) {
-        localStorage.setItem(keyCurrentPageCode, currentPageCode)
+        sessionStorage.setItem(postsCurrentPageCode, currentPageCode)
         let blockMinUid = this.blockminuid
         if (blockMinUid !== null) {
           if (currentPageCode === null) {
@@ -323,6 +336,13 @@
         deep: true,
         handler (val) {
           this.setPosts(val)
+          this.$nextTick(() => {
+            let pos = sessionStorage.getItem(postsReadingLocation)
+            console.log('scrollto', pos)
+            if (pos !== null) {
+              window.scrollTo(0, pos)
+            }
+          })
         }
       },
       'currentminblock': {
@@ -338,7 +358,7 @@
             this.reqPosts(1, this.elementMaxSize)
           }
           // 帖子板块变化，则需要重置下标
-          localStorage.setItem(keyCurrentPageCode, '1')
+          sessionStorage.setItem(postsCurrentPageCode, '1')
         }
       }
     },

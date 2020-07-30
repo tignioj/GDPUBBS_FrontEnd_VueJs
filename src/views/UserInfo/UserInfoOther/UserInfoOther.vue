@@ -43,7 +43,7 @@
     components: {ImgPreview, UserInfoTopBar},
     data () {
       return {
-        profile: '',
+        profile: ''
       }
     },
     computed: {
