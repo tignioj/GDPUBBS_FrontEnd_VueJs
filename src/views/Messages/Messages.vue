@@ -47,7 +47,7 @@ export default {
   },
   methods: {
     toggle (i) {
-      this.active = i
+      this.active = parseInt(i)
       this.currentView = this.tabs[i].view
       sessionStorage.setItem(currentTabKey, i)
       sessionStorage.removeItem(otherCommentsToMeLocation)
@@ -57,14 +57,16 @@ export default {
       sessionStorage.removeItem(otherCommentsToMePageCode)
     }
   },
-  mounted () {
+  created () {
     this.myglobalfun.cleanTopTabCard()
     let tab = sessionStorage.getItem(currentTabKey)
     console.log(tab)
     if (tab !== null) {
-      this.active = tab
+      this.active = parseInt(tab)
       this.currentView = this.tabs[tab].view
     }
+  },
+  mounted () {
   },
   beforeRouteLeave (to, from, next) {
     this.$refs.component.saveCurrentInfo()

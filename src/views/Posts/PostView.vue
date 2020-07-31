@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div id="img-header-div" v-if="apost && apost.postImg">
       <img class="img-header" :src="apost.postImg"/>
     </div>
@@ -43,20 +42,25 @@
         class="mdui-card mdui-hoverable mdui-m-t-1 mdui-p-x-3 mdui-p-y-1" id="postViewCommentEditor"
         @commentsUpdate="commentsUpdate"
         :postUserUid="apost.postUser.userUid"
+        :elementMaxSize="this.elementMaxSize"
         :post-uid="this.$route.params.id"
       />
 
       <PostViewComments
         v-if="apost"
         ref="comments"
-                        :postUserUid="apost.postUser.userUid"
-                        :commentPlace="postCommentPlace"
-                        :apostUid="apost.postUid" v-show="apost.postComments > 0"
+        :postUserUid="apost.postUser.userUid"
+        :commentPlace="postCommentPlace"
+        :elementMaxSize="elementMaxSize"
+        :apostUid="apost.postUid" v-show="apost.postComments > 0"
       />
       <!--底部栏-->
       <!--      传给组件一个方法-->
       <PostViewBottom @showEditor="showEditor"/>
     </div>
+    <button @click="scrollToTop()" class="mdui-fab mdui-color-pink-accent mdui-fab-fixed mdui-ripple mdui-m-b-5 ">
+      <i class="mdui-icon material-icons">arrow_upward</i>
+    </button>
   </div>
 </template>
 
@@ -133,18 +137,26 @@ export default {
   },
   data () {
     return {
+      elementMaxSize: 5,
       postCommentPlace: null,
       contentHTML: ''
     }
   },
   mounted () {
     this.myglobalfun.cleanTopTabCard()
+    // 由于Dialog会给Body添加这个class,而从Dialog打开状态跳转到其它路由时，Dialog没有正常关闭
+    // 因此我们需要手动去除
+    document.body.classList.remove('mdui-locked')
     let p = this.$route.query.position
     if (p !== undefined) {
       this.postCommentPlace = p
     }
   },
   methods: {
+    scrollToTop () {
+      window.scrollTo(0, 0)
+      this.$refs.comments.saveCurrentInfo()
+    },
     commentsUpdate (args) {
       this.$refs.comments.commentsUpdate(args)
     },

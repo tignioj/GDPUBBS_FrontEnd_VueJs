@@ -41,7 +41,7 @@ export const reqCommentsByPostId = (id) => ajax(BASE_URL + `/comments/${id}`)
 /**
  * 评论分页查询
  */
-export const reqCommentsPageByPostId = (text, id, pc, ps) => ajax(BASE_URL + '/commentspage?text=' + text + '&postuid=' + id + '&pc=' + pc + '&ps=' + ps)
+export const reqCommentsPageByPostId = (byuserid, text, id, pc, ps) => ajax(BASE_URL + '/commentspage?text=' + text + '&postuid=' + id + '&pc=' + pc + '&ps=' + ps + '&byuserid=' + byuserid)
 
 // 密码登录
 export const reqPwdLogin = ({username, pwd, code}) => ajax(BASE_URL + '/login/pwdlogin', {
@@ -103,7 +103,6 @@ export const getUsersByName = (userAccount) => ajax(BASE_URL + `/user/search?acc
 // 请求我的帖子
 // export const reqMyPosts = () => ajax(BASE_URL + '/post/myposts')
 export const reqMyPostsPage = (text, pc, ps) => ajax(BASE_URL + '/post/mypostspage?in=' + text + '&pc=' + pc + '&ps=' + ps)
-
 
 // 根据当前小板块查询帖子
 export const reqPostsByMinBlockUid = (currentblockuid, pagecode, pagesize) => ajax(BASE_URL + '/posts/byminblock?uid=' + currentblockuid + '&pc=' + pagecode + '&ps=' + pagesize)

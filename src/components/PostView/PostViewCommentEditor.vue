@@ -59,12 +59,11 @@
 
 <script>
   import mdui from 'mdui'
-  import {addComment, saveUserInfo} from '../../api'
-  const postCommentsPageCode = 'post_comments_pagecode'
+  import {addComment} from '../../api'
 
   export default {
     name: 'PostViewCommentEditor',
-    props: ['postUid', 'postUserUid'],
+    props: ['postUid', 'postUserUid', 'elementMaxSize'],
     data () {
       return {
         postContent: '',
@@ -118,6 +117,10 @@
             'Content-Type': 'multipart/form-data'
           }
         }
+
+
+        formData.append('ps', this.elementMaxSize)
+
         // vue-resource
         // axios.post('api/comments/add', formData, config)
         addComment(formData, config)
@@ -130,11 +133,15 @@
               this.$router.push('/login')
             }
 
+            let pos = obj.data.position
+            let lp = obj.data.lastPage
+
             if (obj.code === 0) {
               // 回复数量加1
-              debugger
               this.$emit('commentsUpdate', {
-                goToLastPage: true
+                goToLastPage: true,
+                position: pos,
+                lastPage: lp
               })
               this.imgDelete()
               this.postContent = ''

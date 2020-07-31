@@ -34,10 +34,11 @@
                   楼主
                   </span>
 
-                  <button v-if="!seeHimOnlyFlag" @click="seeHimOnly(postComment.postCommentFromuser.userUid)" class="seehim-btn" >
+                  <button v-if="!seeHimOnlyFlag" @click.stop="seeHimOnly(postComment.postCommentFromuser.userUid)"
+                          class="seehim-btn">
                     只看它
                   </button>
-                  <button v-else @click="unSeeHimOnly()" class="seehim-btn" >
+                  <button v-else @click.stop="unSeeHimOnly()" class="seehim-btn">
                     取消只看它
                   </button>
                 </div>
@@ -83,6 +84,14 @@
             </div>
           </div>
         </div>
+<!--        <div class="mdui-collapse-item-body">-->
+<!--          <div-->
+<!--            v-for="(commentReply,index) in postComment.postCommentReply" :key="index"-->
+<!--          >-->
+<!--            {{commentReply.commentReplyFromuser.userAccount}}: {{commentReply.commentReplyContent}}-->
+<!--&lt;!&ndash;            {{commentReply.commentReplyFromuser}}: {{commentReply.commentReplyContent}}&ndash;&gt;-->
+<!--          </div>-->
+<!--        </div>-->
 
       </div>
     </div>
@@ -107,11 +116,12 @@ import CommentReplyList from './CommentReplyList'
 
 const postCommentsLocation = 'post_comments_location'
 const postCommentsSearchText = 'post_comments_search_text'
+const postCommentsByUserId = 'post_comments_byUserId'
 const postCommentsPageCode = 'post_comments_pagecode'
 
 export default {
   components: {CommentReplyList},
-  props: ['apostUid', 'postUserUid', 'commentPlace'],
+  props: ['apostUid', 'postUserUid', 'commentPlace', 'elementMaxSize'],
   name: 'PostViewComments',
   computed: {
     ...mapState(['userProfile'])
@@ -119,7 +129,9 @@ export default {
   data () {
     return {
       goToLastPage: false,
+      position: '',
       seeHimOnlyFlag: false,
+      seeByUserId: '',
       loggedInuserUid: '',
       id: '',
       // 搜索
@@ -133,7 +145,6 @@ export default {
       /* 一共多少页 */
       totalPageSize: 1,
       /* 一次请求最多显示多少条记录 */
-      elementMaxSize: 5,
       /* 显示下标数量 */
       showIndicatorSize: 5,
 
@@ -146,14 +157,17 @@ export default {
   },
   methods: {
     seeHimOnly (userUid) {
-      sessionStorage.setItem(postCommentsSearchText, userUid)
+      sessionStorage.setItem(postCommentsByUserId, userUid)
+      sessionStorage.setItem(postCommentsPageCode, '1')
+      this.currentPageCode = 1
       this.seeHimOnlyFlag = true
+      this.seeByUserId = userUid
       this.reqComments()
     },
     unSeeHimOnly () {
       this.seeHimOnlyFlag = false
-      sessionStorage.removeItem(postCommentsSearchText)
-      this.searchInput = ''
+      sessionStorage.removeItem(postCommentsByUserId)
+      this.seeByUserId = ''
       this.reqComments()
     },
     saveCurrentInfo () {
@@ -219,10 +233,6 @@ export default {
 
       // 2）一共多少页 totalPageSize
       this.totalPageSize = tp
-      if (this.goToLastPage) {
-        this.currentPageCode = tp
-        this.goToLastPage = false
-      }
 
       // 3） 数据库中一共多少条记录 totalElements
       this.totalElements = te
@@ -246,7 +256,7 @@ export default {
       // sessionStorage.setItem(keyCurrentSearchPageCode, this.currentPageCode)
       this.currentPageCode = currentPageCode
       console.log('currentPageCode:', currentPageCode)
-      let re = await reqCommentsPageByPostId(this.searchInput, this.postUid, currentPageCode, elementMaxSize)
+      let re = await reqCommentsPageByPostId(this.seeByUserId, this.searchInput, this.postUid, currentPageCode, elementMaxSize)
       console.log(re)
       if (re.code === 0) {
         console.log(re.code)
@@ -403,16 +413,10 @@ export default {
       console.log('评论请求成功')
       // this.$nextTick()将回调延迟到下次 DOM 更新循环之后执行。在修改数据之后立即使用它，然后等待 DOM 更新。
       this.$nextTick(() => {
-        let place = this.$route.query.position
-        if (place !== undefined) {
-          let e = document.getElementById('#' + place)
-          if (e !== null) {
-            e.scrollIntoView({
-              block: 'center',
-              inline: 'center'
-            })
-            // this.$emit('scrollToEle', e)
-          }
+        // let place = this.$route.query.position
+        let place = this.position
+        if (place !== undefined && (place !== '')) {
+          this.scrollToElement(place)
         } else {
           let pos = sessionStorage.getItem(postCommentsLocation)
           console.log('scrollto', pos)
@@ -422,6 +426,16 @@ export default {
         }
       })
     },
+    scrollToElement (place) {
+      let e = document.getElementById('#' + place)
+      if (e !== null) {
+        e.scrollIntoView({
+          block: 'center',
+          inline: 'center'
+        })
+        // this.$emit('scrollToEle', e)
+      }
+    },
     commentsUpdate (args) {
       // 更新评论
       // this.reqPosts(this.currentPageCode, this.elementMaxSize)
@@ -429,10 +443,17 @@ export default {
       if (args) {
         if (args.goToLastPage) {
           this.goToLastPage = true
+          this.position = args.position
+          this.currentPageCode = args.lastPage
+          sessionStorage.setItem(postCommentsPageCode, this.currentPageCode)
         }
       }
       this.reqComments()
     }
+  },
+  beforeDestroy () {
+    sessionStorage.removeItem(postCommentsSearchText)
+    sessionStorage.removeItem(postCommentsByUserId)
   },
   watch: {
     'userProfile':
@@ -491,12 +512,14 @@ export default {
   justify-content: center;
   margin: 0 auto 50px auto;
 }
+
 .seehim-btn {
   border: 0;
   background: transparent;
   cursor: pointer;
   border-radius: 3px;
 }
+
 .seehim-btn:hover {
   transition: background-color;
   transition-duration: 100ms;

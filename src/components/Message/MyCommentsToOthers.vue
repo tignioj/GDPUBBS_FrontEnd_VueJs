@@ -32,22 +32,20 @@
                 <!--评论者头像-->
                 <img class="mdui-card-header-avatar"
                      :src="myglobalfun.imgBaseUrl(comment.fromUser.userAvatar)"/>
-                <div class="mdui-card-header-title"
-                >
-                  {{ comment.fromUser.userAccount }}
-                  回复帖子:
-                  {{ comment.post ? comment.post.postTitle : '帖子已删除' }}
+                <div class="mdui-card-header-title">
+                  我回复了 {{ comment.type === 'post_comment' ? '帖子' : '评论' }}
+                  <span class="mdui-float-right">
+                    {{ comment.post ? comment.post.postTitle : '原文已删除' }}
+                  </span>
                 </div>
                 <!--评论日期-->
                 <div class="mdui-card-header-subtitle">{{ comment.replyDate | date-format }}</div>
               </div>
-
-
               <!--评论内容-->
               <!-- 卡片的内容 -->
               <div class="mdui-card-content">
                 <div>
-                  {{ comment.fromUser.userAccount }}:{{ comment.summary }}
+                  原文： {{ comment.toUser.userAccount }}:{{ comment.summary }}
                 </div>
                 <div>
                   我:{{ comment.content }}

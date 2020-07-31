@@ -33,16 +33,16 @@
                   <!--评论者头像-->
                   <img class="mdui-card-header-avatar"
                        :src="myglobalfun.imgBaseUrl(comment.fromUser.userAvatar)"/>
-                  <div class="mdui-card-header-title"
-                  >
+                  <div class="mdui-card-header-title">
                     {{ comment.fromUser.userAccount }}
-                    回复帖子:
-                    {{ comment.post ? comment.post.postTitle : '帖子已删除' }}
+                    {{ comment.type === 'comment_reply' ? '回复了你的评论' : '回复帖子' }}:
+                    <span class="mdui-float-right">
+                      {{ comment.post ? comment.post.postTitle : '帖子已删除' }}
+                    </span>
                   </div>
                   <!--评论日期-->
                   <div class="mdui-card-header-subtitle">{{ comment.replyDate | date-format }}</div>
                 </div>
-
                 <!--评论图片-->
                 <!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 -->
                 <div class="mdui-card-media mdui-m-l-2 my-img my-img-rounded">
@@ -53,10 +53,18 @@
                 <!--评论内容-->
                 <!-- 卡片的内容 -->
                 <div class="mdui-card-content">
-                  <div>
-                    {{ comment.toUser.userAccount }}:{{ comment.summary }}
+                  <div v-if="comment.postComment">
+                    原评论: {{ comment.postComment.postCommentFromuser.userAccount }}: {{ comment.summary }}
+                    <div>
+                      {{ comment.fromUser.userAccount }}:{{ comment.content }}
+                    </div>
                   </div>
-                  {{ comment.fromUser.userAccount }}:{{ comment.content }}
+                  <div v-else>
+                    原帖: {{ comment.fromUser.userAccount }}: {{ comment.summary }}
+                    <div>
+                      {{ comment.fromUser.userAccount }}:{{ comment.content }}
+                    </div>
+                  </div>
                 </div>
 
                 <!-- 卡片的按钮 -->
