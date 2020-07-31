@@ -21,6 +21,7 @@
 
             <!--            <div @click.prevent="this.globaRouterURL.PROFILE_OTHER  + '/' + postComment.postCommentFromuser.userAccount" >-->
             <div>
+              <router-link tag="div" :to="'/userinfoother/' + postComment.postCommentFromuser.userAccount">
               <div class="mdui-card-header">
                 <!--评论者头像-->
                 <img class="mdui-card-header-avatar"
@@ -45,6 +46,7 @@
                 <!--评论日期-->
                 <div class="mdui-card-header-subtitle">{{ postComment.postCommentDate | date-format }}</div>
               </div>
+              </router-link>
             </div>
 
             <!--评论图片-->
@@ -61,8 +63,12 @@
 
             <!-- 卡片的按钮 -->
             <div class="mdui-card-actions">
-              <button class="mdui-btn mdui-ripple">点赞{{ postComment.postCommentGood }}</button>
-              <button class="mdui-btn mdui-ripple">踩{{ postComment.postCommentBad }}</button>
+              <button @click.stop="addCommentGood(postComment.postCommentUid)" class="mdui-btn mdui-ripple">
+                点赞{{ postComment.postCommentGood }}
+              </button>
+              <button @click.stop="addCommentBad(postComment.postCommentUid)" class="mdui-btn mdui-ripple">
+                踩{{ postComment.postCommentBad }}
+              </button>
               <!--              <button class="mdui-btn mdui-ripple"-->
               <!--                      @click.stop="replyTo(-->
               <!--                        postComment.postCommentUid,-->
@@ -84,14 +90,14 @@
             </div>
           </div>
         </div>
-<!--        <div class="mdui-collapse-item-body">-->
-<!--          <div-->
-<!--            v-for="(commentReply,index) in postComment.postCommentReply" :key="index"-->
-<!--          >-->
-<!--            {{commentReply.commentReplyFromuser.userAccount}}: {{commentReply.commentReplyContent}}-->
-<!--&lt;!&ndash;            {{commentReply.commentReplyFromuser}}: {{commentReply.commentReplyContent}}&ndash;&gt;-->
-<!--          </div>-->
-<!--        </div>-->
+        <!--        <div class="mdui-collapse-item-body">-->
+        <!--          <div-->
+        <!--            v-for="(commentReply,index) in postComment.postCommentReply" :key="index"-->
+        <!--          >-->
+        <!--            {{commentReply.commentReplyFromuser.userAccount}}: {{commentReply.commentReplyContent}}-->
+        <!--&lt;!&ndash;            {{commentReply.commentReplyFromuser}}: {{commentReply.commentReplyContent}}&ndash;&gt;-->
+        <!--          </div>-->
+        <!--        </div>-->
 
       </div>
     </div>
@@ -111,7 +117,7 @@
 <script>
 import {mapState} from 'vuex'
 import {dialog, snackbar} from 'mdui'
-import {deleteOneCommentByUid, reqCommentsPageByPostId} from '../../api'
+import {deleteOneCommentByUid, reqCommentsPageByPostId, addPostCommentBad, addPostCommentGood} from '../../api'
 import CommentReplyList from './CommentReplyList'
 
 const postCommentsLocation = 'post_comments_location'
@@ -128,6 +134,7 @@ export default {
   },
   data () {
     return {
+      fruits: ['大西瓜皮', '香蕉皮', '臭鸡蛋'],
       goToLastPage: false,
       position: '',
       seeHimOnlyFlag: false,
@@ -156,6 +163,26 @@ export default {
     }
   },
   methods: {
+    async addCommentGood (uid) {
+      this.saveCurrentInfo()
+      let re = await addPostCommentGood(uid)
+      if (re.code === 0) {
+        snackbar({
+          message: '你给层主点击了个赞'
+        })
+        this.reqComments()
+      }
+    },
+    async addCommentBad (uid) {
+      this.saveCurrentInfo()
+      let re = await addPostCommentBad(uid)
+      if (re.code === 0) {
+        snackbar({
+          message: '你向层主扔了一块' + this.fruits[Math.floor((Math.random() * this.fruits.length))]
+        })
+        this.reqComments()
+      }
+    },
     seeHimOnly (userUid) {
       sessionStorage.setItem(postCommentsByUserId, userUid)
       sessionStorage.setItem(postCommentsPageCode, '1')
@@ -163,20 +190,23 @@ export default {
       this.seeHimOnlyFlag = true
       this.seeByUserId = userUid
       this.reqComments()
-    },
+    }
+    ,
     unSeeHimOnly () {
       this.seeHimOnlyFlag = false
       sessionStorage.removeItem(postCommentsByUserId)
       this.seeByUserId = ''
       this.reqComments()
-    },
+    }
+    ,
     saveCurrentInfo () {
       let pos = window.pageYOffset
       sessionStorage.setItem(postCommentsLocation, pos)
       sessionStorage.setItem(postCommentsSearchText, this.searchInput)
       sessionStorage.setItem(postCommentsPageCode, this.currentPageCode)
       console.log(pos)
-    },
+    }
+    ,
     deleteBlockMin (name, uid) {
       const self = this
       dialog({
@@ -193,7 +223,8 @@ export default {
           }
         ]
       })
-    },
+    }
+    ,
     // async confirmDelete (blockBigUid) {
     //   let post = await delBlockMin(blockBigUid)
     //   if (post.code === 0) {
@@ -203,7 +234,8 @@ export default {
     loadBlockBloMin () {
       // this.searchInput = this.$route.query.searchInput
       this.reqPosts(this.currentPageCode, this.elementMaxSize)
-    },
+    }
+    ,
     setResultPosts (page) {
       let list = []
       let content = page.content
@@ -246,7 +278,8 @@ export default {
       this.isShowPrevious = this.currentPageCode > 1
 
       this.parseIndicator(page)
-    },
+    }
+    ,
     async reqPosts (currentPageCode, elementMaxSize) {
       if (currentPageCode === null) {
         currentPageCode = 1
@@ -264,7 +297,8 @@ export default {
       } else {
         // this.$router.replace('/login')
       }
-    },
+    }
+    ,
     /**
      * 分页
      * @param pageObj
@@ -357,7 +391,8 @@ export default {
       buttonGroup.appendChild(last)
 
       indicatorEle.appendChild(buttonGroup)
-    },
+    }
+    ,
     async confirmDelete (uid) {
       let re = await deleteOneCommentByUid(uid)
       console.log(re)
@@ -368,7 +403,8 @@ export default {
         })
         this.reqComments()
       }
-    },
+    }
+    ,
     deleteComment (uid) {
       const self = this
       dialog({
@@ -385,7 +421,8 @@ export default {
           }
         ]
       })
-    },
+    }
+    ,
     replyTo (postUid, userUid, userName) {
       let refname = 'commentReply' + postUid
       let ref = this.$refs[refname][0]
@@ -399,6 +436,11 @@ export default {
       this.$refs.commentReply.showReply(postComment)
     },
     async reqComments () {
+      this.id = this.$route.params.id
+      this.postUid = this.id
+      if (this.userProfile !== '') {
+        this.loggedInuserUid = this.userProfile.userUid
+      }
       // this.searchInput = this.$route.query.searchInput
       let pc = sessionStorage.getItem(postCommentsPageCode)
       if (pc === null && pc === 'NaN') {
@@ -468,11 +510,7 @@ export default {
       }
   },
   mounted () {
-    this.id = this.$route.params.id
-    this.postUid = this.id
-    if (this.userProfile !== '') {
-      this.loggedInuserUid = this.userProfile.userUid
-    }
+
     this.reqComments()
     // Event.$on('commentsUpdate', age => {
     //   this.reqComments()
