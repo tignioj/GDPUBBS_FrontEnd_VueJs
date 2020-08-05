@@ -1,15 +1,8 @@
 <template>
-
   <div>
-
-    <LoginTopBar/>
-    <!--    <div class="mdui-appbar">-->
-    <!--      <div class="mdui-toolbar ">-->
-    <!--        <a href="javascript:;" @click="$router.back()" class="mdui-btn mdui-btn-icon"><i-->
-    <!--          class="mdui-icon material-icons">arrow_back</i></a>-->
-    <!--        <a href="javascript:;" class="mdui-typo-title">登陆</a>-->
-    <!--      </div>-->
-    <!--    </div>-->
+    <div class="mdui-progress" v-show="waiting">
+      <div class="mdui-progress-indeterminate"></div>
+    </div>
     <div id="outer" class="mdui-card mdui-container mdui-hoverable mdui-m-t-1">
       <img id="logo" class="mdui-center mdui-img-fluid mdui-m-x-2" src="./images/广药.png">
       <!-- <img id="logo" class="mdui-img-fluid" src="1.jpg"> -->
@@ -65,13 +58,12 @@
 <script>
 import mdui from 'mdui'
 import {reqbase64Img, reqPwdLogin, reqPwdRegist} from '../../api'
-import LoginTopBar from '../../components/TopBar/LoginTopBar/LoginTopBar'
 
 export default {
   name: 'Login',
-  components: {LoginTopBar},
   data () {
     return {
+      waiting: false,
       pwd: '123456', /* 密码 */
       // username: '', /* 用户名 */
       username: '张三', /* 用户名 */
@@ -86,9 +78,11 @@ export default {
   methods: {
     async regist (e) {
       e.target.disabled = true
+      this.waiting = true
       // 1. 表单校验
       if (!this.checkInput()) {
         e.target.disabled = false
+        this.waiting = false
         return
       }
       const {username, pwd, code} = this
@@ -110,12 +104,16 @@ export default {
         this.showLoginError(result.msg)
       }
       e.target.disabled = false
+      this.waiting = false
     },
     async login (e) {
+      const self = this
       e.target.disabled = true
+      self.waiting = true
       // 1. 表单校验
       if (!this.checkInput()) {
         e.target.disabled = false
+        self.waiting = false
         return
       }
 
@@ -123,30 +121,33 @@ export default {
       // 2. 异步登陆
       console.log('开始登陆')
       // 发送ajax请求密码登陆
-      await reqPwdLogin({username, pwd, code}).then(re => {
+      reqPwdLogin({username, pwd, code}).then(re => {
         let result = re
         console.log(result)
-        debugger
+        self.waiting = false
         // 根据结果数据处理
         if (result.code === 0) {
           const user = result.data
           // 将user保存到vuex的state
-          this.$store.dispatch('recordUser', user)
+          self.$store.dispatch('recordUser', user)
           // 去个人中心界面
-          this.$router.replace('/profile')
+          self.$router.replace('/profile')
         } else {
           // 显示新的图片验证码
-          this.getCaptcha()
+          self.getCaptcha()
           e.target.disabled = false
           // 错误信息
-          this.showLoginError(result.msg)
+          self.showLoginError(result.msg)
         }
         e.target.disabled = false
+        self.waiting = false
       }).catch(err => {
         mdui.snackbar({
           message: '服务器错误'
         })
+        console.error(err)
         e.target.disabled = false
+        self.waiting = false
       })
     },
     /**
@@ -280,6 +281,7 @@ export default {
 #outer {
   border-radius: 15px;
 }
+
 
 </style>
 

@@ -201,7 +201,7 @@ import {
   addCommentReplyBad,
   getCommentRepliesByCommentUid,
   delCommentReply,
-  addCommentReply,
+  addCommentReply
 } from '../../api'
 
 export default {
@@ -231,7 +231,6 @@ export default {
       base64Img: null,
       dialogObj: null,
       dialogEle: null,
-
       // 分页
       searchInput: '',
       indicatorsIndex: [],
@@ -249,7 +248,6 @@ export default {
 
       /* 是否显示下一页 */
       isShowNext: false
-
     }
   },
   watch: {
@@ -288,7 +286,6 @@ export default {
           this.postComment.postCommentUid,
           this.postComment.postCommentFromuser.userUid,
           this.postComment.postCommentFromuser.userAccount)
-
         this.$nextTick(() => {
           // let toUser = self.postComment.postCommentFromuser
           // self.replyTo(self.postComment.postCommentUid, toUser.userUid, toUser.userAccount)
@@ -320,7 +317,6 @@ export default {
       })
       this.comments = list
       // this.blockminuid = page.currentBlockMinUid
-
       /**
        * 1. 分页必须的元素
        *  1) 当前页码 currentPageCode
@@ -331,14 +327,6 @@ export default {
       let tp = page.totalPage
       let te = page.totalElements
 
-      // 1) 当前页码 currentPageCode
-      // let currentPageCode = sessionStorage.getItem('currentPageCode')
-      // if (currentPageCode === null) {
-      //   currentPageCode = 1
-      // }
-      // this.currentPageCode = parseInt(currentPageCode)
-
-      // 2）一共多少页 totalPageSize
       this.totalPageSize = tp
 
       // 3） 数据库中一共多少条记录 totalElements
@@ -617,7 +605,6 @@ export default {
         })
         mdui.mutation()
       })
-
     },
     fileChange (event) {
       let fileEle = event.target

@@ -141,8 +141,7 @@ import {
   deleteOneCommentByUid,
   reqCommentsPageByPostId,
   addPostCommentBad,
-  addPostCommentGood,
-  getHotCommentReplys
+  addPostCommentGood
 } from '../../api'
 import CommentReplyList from './CommentReplyList'
 

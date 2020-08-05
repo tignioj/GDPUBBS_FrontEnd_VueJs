@@ -80,7 +80,7 @@
         {{ this.errorMsg }}
       </div>
     </div>
-    <div v-show="!hasLoaded" class="mdui-m-t-2">
+    <div v-show="!hasLoaded">
       <div class="mdui-progress ">
         <div class="mdui-progress-indeterminate"></div>
       </div>

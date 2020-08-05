@@ -391,7 +391,16 @@ export default new Router({
     /* 登录 */
     {
       path: routerUrl.LOGIN,
-      component: Login
+      component: Login,
+      meta: {
+        appBar: {
+          title: '登录',
+          showBack: true,
+          showReload: true,
+          showMore: false,
+          showSearch: false
+        }
+      }
     },
     /* 主页 */
     {
