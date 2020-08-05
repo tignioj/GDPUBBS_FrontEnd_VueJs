@@ -29,6 +29,8 @@
         @click="$router.push(globaRouterURL.BLOCKMIN_LIST + '/' + blockbigDetail.bBlockUid + '?bbname=' + blockbigDetail.bBlockName)"
       >查看所有小板块</button>
 
+      <BlockMinList v-if="blockbigDetail" :blockbigDetail="blockbigDetail" />
+
 
       <div v-if="blockMins.length > 0"
            class="mdui-row-xs-1 mdui-row-sm-2 mdui-row-xl-3  mdui-grid-list ">
@@ -83,11 +85,13 @@
 </template>
 
 <script>
-  import {reqBlockDetail} from '../../api'
+  import {reqBlockDetail} from '../../../api'
   import {mapState} from 'vuex'
+  import BlockMinList from '../BlockMin/BlockMinList'
 
   export default {
     name: 'BlockBigDetail',
+    components: {BlockMinList},
     data () {
       return {
         loggedInuserUid: '',
@@ -132,5 +136,10 @@
 </script>
 
 <style scoped>
-
+#indicator {
+  display: flex;
+  border: 1px solid black;
+  justify-content: center;
+  margin: 0 auto 50px auto;
+}
 </style>

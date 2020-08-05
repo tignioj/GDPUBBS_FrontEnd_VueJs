@@ -87,7 +87,7 @@
 
 <script>
   import mdui from 'mdui'
-  import {getUsersByName, reqBlockMinDetail, updateBlockMin} from '../../api'
+  import {getUsersByName, reqBlockMinDetail, updateBlockMin} from '../../../api'
 
   export default {
     name: 'BlockMinUpdate',

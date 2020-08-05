@@ -18,7 +18,7 @@
         <br/>
       </div>
 
-      <div class="mdui-textfield mdui-textfield-floating-label">
+      <div class="mdui-textfield ">
         <label class="mdui-textfield-label">标题</label>
         <input v-if="this.post!=null && this.post.postTitle !==null" v-model="postTitle"
                name="postTitle" id="title" class="mdui-textfield-input" type="text" required/>

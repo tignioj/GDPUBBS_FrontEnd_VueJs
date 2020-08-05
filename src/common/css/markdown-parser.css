@@ -1,0 +1,181 @@
+/*缩进框*/
+.block-frame {
+    border-radius: 0.5em;
+    background: lightgray;
+}
+
+
+.block-frame:hover {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+/*缩进框下的ol*/
+.block-frame ol {
+    overflow: auto;
+    margin: 0;
+    padding: 20px;
+    list-style-type: none;
+}
+
+/*缩进框下的*/
+.block-frame li {
+    font-family: monospace;
+}
+
+
+/*引用框*/
+.quote-frame {
+    /*background-color: #E8EAF6;*/
+    border-radius: 0.5em;
+}
+
+/*引用框下的ol*/
+.quote-frame ol {
+    /*padding: 1em;*/
+    padding: 10px 10px 10px 0;
+    overflow: auto;
+}
+
+/*引用框内的每一行*/
+.quote-line {
+    display: flex;
+}
+
+/*引用框前面填充物的样式*/
+.quote-line-filler {
+    /*background: darkgray;*/
+    /*background-color : rgba(0,0,0,0.1);*/
+    border-right: 0.3em solid rgba(0, 0, 0, 0.1);
+    padding-left: 1em;
+    margin-right: 1em;;
+}
+
+/*无序list*/
+.unordered-list {
+    list-style: none;
+    margin: 10px 0 0 0;
+    padding: 0;
+}
+
+.ordered-list {
+    list-style: none;
+    margin: 10px 0 0 0;
+    padding: 0;
+}
+
+
+/*所有的标题*/
+.header {
+}
+
+
+/*纯文本*/
+.plain-text {
+    line-height: 2;
+    margin: 15px 0 0 0;
+}
+
+
+/*删除*/
+.md-del {
+    text-decoration-line: line-through;
+}
+
+/*斜体*/
+.md-italic {
+    font-style: italic;
+    /*font-style: oblique;*/
+    color: red;
+}
+
+/*粗体*/
+.md-strong {
+    font-weight: bold;
+    color: purple;
+}
+
+/*下划线*/
+.md-underline {
+    text-decoration: underline;
+}
+
+/*未完成清单的*/
+.md-todo-uncheck {
+}
+
+/*完成清单*/
+.md-todo-checked {
+}
+
+#indicator > div {
+}
+
+/*目录的div*/
+#indicator {
+    /*初次加载时候不显示目录，用js检测是否有目录，如果有由js设置为visible*/
+    visibility: hidden;
+    border-left: 1px solid rgba(128, 128, 128, 0.56);
+    border-bottom: 1px solid rgba(128, 128, 128, 0.56);
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: 10px;
+    max-width: 30%;
+    max-height: 100%;
+    overflow: auto;
+}
+
+/*目录的每一行*/
+.md-indicator-line {
+    cursor: pointer;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.56);
+    margin: 0;
+    /*padding: 10px 10px 2px 10px;*/
+    padding: 5px;
+}
+
+
+
+/* 目录中高亮当前位置 */
+.md-indicator-line-active {
+    background-color: grey;
+}
+
+
+/*代码框上面的横条*/
+.md-indicator-bar {
+    /*border-radius: 0.5em;*/
+    /*background-color: black;*/
+    /*border-bottom: 1px solid rgba(0, 0, 0, 0.57);*/
+    /*position: relative;*/
+    height: 25px;
+}
+
+/*折叠目录的按钮*/
+.md-indicator-btn {
+    cursor: pointer;
+    padding: 0px;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    /*display: inline-block;*/
+    right: 20px;
+    line-height: 40px;
+    top: 10px;
+    border-radius: 100%;
+    /*border: 1px solid red;*/
+    /*border: 0;*/
+    position: fixed;
+    background-color: transparent;
+    /*background-color: darkslategray;*/
+    font-weight: bolder;
+    /*color: #bababa;*/
+    color: darkgray;
+    font-size: xx-large;
+    user-select: none;
+}
+
+.md-indicator-btn:hover {
+    transition-duration: 100ms;
+    /*background-color: darkgoldenrod;*/
+}

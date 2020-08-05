@@ -8,11 +8,13 @@ import store from './store'
 import 'mdui/dist/css/mdui.css'
 import './filters'
 import myglobalfun from './kits/myglobalfun.js'
+import md from '../src/common/js/markdown-parser.js'
 
 Vue.use(mdui)
 Vue.use(myglobalfun)
 
 Vue.config.productionTip = false
+Vue.prototype.md = md
 //
 // router.beforeEach((to, from, next) => {
 //   // console.log('之前:', 'to:', to.path, to.meta.keepAlive, ' from:', from.path, from.meta.keepAlive)

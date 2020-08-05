@@ -14,16 +14,17 @@ import PostAddPreview from '../views/Posts/PostAdd/PostAddPreview.vue'
 import MyPosts from '../views/Posts/MyPosts.vue'
 import routerURL from './routeurl.js'
 import SearchResult from '../components/Category/SearchResult.vue'
-import BlockBigAdd from '../views/BlockBig/BlockBigAdd'
-import BlockBigUpdate from '../views/BlockBig/BlockBigUpdate'
-import BlockMinAdd from '../views/BlockMin/BlockMinAdd'
-import BlockMinList from '../views/BlockMin/BlockMinList'
+import BlockBigAdd from '../components/Category/BlockBig/BlockBigAdd'
+import BlockBigUpdate from '../components/Category/BlockBig/BlockBigUpdate'
+import BlockMinAdd from '../components/Category/BlockMin/BlockMinAdd'
+import BlockMinList from '../components/Category/BlockMin/BlockMinList'
 import PrivilegeList from '../views/Privilege/PrivilegeList'
-import BlockBigList from '../views/BlockBig/BlockBigList'
-import BlockBigDetail from '../views/BlockBig/BlockBigDetail'
-import BlockMinUpdate from '../views/BlockMin/BlockMinUpdate'
-import BlockMinDetail from '../views/BlockMin/BlockMinDetail'
+import BlockBigList from '../components/Category/BlockBig/BlockBigList'
+import BlockBigDetail from '../components/Category/BlockBig/BlockBigDetail'
+import BlockMinUpdate from '../components/Category/BlockMin/BlockMinUpdate'
+import BlockMinDetail from '../components/Category/BlockMin/BlockMinDetail'
 import UserInfoEdit from '../views/UserInfo/UserInfoMe/UserInfoEdit'
+import ManagePosts from '../views/Posts/ManagePosts'
 
 Vue.use(Router)
 Vue.use(routerURL)
@@ -201,7 +202,6 @@ export default new Router({
         }
       }
     },
-
     /* 添加帖子 */
     {
       name: 'PostsAdd',
@@ -212,6 +212,22 @@ export default new Router({
         appBar: {
           title: '添加帖子',
           showSearch: true,
+          showReload: true,
+          showMore: false,
+          showBack: true
+        }
+      }
+    },
+    /* 管理帖子 */
+    {
+      name: 'PostManage',
+      path: routerUrl.POST_MANAGE,
+      component: ManagePosts,
+      meta: {
+        keepAlive: true,
+        appBar: {
+          title: '添加帖子',
+          showSearch: false,
           showReload: true,
           showMore: false,
           showBack: true
@@ -268,6 +284,7 @@ export default new Router({
       path: routerUrl.CATEGORIES,
       component: Categories,
       meta: {
+
         showBottom: true,
         showSideBar: true,
         appBar: {

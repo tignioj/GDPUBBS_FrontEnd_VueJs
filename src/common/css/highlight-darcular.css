@@ -1,0 +1,181 @@
+
+/**
+idea darcular 风格的代码高亮
+ */
+/*=====================整体配置开始==============================*/
+
+/*单行代码，多行代码都有*/
+.code {
+  border-radius: 0.5em;
+  border: 1px solid rgba(0,0,0,0.1);
+  /*这个字体适合代码*/
+  font-family: monospace;
+}
+
+/*多行代码的包裹层div*/
+.code-multi-frame {
+  background-color: #2b2b2b;
+  transition-duration: 100ms;
+  color: #bababa;
+}
+
+.code-multi-frame:hover {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.code-multi-frame ol {
+  overflow: auto;
+  padding: 15px;
+  margin: 0;
+}
+
+/*代码框上面的横条*/
+.md-code-bar {
+  /*border-radius: 0.5em;*/
+  /*background-color: black;*/
+  /*border-bottom: 1px solid rgba(0, 0, 0, 0.57);*/
+  position: relative;
+  height: 25px;
+}
+
+
+/*折叠代码的按钮*/
+.md-code-fold {
+  cursor: pointer;
+  right: 6px;
+  line-height: 0;
+  top: 12px;
+  border-radius: 100%;
+  border: 0;
+  position: absolute;
+  background-color: transparent;
+  /*background-color: darkslategray;*/
+  font-weight: bolder;
+  /*color: #bababa;*/
+  color: darkgray;
+  font-size: xx-large;
+  user-select: none;
+}
+
+.md-code-fold:hover {
+  transition-duration: 100ms;
+  /*background-color: darkgoldenrod;*/
+}
+
+/*多行代码的每行代码*/
+.code-multi-frame-line  {
+  list-style: none;
+}
+.code-multi-frame-line:hover {
+  /*background-color: papayawhip;*/
+  background-color: darkslategray;
+}
+
+/*=====================整体配置结束==============================*/
+
+
+/*============================单行代码开始====================*/
+/*单行代码的外层div*/
+.code-single-frame {
+  /*padding: 0.1em;*/
+  /*margin: 0.1em;*/
+  padding: 1px;
+  /*margin: 4px;*/
+  background-color: whitesmoke;
+}
+
+/*============================单行代码结束====================*/
+
+
+/*===============================高亮=================================*/
+
+/*注解，以@开头*/
+.hl-code-annotation {
+  /*color: cadetblue;*/
+  color: #bbb529;
+}
+
+/*java的关键字*/
+.hl-code-keyword {
+  color: #cc7832
+}
+
+
+/*java的方法*/
+.hl-code-function {
+  color: #e8be6a;
+}
+
+/*字符串*/
+.hl-code-string {
+  color: #6a8759;
+}
+
+/*java属性*/
+.hl-code-field {
+  color: #8775a9;
+}
+
+/*单行注释*/
+.hl-code-one-line-comment {
+  color: #808080;
+}
+/*多行注释*/
+.hl-code-multi-line-comment {
+  color: #629755;
+}
+
+/*纯数字颜色*/
+.hl-code-number {
+  color: #6897bb;
+}
+
+
+/*=============================================*/
+/*声明 <!DOCTYPE >*/
+.hl-code-html-declare-tag {
+  /*color: firebrick;*/
+  color: red;
+}
+
+/*声明类型 <!DOCTYPE html>*/
+.hl-code-html-declare-type {
+  color: yellow;
+
+}
+
+/*纯文本*/
+.hl-code-html-plain-text {
+  color: #bababa;
+}
+
+/*标签名称*/
+.hl-code-html-tag {
+  color: red;
+}
+
+/*属性*/
+.hl-code-html-prop  {
+  /*color: #cc7832;*/
+  color: orange;
+}
+
+/*字符串*/
+.hl-code-html-string {
+  color: #629755;
+}
+
+/*xml注释*/
+.hl-code-html-comment {
+  color: #808080;
+}
+
+
+/*=======================JSON=======================*/
+.hl-code-json-key {
+  color: #cc7832
+}
+
+.hl-code-json-value {
+  color: #629755;
+}

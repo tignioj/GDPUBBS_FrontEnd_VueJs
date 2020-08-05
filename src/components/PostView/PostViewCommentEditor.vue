@@ -89,7 +89,7 @@ export default {
           this.loggedInuserUid = val.userUid
         }
       }
-    },
+    }
   },
   methods: {
     imgDelete () {

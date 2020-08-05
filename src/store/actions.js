@@ -72,13 +72,16 @@ export default {
     commit(RECEIVE_INDEX_BIGBLOCKS, {indexcategory})
     // }
   },
-  async getpostbyuid ({commit}, {id, callback}) {
+  async getpostbyuid ({commit}, {id, success, error, finish}) {
     const result = await reqAPostById(id)
     if (result.code === 0) {
       const apost = result.data
       commit(RECEIVE_APOST_BYID, {apost})
+      success && success(result)
+    } else {
+      error && error(result)
     }
-    callback(result)
+    finish && finish(result)
   },
   async getcommentsbypostuid ({commit}, {id, callback}) {
     const result = await reqCommentsByPostId(id)

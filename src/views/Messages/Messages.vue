@@ -7,13 +7,17 @@
       </li>
     </ul>
     <!--:is实现多个组件实现同一个挂载点-->
-    <component ref="component" :is="currentView"></component>
+    <component v-if="loggedInuserUid" ref="component" :is="currentView"></component>
+
+    <div class="mdui-typo mdui-text-center" v-else> 你还没有登录哦, <a @click="$router.push(globaRouterURL.LOGIN)">点击这里去登录 </a>
+    </div>
   </div>
 </template>
 
 <script>
 import MyCommentsToOthers from '../../components/Message/MyCommentsToOthers.vue'
 import OthersCommentsToMe from '../../components/Message/OthersCommentsToMe.vue'
+import {mapState} from 'vuex'
 
 const currentTabKey = 'current_tab_key'
 
@@ -31,6 +35,7 @@ export default {
   },
   data () {
     return {
+      loggedInuserUid: '',
       active: 0,
       currentView: MyCommentsToOthers,
       tabs: [
@@ -43,6 +48,20 @@ export default {
           view: OthersCommentsToMe
         }
       ]
+    }
+  },
+  computed: {
+    ...mapState(['userProfile'])
+  },
+  watch: {
+    'userProfile': {
+      deep: true,
+      handler (val) {
+        if (val !== '') {
+          console.log(val)
+          this.loggedInuserUid = val.userUid
+        }
+      }
     }
   },
   methods: {
@@ -67,9 +86,14 @@ export default {
     }
   },
   mounted () {
+    if (this.userProfile !== '') {
+      this.loggedInuserUid = this.userProfile.userUid
+    }
   },
   beforeRouteLeave (to, from, next) {
-    this.$refs.component.saveCurrentInfo()
+    if (this.$refs.comonent !== undefined) {
+      this.$refs.component.saveCurrentInfo()
+    }
     next()
   }
 }

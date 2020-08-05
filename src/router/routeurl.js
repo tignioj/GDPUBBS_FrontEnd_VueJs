@@ -47,6 +47,7 @@ const install = function (Vue, option) {
     MY_POSTS: '/post/myposts',
     POST_ADD: '/post/add',
     POST_VIEW: '/post/view',
+    POST_MANAGE: '/post/manage',
     BLOCKBIG_ADD: '/blockbig/add',
     BLOCKBIG_LIST: '/blockbig/list',
     BLOCKBIG_UPDATE: '/blockbig/update',

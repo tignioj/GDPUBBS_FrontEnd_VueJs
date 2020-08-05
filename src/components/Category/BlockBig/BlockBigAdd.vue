@@ -3,19 +3,15 @@
     <form method="post" id="form" enctype="application/x-www-form-urlencoded">
       <!--      <input name="post_bblock.bbl_name" type="hidden" id="bblock"/>-->
       <!--      <input name="post_mblock.mb_name" type="hidden" id="mblock"/>-->
-      <!--      <input name="bBlockIcon" type="hidden" id="mblock"/>-->
-
-      <h1>添加小板块到 {{blockBigName}}</h1>
-
-      <input name="belongToBigBlock.bBlockUid" v-model="blockBigUid"  type="hidden"/>
+      <input name="bBlockIcon" type="hidden" id="mblock"/>
 
       <div class="mdui-textfield mdui-textfield-floating-label">
-        <label class="mdui-textfield-label">小板块名称</label>
-        <input name="blockMinName" id="title" class="mdui-textfield-input" type="text" required/>
+        <label class="mdui-textfield-label">大板块名称</label>
+        <input name="bBlockName" id="title" class="mdui-textfield-input" type="text" required/>
         <div class="mdui-textfield-error">名称不能为空</div>
       </div>
       <div class="mdui-textfield">
-        <textarea name="blockMinDesc" class="mdui-textfield-input" maxlength="10000"
+        <textarea name="bBlockDesc" class="mdui-textfield-input" maxlength="10000"
                   placeholder="板块描述" required></textarea>
         <div class="mdui-textfield-error">描述不能为空</div>
       </div>
@@ -82,23 +78,22 @@
       >发布
       </button>
     </form>
+
   </div>
 </template>
 
 <script>
+  import {addBlockBig, getUsersByName} from '../../../api'
   import mdui from 'mdui'
-  import {addBlockMin, getUsersByName} from '../../api'
 
   export default {
-    name: 'BlockMinAdd',
+    name: 'BlockBigAdd',
     data () {
       return {
         collapse: false,
         users: [],
         grantedUsers: [],
-        blockBigName: '',
-        userAccount: '',
-        blockBigUid: ''
+        userAccount: ''
       }
     },
     methods: {
@@ -108,7 +103,7 @@
 
         if (this.grantedUsers.length === 0) {
           mdui.snackbar({
-            message: '请至少授权一个用户作为小版主'
+            message: '请至少授权一个用户作为大版主'
           })
           return
         }
@@ -130,7 +125,7 @@
         }
         // vue-resource
         // axios.post('api/post/add', formData, config)
-        addBlockMin(formData, config).then(res => {
+        addBlockBig(formData, config).then(res => {
           console.log(res.data)
           // success callback
           let obj = res
@@ -149,7 +144,7 @@
               message: '创建成功，3秒后自动跳转到该板块',
               buttonText: '取消',
               onClick: function () {
-                self.$router.replace('/blockmin/detail/' + obj.data.blockMinUid)
+                self.$router.replace('/blockbig/detail/' + obj.data.bBlockUid)
               },
               onButtonClick: function () {
                 view = false
@@ -159,7 +154,7 @@
             })
             if (view) {
               setTimeout(function () {
-                self.$router.replace('/blockmin/detail/' + obj.data.blockMinUid)
+                self.$router.replace('/blockbig/detail/' + obj.data.bBlockUid)
               }, 3000)
             }
           }
@@ -202,8 +197,6 @@
       }
     },
     mounted () {
-      this.blockBigUid = this.$route.params.id
-      this.blockBigName = this.$route.query.bbname
     }
 
   }

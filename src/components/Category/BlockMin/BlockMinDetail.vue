@@ -93,8 +93,8 @@
 
 <script>
   import {mapState} from 'vuex'
-  import {reqBlockMinDetail, reqBlockBigByUid} from '../../api'
-  import PostViewTag from '../../components/PostView/PostViewTag'
+  import {reqBlockMinDetail, reqBlockBigByUid} from '../../../api'
+  import PostViewTag from '../../PostView/PostViewTag'
 
   export default {
     name: 'BlockMinDetail',

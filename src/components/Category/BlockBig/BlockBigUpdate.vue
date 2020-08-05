@@ -89,7 +89,7 @@
 </template>
 
 <script>
-  import {getUsersByName, reqBlockDetail, updateBlockBig} from '../../api'
+  import {getUsersByName, reqBlockDetail, updateBlockBig} from '../../../api'
   import mdui from 'mdui'
 
   export default {

@@ -25,7 +25,7 @@
 <script>
   import PostsTopBar from '../../components/TopBar/PostsTopBar/PostsTopBar.vue'
   import PostList from '../../components/PostList/PostList.vue'
-  import mdui, {Drawer} from 'mdui'
+  import mdui from 'mdui'
 
   export default {
     name: 'Posts',
@@ -44,11 +44,10 @@
       if (to.name === 'home') {
         to.query.temp = '这里是参数，选中后的地址'
       }
-      var inst = new Drawer('#main-drawer')
+      var inst = new mdui.Drawer('#main-drawer')
       this.$refs.postlist.saveCurrentInfo()
       inst.close()
-      console.log(to)
-      console.log(from)
+      document.body.classList.remove("mdui-lcoked")
       next() // 一定不要忘记写
     }
   }

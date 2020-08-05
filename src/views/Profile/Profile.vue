@@ -118,7 +118,7 @@
 
           <div class="mdui-col-xs-3 mdui-center" v-if="userProfile.userPri.userPrivilegeId >= 2">
             <div class="mdui-tab mdui-tab-full-width mdui-color-theme-0" mdui-tab>
-              <a @click="$router.push('/posts/list')" href="#example6-tab2" class="mdui-ripple">
+              <a @click="$router.push(globaRouterURL.POST_MANAGE)" href="#example6-tab2" class="mdui-ripple">
                 <i class="mdui-icon material-icons">apps</i>
                 <label>管理帖子</label>
               </a>

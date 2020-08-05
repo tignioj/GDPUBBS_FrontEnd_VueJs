@@ -3,9 +3,10 @@
   <div
     v-show="comments.length > 0"
     class="mdui-card mdui-hoverable mdui-m-t-1 mdui-p-x-1 mdui-p-y-1">
-    <div id="postComment" class="mdui-collapse" mdui-collapse>
+    <div id="postComment" class="mdui-collapse " mdui-collapse>
       <div :id="'#' + postComment.postCommentPlace"
-           class="mdui-collapse-item  mdui-m-t-1" v-for="(postComment, index) in comments" :key="index"
+           class="mdui-collapse-item  mdui-collapse-item-open mdui-m-t-1" v-for="(postComment, index) in comments"
+           :key="index"
       >
         <!--      <div @click.prevent="showReply(postComment.postCommentUid)" :id="'#' + postComment.postCommentPlace"-->
         <!--           class="mdui-collapse-item  mdui-m-t-1" v-for="(postComment, index) in comments" :key="index"-->
@@ -22,30 +23,27 @@
             <!--            <div @click.prevent="this.globaRouterURL.PROFILE_OTHER  + '/' + postComment.postCommentFromuser.userAccount" >-->
             <div>
               <router-link tag="div" :to="'/userinfoother/' + postComment.postCommentFromuser.userAccount">
-              <div class="mdui-card-header">
-                <!--评论者头像-->
-                <img class="mdui-card-header-avatar"
-                     :src="myglobalfun.imgBaseUrl(postComment.postCommentFromuser.userAvatar)"/>
-                <div class="mdui-card-header-title">
-                  {{ postComment.postCommentPlace }}楼
-                  {{ postComment.postCommentFromuser.userAccount }}
-
-
-                  <span style="color: red" v-if="postComment.postCommentFromuser.userUid === postUserUid">
+                <div class="mdui-card-header">
+                  <!--评论者头像-->
+                  <img class="mdui-card-header-avatar"
+                       :src="myglobalfun.imgBaseUrl(postComment.postCommentFromuser.userAvatar)"/>
+                  <div class="mdui-card-header-title mdui-typo">
+                    {{ postComment.postCommentPlace }}楼
+                    <a> {{ postComment.postCommentFromuser.userAccount }} </a>
+                    <span style="color: red" v-if="postComment.postCommentFromuser.userUid === postUserUid">
                   楼主
                   </span>
-
-                  <button v-if="!seeHimOnlyFlag" @click.stop="seeHimOnly(postComment.postCommentFromuser.userUid)"
-                          class="seehim-btn">
-                    只看它
-                  </button>
-                  <button v-else @click.stop="unSeeHimOnly()" class="seehim-btn">
-                    取消只看它
-                  </button>
+                    <button v-if="!seeHimOnlyFlag" @click.stop="seeHimOnly(postComment.postCommentFromuser.userUid)"
+                            class="seehim-btn">
+                      只看它
+                    </button>
+                    <button v-else @click.stop="unSeeHimOnly()" class="seehim-btn">
+                      取消只看它
+                    </button>
+                  </div>
+                  <!--评论日期-->
+                  <div class="mdui-card-header-subtitle">{{ postComment.postCommentDate | date-format }}</div>
                 </div>
-                <!--评论日期-->
-                <div class="mdui-card-header-subtitle">{{ postComment.postCommentDate | date-format }}</div>
-              </div>
               </router-link>
             </div>
 
@@ -63,22 +61,22 @@
 
             <!-- 卡片的按钮 -->
             <div class="mdui-card-actions">
-              <button @click.stop="addCommentGood(postComment.postCommentUid)" class="mdui-btn mdui-ripple">
-                点赞{{ postComment.postCommentGood }}
+
+              <button @click.stop="addCommentGood(postComment.postCommentUid)" class="mdui-btn mdui-btn-icon">
+                <i class="mdui-icon material-icons">thumb_up</i>
               </button>
-              <button @click.stop="addCommentBad(postComment.postCommentUid)" class="mdui-btn mdui-ripple">
-                踩{{ postComment.postCommentBad }}
+              {{ postComment.postCommentGood }}
+
+              <button @click.stop="addCommentBad(postComment.postCommentUid)" class="mdui-btn mdui-btn-icon">
+                <i class="mdui-icon material-icons">thumb_down</i>
               </button>
-              <!--              <button class="mdui-btn mdui-ripple"-->
-              <!--                      @click.stop="replyTo(-->
-              <!--                        postComment.postCommentUid,-->
-              <!--                        postComment.postCommentFromuser.userUid,-->
-              <!--                        postComment.postCommentFromuser.userAccount)">-->
-              <!--                评论{{postComment.postCommentReply.length}}-->
-              <!--              </button>-->
-              <button @click.prevent="showReply(postComment)" class="mdui-btn mdui-ripple">
-                评论{{ postComment.postCommentReply.length }}
+              {{ postComment.postCommentBad }}
+
+              <button @click.stop="showReply(postComment)" class="mdui-btn mdui-btn-icon">
+                <i class="mdui-icon material-icons">comment</i>
               </button>
+              {{ postComment.commentReplyCount }}
+
               <button
                 v-if="postComment.postCommentFromuser.userUid ===  loggedInuserUid"
                 @click.stop="deleteComment(postComment.postCommentUid)"
@@ -90,14 +88,36 @@
             </div>
           </div>
         </div>
-        <!--        <div class="mdui-collapse-item-body">-->
-        <!--          <div-->
-        <!--            v-for="(commentReply,index) in postComment.postCommentReply" :key="index"-->
-        <!--          >-->
-        <!--            {{commentReply.commentReplyFromuser.userAccount}}: {{commentReply.commentReplyContent}}-->
-        <!--&lt;!&ndash;            {{commentReply.commentReplyFromuser}}: {{commentReply.commentReplyContent}}&ndash;&gt;-->
-        <!--          </div>-->
-        <!--        </div>-->
+        <div class="mdui-collapse-item-body mdui-shadow-1 mdui-m-x-1">
+
+          <!--          <div class="mdui-m-x-1 mdui-typo"-->
+          <!--               v-for="(commentReply,index) in getCommentReply(postComment.postCommentUid)" :key="index"-->
+          <!--          >-->
+          <div class="mdui-m-x-1 mdui-typo"
+               v-for="(commentReply,index) in postComment.postCommentReply.slice(0,5)" :key="index"
+          >
+            <a
+              @click="$router.push(globaRouterURL.PROFILE_OTHER + '/' + commentReply.commentReplyFromuser.userAccount)"
+            P>
+              {{ commentReply.commentReplyFromuser.userAccount }}
+            </a>
+
+            <span v-if="postComment.postCommentFromuser.userUid !== commentReply.commentReplyTouser.userUid">
+                      回复
+                    <a
+                      @click="$router.push(globaRouterURL.PROFILE_OTHER + '/' + commentReply.commentReplyFromuser.userAccount)"
+                    > {{ commentReply.commentReplyFromuser.userAccount }} </a>
+                    </span> :
+            <span @click.stop="showReply(postComment, commentReply.commentReplyFromuser)">
+            {{ commentReply.commentReplyContent }}
+            </span>
+            <!--            {{commentReply.commentReplyFromuser}}: {{commentReply.commentReplyContent}}-->
+          </div>
+
+          <div v-if="postComment.commentReplyCount >= 5" class="mdui-m-x-1 mdui-typo">
+            <a @click="showReply(postComment)">点击查看更多评论</a>
+          </div>
+        </div>
 
       </div>
     </div>
@@ -107,7 +127,7 @@
     <!--        <PostViewCommentReply :replys="postComment.postCommentReply" :postComment="postComment"/>-->
     <CommentReplyList @commentsUpdate="commentsUpdate" ref="commentReply"/>
 
-    <div class="mdui-m-t-2" id="indicator">
+    <div class="mdui-m-t-2" id="indicatorcomment">
     </div>
   </div>
 
@@ -116,8 +136,14 @@
 
 <script>
 import {mapState} from 'vuex'
-import {dialog, snackbar} from 'mdui'
-import {deleteOneCommentByUid, reqCommentsPageByPostId, addPostCommentBad, addPostCommentGood} from '../../api'
+import mdui from 'mdui'
+import {
+  deleteOneCommentByUid,
+  reqCommentsPageByPostId,
+  addPostCommentBad,
+  addPostCommentGood,
+  getHotCommentReplys
+} from '../../api'
 import CommentReplyList from './CommentReplyList'
 
 const postCommentsLocation = 'post_comments_location'
@@ -147,6 +173,7 @@ export default {
       searchInput: '',
       comments: [],
       indicatorsIndex: [],
+
       /* 当前第几页 */
       currentPageCode: 1,
       /* 一共多少页 */
@@ -167,7 +194,7 @@ export default {
       this.saveCurrentInfo()
       let re = await addPostCommentGood(uid)
       if (re.code === 0) {
-        snackbar({
+        mdui.snackbar({
           message: '你给层主点击了个赞'
         })
         this.reqComments()
@@ -177,7 +204,7 @@ export default {
       this.saveCurrentInfo()
       let re = await addPostCommentBad(uid)
       if (re.code === 0) {
-        snackbar({
+        mdui.snackbar({
           message: '你向层主扔了一块' + this.fruits[Math.floor((Math.random() * this.fruits.length))]
         })
         this.reqComments()
@@ -190,26 +217,23 @@ export default {
       this.seeHimOnlyFlag = true
       this.seeByUserId = userUid
       this.reqComments()
-    }
-    ,
+    },
     unSeeHimOnly () {
       this.seeHimOnlyFlag = false
       sessionStorage.removeItem(postCommentsByUserId)
       this.seeByUserId = ''
       this.reqComments()
-    }
-    ,
+    },
     saveCurrentInfo () {
       let pos = window.pageYOffset
       sessionStorage.setItem(postCommentsLocation, pos)
       sessionStorage.setItem(postCommentsSearchText, this.searchInput)
       sessionStorage.setItem(postCommentsPageCode, this.currentPageCode)
       console.log(pos)
-    }
-    ,
+    },
     deleteBlockMin (name, uid) {
       const self = this
-      dialog({
+      mdui.dialog({
         title: '确认删除"' + name + '"吗?',
         buttons: [
           {
@@ -223,8 +247,7 @@ export default {
           }
         ]
       })
-    }
-    ,
+    },
     // async confirmDelete (blockBigUid) {
     //   let post = await delBlockMin(blockBigUid)
     //   if (post.code === 0) {
@@ -234,11 +257,11 @@ export default {
     loadBlockBloMin () {
       // this.searchInput = this.$route.query.searchInput
       this.reqPosts(this.currentPageCode, this.elementMaxSize)
-    }
-    ,
+    },
     setResultPosts (page) {
       let list = []
       let content = page.content
+      this.commentRepliesMap = new Map()
       content.forEach(post => {
         list.push(post)
       })
@@ -278,8 +301,7 @@ export default {
       this.isShowPrevious = this.currentPageCode > 1
 
       this.parseIndicator(page)
-    }
-    ,
+    },
     async reqPosts (currentPageCode, elementMaxSize) {
       if (currentPageCode === null) {
         currentPageCode = 1
@@ -292,13 +314,11 @@ export default {
       let re = await reqCommentsPageByPostId(this.seeByUserId, this.searchInput, this.postUid, currentPageCode, elementMaxSize)
       console.log(re)
       if (re.code === 0) {
-        console.log(re.code)
         this.setResultPosts(re.data)
       } else {
         // this.$router.replace('/login')
       }
-    }
-    ,
+    },
     /**
      * 分页
      * @param pageObj
@@ -316,7 +336,6 @@ export default {
       let indexs = []
       // 显示5个下标
       let showMax = showIndicatorSize * (Math.floor((currentPageCode - 1) / showIndicatorSize) + 1)
-      console.log(showMax)
       for (let i = showMax - showIndicatorSize + 1; i <= showMax; i++) {
         if (i > totalPageSize) {
           break
@@ -325,7 +344,7 @@ export default {
       }
       indicatorsIndex = indexs
 
-      let indicatorEle = document.getElementById('indicator')
+      let indicatorEle = document.getElementById('indicatorcomment')
       indicatorEle.innerHTML = ''
       let buttonGroup = document.createElement('div')
       buttonGroup.classList.add('mdui-btn-group')
@@ -391,23 +410,21 @@ export default {
       buttonGroup.appendChild(last)
 
       indicatorEle.appendChild(buttonGroup)
-    }
-    ,
+    },
     async confirmDelete (uid) {
       let re = await deleteOneCommentByUid(uid)
       console.log(re)
       if (re.code === 0) {
         console.log(re.data)
-        snackbar({
+        mdui.snackbar({
           message: '删除成功'
         })
         this.reqComments()
       }
-    }
-    ,
+    },
     deleteComment (uid) {
       const self = this
-      dialog({
+      mdui.dialog({
         title: '确认删除吗',
         buttons: [
           {
@@ -421,19 +438,18 @@ export default {
           }
         ]
       })
-    }
-    ,
-    replyTo (postUid, userUid, userName) {
-      let refname = 'commentReply' + postUid
-      let ref = this.$refs[refname][0]
-      ref.replyTo(postUid, userUid, userName)
     },
-    showReply (postComment) {
+    removeCurrentInfo () {
+      sessionStorage.removeItem(postCommentsLocation)
+      sessionStorage.removeItem(postCommentsPageCode)
+      sessionStorage.removeItem(postCommentsSearchText)
+    },
+    showReply (postComment, replyToUser) {
       this.saveCurrentInfo()
       // this.$refs.commentReply.getCommentReplies()
       // this.$refs['commentReply'].getCommentReplies()
       console.log(postComment)
-      this.$refs.commentReply.showReply(postComment)
+      this.$refs.commentReply.showReply(postComment, replyToUser)
     },
     async reqComments () {
       this.id = this.$route.params.id
@@ -451,8 +467,10 @@ export default {
 
       console.log('评论请求中...')
       await this.reqPosts(this.currentPageCode, this.elementMaxSize)
-
       console.log('评论请求成功')
+
+      console.log('请求二级评论')
+
       // this.$nextTick()将回调延迟到下次 DOM 更新循环之后执行。在修改数据之后立即使用它，然后等待 DOM 更新。
       this.$nextTick(() => {
         // let place = this.$route.query.position
@@ -491,12 +509,13 @@ export default {
         }
       }
       this.reqComments()
+      this.$emit('commentBottomUpdate')
     }
   },
-  beforeDestroy () {
-    sessionStorage.removeItem(postCommentsSearchText)
-    sessionStorage.removeItem(postCommentsByUserId)
-  },
+  // beforeDestroy () {
+  //   sessionStorage.removeItem(postCommentsSearchText)
+  //   sessionStorage.removeItem(postCommentsByUserId)
+  // },
   watch: {
     'userProfile':
       {
@@ -510,7 +529,6 @@ export default {
       }
   },
   mounted () {
-
     this.reqComments()
     // Event.$on('commentsUpdate', age => {
     //   this.reqComments()
@@ -544,7 +562,7 @@ export default {
   box-shadow: 5px 5px 5px #888888;
 }
 
-#indicator {
+#indicatorcomment {
   display: flex;
   border: 1px solid black;
   justify-content: center;

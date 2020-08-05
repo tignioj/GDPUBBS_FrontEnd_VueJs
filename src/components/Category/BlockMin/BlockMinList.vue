@@ -2,6 +2,7 @@
   <div class="mdui-container">
     <h1>所有小板块</h1>
     <button
+      v-if="((userProfile && userProfile.userPri.userPrivilegeId >= 3))"
       @click="$router.push(globaRouterURL.BLOCKMIN_ADD + '/' + blockBigUid  + '?bbname=' + blockBigName)"
       class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent mdui-m-b-2">添加小板块
     </button>
@@ -51,21 +52,20 @@
       <div v-if="blockmins.length === 0">暂时没有帖子哈~</div>
     </div>
 
-    <div id="indicator">
+    <div id="indicatorblockmin">
     </div>
   </div>
 </template>
 
 <script>
-  import {blockMinListByBlockBigUid, delBlockMin} from '../../api'
+  import {blockMinListByBlockBigUid, delBlockMin} from '../../../api'
   import {mapState} from 'vuex'
-  import {dialog} from 'mdui'
+  import mdui from 'mdui'
 
   export default {
     name: 'BlockMinList',
+    props: ['blockbigDetail'],
     mounted () {
-      this.blockBigUid = this.$route.params.id
-      this.blockBigName = this.$route.query.bbname
       this.loadBlockMins()
     },
     computed: {
@@ -110,12 +110,19 @@
     },
     methods: {
       loadBlockMins () {
+        if (this.blockbigDetail) {
+          this.blockBigUid = this.blockbigDetail.bBlockUid
+          this.blockBigName = this.blockbigDetail.bBlockName
+        } else {
+          this.blockBigUid = this.$route.params.id
+          this.blockBigName = this.$route.query.bbname
+        }
         // this.searchInput = this.$route.query.searchInput
         this.reqPosts(this.currentPageCode, this.elementMaxSize)
       },
       deleteBlockMin (name, uid) {
         const self = this
-        dialog({
+        mdui.dialog({
           title: '确认删除"' + name + '"吗?',
           buttons: [
             {
@@ -225,7 +232,7 @@
         }
         indicatorsIndex = indexs
 
-        let indicatorEle = document.getElementById('indicator')
+        let indicatorEle = document.getElementById('indicatorblockmin')
         indicatorEle.innerHTML = ''
         let buttonGroup = document.createElement('div')
         buttonGroup.classList.add('mdui-btn-group')
@@ -295,9 +302,8 @@
     }
   }
 </script>
-
 <style scoped>
-  #indicator {
+  #indicatorblockmin {
     display: flex;
     border: 1px solid black;
     justify-content: center;

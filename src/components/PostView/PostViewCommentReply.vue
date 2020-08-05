@@ -160,8 +160,8 @@
         this.dialog = new Dialog(this.dialogEle)
         this.dialog.open()
         // 监听关闭
-        this.dialogEle.addEventListener('close.mdui.dialog', function (e) {
-        })
+        // this.dialogEle.addEventListener('close.mdui.dialog', function (e) {
+        // })
       },
       deleteCommentReply (uid) {
         const self = this

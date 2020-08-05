@@ -43,7 +43,7 @@
 </template>
 
 <script>
-  import {dialog} from 'mdui'
+  import mdui from 'mdui'
   import UserInfoTopBar from '../../../components/TopBar/UserInfoTopBar/UserInfoTopBar'
   import {mapState} from 'vuex'
 
@@ -72,7 +72,7 @@
         }
       },
       logout () {
-        dialog({
+        mdui.dialog({
           title: '退出登陆吗',
           buttons: [
             {

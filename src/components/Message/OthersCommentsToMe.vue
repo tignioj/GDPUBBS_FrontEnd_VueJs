@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>
+    <div v-show="hasLoaded">
       <div class="mdui-row  mdui-p-b-2">
         <div class="mdui-col-xs-12 mdui-col-sm-8">
           <div class="mdui-textfield mdui-p-b-2 mdui-p-t-2">
@@ -86,13 +86,18 @@
       </div>
       <div v-show="othersCommentsToMe.length > 0" class="mdui-m-t-2" id="indicatortome"></div>
     </div>
+    <div v-if="!hasLoaded">
+      <div class="mdui-progress">
+        <div class="mdui-progress-indeterminate"></div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import {deleteOneCommentByUid, reqCommentsPageToMe} from '../../api'
 import {mapState} from 'vuex'
-import {snackbar} from 'mdui'
+import mdui from 'mdui'
 
 const otherCommentsToMeLocation = 'other_comments_to_me_location'
 const otherCommentsToMeSearchText = 'other_comments_to_me_search_text'
@@ -117,6 +122,7 @@ export default {
   },
   data () {
     return {
+      hasLoaded: false,
       searchInput: '',
       blockMinUid: '',
       blockBigUid: '',
@@ -300,7 +306,7 @@ export default {
       console.log(re)
       if (re.code === 0) {
         console.log(re.data)
-        snackbar({
+        mdui.snackbar({
           message: '删除成功'
         })
         this.reqComments()
@@ -316,6 +322,7 @@ export default {
       this.searchInput = (text === null) ? '' : text
 
       await this.reqPosts(this.currentPageCode, this.elementMaxSize)
+      this.hasLoaded = true
       this.$nextTick(() => {
         let pos = sessionStorage.getItem(otherCommentsToMeLocation)
         console.log('scrollto', pos)
@@ -343,6 +350,7 @@ export default {
   },
 
   mounted () {
+    this.hasLoaded = false
     if (this.$parent.active === 1) {
       this.reqComments()
     }

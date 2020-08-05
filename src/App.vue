@@ -13,7 +13,7 @@
     <!--    <router-view v-if="!$route.meta.keepAlive"></router-view>-->
 
     <!--    <keep-alive :include="getKeepAlive($route)">-->
-    <keep-alive include="PostsAdd,PostEdit">
+    <keep-alive include="PostsAdd,PostEdit,Categories">
       <router-view></router-view>
     </keep-alive>
     <Bottom v-show="$route.meta.showBottom"/>

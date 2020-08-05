@@ -2,90 +2,118 @@
 
   <div class="mdui-container">
 
-    <div id="content">
-      <div v-if="posts.length > 0" id="contentDoc" class="mdui-row-xs-1 mdui-row-sm-2 mdui-row-xl-3  mdui-grid-list ">
-
-        <div class="mdui-card mdui-col mdui-hoverable mdui-m-y-1 "
-             v-for="(post, index)  in posts" :key="index"
-        >
-<!--          <a :href="'/document/browse.html?postUid=' + post.postUid" class="docLink" style="display:none;"></a>-->
-          <!-- 卡片头部，包含头像、标题、副标题 -->
-          <router-link tag="div" :to="'/userinfoother/' + post.postUser.userAccount">
-            <div class="mdui-card-header">
-              <img class="mdui-card-header-avatar" :src="myglobalfun.imgBaseUrl(post.postUser.userAvatar)"/>
-              <!--        <img class="mdui-card-header-avatar" src="./user/avatar/default.jpg" />-->
-              <!--        <img class="mdui-card-header-avatar" :src="post.postUser.userAvatar" />-->
-              <div class="mdui-card-header-title">{{ post.postUser.userAccount }}
-                <span>{{ post.postPrivilege.postPrivilegeDesc }}</span>
-              </div>
-              <div class="mdui-card-header-subtitle">最后修改时间：{{ post.postDate | date-format }}
-              </div>
-            </div>
-          </router-link>
-          <router-link :to="'/post/view/' + post.postUid" tag="div">
-
-            <!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 -->
-            <div class="mdui-card-media">
-              <!--图片地址 -->
-              <img v-if="post.postImg" :src="myglobalfun.imgBaseUrl(post.postImg)"/>
-              <!-- 卡片中可以包含一个或多个菜单按钮 -->
-              <!--        <div class="mdui-card-menu">-->
-              <!--          <button class="mdui-btn mdui-btn-icon mdui-text-color-white"><i class="mdui-icon material-icons">share</i></button>-->
-              <!--        </div>-->
-            </div>
-
-            <!-- 卡片的标题和副标题 -->
-            <div class="mdui-card-primary">
-              <div class="mdui-card-primary-title">{{ post.postTitle }}</div>
-              <div v-if="post.postTag" class="mdui-card-primary-subtitle">
-                <PostViewTag :tags="post.postTag" v-if="post.postTag.length"/>
-              </div>
-            </div>
-
-            <!-- 卡片的内容 -->
-            <div class="mdui-card-content">{{ post.postContent }}</div>
-
-          </router-link>
-
-          <!-- 卡片的按钮 -->
-          <div class="mdui-card-actions">
-            <button @click="postGood(post.postUid)" class="mdui-btn mdui-ripple">点赞:{{ post.postGood }}</button>
-            <button @click="postBad(post.postUid)" class="mdui-btn mdui-ripple">踩:{{ post.postBad }}</button>
-            <button class="mdui-btn mdui-ripple">所有评论:{{ post.postComments }}</button>
-            <!--            <button class="mdui-btn mdui-ripple">点赞:{{post.postGood}}</button>-->
-            <button
-              v-if="post.postUser.userUid ===  loggedInuserUid"
-              @click="$router.push(globaRouterURL.POST_EDIT + '/' + post.postUid)" class="mdui-btn mdui-ripple">编辑
-            </button>
-            <button
-              v-if="(post.postUser.userUid ===  loggedInuserUid) || (userProfile && userProfile.userPri.userPrivilegeId === 2)"
-              @click="deletePost(post.postTitle, post.postUid)" class="mdui-btn mdui-ripple">删除
-            </button>
-            <!--            <button class="mdui-btn mdui-ripple">评论:{{post.postComments}}</button>-->
-            <button class="mdui-btn mdui-btn-icon mdui-float-right"><i class="mdui-icon material-icons">expand_more</i>
-
-            </button>
-          </div>
+    <div id="content" class="mdui-m-t-2">
+      <!--            <div v-if="posts.length > 0" id="contentDoc" class="mdui-row-xs-1 mdui-row-sm-2 mdui-row-xl-3  mdui-grid-list ">-->
+      <div v-if="!hasLoaded">
+        <div class="mdui-progress">
+          <div class="mdui-progress-indeterminate"></div>
         </div>
-        <!--如果没有帖子-->
       </div>
+      <div v-else-if="hasLoaded">
+        <div v-if="posts.length > 0" id="contentDoc" class="mdui-row-xs-1   mdui-grid-list ">
+          <div class="mdui-card mdui-col mdui-hoverable mdui-m-y-1 my-card"
+               v-for="(post, index)  in posts" :key="index"
+          >
+            <!--          <a :href="'/document/browse.html?postUid=' + post.postUid" class="docLink" style="display:none;"></a>-->
+            <!-- 卡片头部，包含头像、标题、副标题 -->
+            <router-link tag="div" :to="'/userinfoother/' + post.postUser.userAccount">
+              <div class="mdui-card-header">
+                <img class="mdui-card-header-avatar" :src="myglobalfun.imgBaseUrl(post.postUser.userAvatar)"/>
+                <!--        <img class="mdui-card-header-avatar" src="./user/avatar/default.jpg" />-->
+                <!--        <img class="mdui-card-header-avatar" :src="post.postUser.userAvatar" />-->
+                <div class="mdui-card-header-title">{{ post.postUser.userAccount }}
+                  <span>{{ post.postPrivilege.postPrivilegeDesc }}</span>
+                </div>
+                <div class="mdui-card-header-subtitle">最后修改时间：{{ post.postDate | date-format }}
+                </div>
+              </div>
+            </router-link>
+            <router-link :to="'/post/view/' + post.postUid" tag="div">
 
-      <div v-if="currentminblock === undefined">
-        <h1>
-          还没有板块，暂时不开放
-        </h1>
-      </div>
-      <div v-else-if="posts.length === 0">
-        <h1>
-          此处一片荒凉，快来发第一篇帖子~
-        </h1>
-        <button class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple mdui-color-theme-accent"
-                @click="$router.push('/post/add/')"
-        >发帖
-        </button>
-      </div>
+              <!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 -->
+              <div class="mdui-card-media" style="max-height: 300px; overflow: hidden">
+                <!--图片地址 -->
+                <img v-if="post.postImg" :src="myglobalfun.imgBaseUrl(post.postImg)"/>
+                <!-- 卡片中可以包含一个或多个菜单按钮 -->
+                <!--        <div class="mdui-card-menu">-->
+                <!--          <button class="mdui-btn mdui-btn-icon mdui-text-color-white"><i class="mdui-icon material-icons">share</i></button>-->
+                <!--        </div>-->
+              </div>
 
-      <div v-show="posts.length>0" id="indicator">
+              <!-- 卡片的标题和副标题 -->
+              <div class="mdui-card-primary blur-bg">
+                <div class="mdui-card-primary-title">{{ post.postTitle }}</div>
+                <div v-if="post.postTag" class="mdui-card-primary-subtitle">
+                  <PostViewTag :tags="post.postTag" v-if="post.postTag.length"/>
+                </div>
+              </div>
+
+              <!-- 卡片的内容 -->
+              <div class="mdui-card-content">{{ post.postContent }}</div>
+
+            </router-link>
+            <!-- 卡片的按钮 -->
+            <div class="mdui-card-actions">
+              <button @click="postGood(post.postUid)" class="mdui-btn mdui-btn-icon">
+                <i class="mdui-icon material-icons">thumb_up</i>
+              </button>
+              {{ post.postGood }}
+
+              <button @click="postBad(post.postUid)" class="mdui-btn mdui-btn-icon">
+                <i class="mdui-icon material-icons">thumb_down</i>
+              </button>
+              {{ post.postBad }}
+
+
+              <button class="mdui-btn mdui-btn-icon">
+                <i class="mdui-icon material-icons">comment</i>
+              </button>
+              {{ post.postCommentReply + post.postComments }}
+
+              <button class="mdui-btn mdui-btn-icon">
+                <i class="mdui-icon material-icons">remove_red_eye</i>
+              </button>
+              {{ post.postViewCount }}
+
+
+              <button
+                v-if="post.postUser.userUid ===  loggedInuserUid"
+                @click="$router.push(globaRouterURL.POST_EDIT + '/' + post.postUid)" class="mdui-btn mdui-ripple">编辑
+              </button>
+              <button
+                v-if="(post.postUser.userUid ===  loggedInuserUid) ||
+              (userProfile && userProfile.userPri.userPrivilegeId >= 2)"
+                @click="deletePost(post.postTitle, post.postUid)" class="mdui-btn mdui-ripple">删除
+              </button>
+              <button
+                v-if="(userProfile && userProfile.userPri.userPrivilegeId >= 2)"
+                @click="banThisPost(post.postTitle, post.postUid)" class="mdui-btn mdui-ripple">封禁
+              </button>
+              <!--            <button class="mdui-btn mdui-ripple">评论:{{post.postComments}}</button>-->
+              <button class="mdui-btn mdui-btn-icon mdui-float-right share-link"
+                      :data-clipboard-text="getURL(post.postUid)">
+                <i class="mdui-icon material-icons">share</i>
+              </button>
+            </div>
+          </div>
+          <!--如果没有帖子-->
+        </div>
+        <div v-else-if="posts.length === 0">
+          <h1>
+            此处一片荒凉，快来发第一篇帖子~
+          </h1>
+          <button class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple mdui-color-theme-accent"
+                  @click="$router.push('/post/add/')"
+          >发帖
+          </button>
+        </div>
+        <div v-else-if="currentminblock === undefined">
+          <h1>
+            还没有板块，暂时不开放
+          </h1>
+        </div>
+      </div>
+      <div v-show=" hasLoaded && posts.length>0" id="indicatorposts">
       </div>
     </div>
   </div>
@@ -94,11 +122,11 @@
 <script>
 import {mapState} from 'vuex'
 import PostViewTag from '../PostView/PostViewTag'
-import {dialog, snackbar} from 'mdui'
-import {deleteOnePost, addPostGood, addPostBad} from '../../api'
+import mdui from 'mdui'
+import ClipboardJS from 'clipboard'
+import {postBan, deleteOnePost, addPostGood, addPostBad} from '../../api'
 
 const postsCurrentPageCode = 'key_current_page_code_in_postlist'
-
 const postsReadingLocation = 'posts_readingLocation'
 const postsSearchText = 'posts_searchText'
 
@@ -107,6 +135,8 @@ export default {
   components: {PostViewTag},
   data () {
     return {
+      hasLoaded: false,
+      clipboard: null,
       loggedInuserUid: '',
       blockminuid: '',
       posts: [],
@@ -135,24 +165,64 @@ export default {
       isShowNext: false
     }
   },
-
   methods: {
+    getURL (postUid) {
+      return window.location.origin + '/#/post/view/' + postUid
+    },
+    // shareLink () {
+    //   let clipBoardContent = window.location.href
+    //   window.clipboardData.setData('Text', clipBoardContent)
+    //   mdui.snackbar({
+    //     message: '复制链接成功'
+    //   })
+    // },
     async postGood (uid) {
+      // this.saveCurrentInfo()
       let re = await addPostGood(uid)
+
       if (re.code === 0) {
-        snackbar({
+        mdui.snackbar({
           message: '点赞成功'
         })
-        this.refreshPosts()
+        this.updatePostInfo(uid, re)
       }
+    },
+    updatePostInfo (uid, re) {
+      let info = re.data
+      for (let i = 0; i < this.posts.length; i++) {
+        let p = this.posts[i]
+        if (p.postUid === uid) {
+          p.postGood = info.postGood
+          p.postBad = info.postBad
+          p.postViewCount = info.postViewCount
+          p.postCommentCount = info.commentCount
+        }
+      }
+    },
+    banThisPost (postTitle, postUid) {
+      const self = this
+      mdui.dialog({
+        title: '确认封禁"' + postTitle + '"吗?',
+        buttons: [
+          {
+            text: '取消'
+          },
+          {
+            text: '确认',
+            onClick: function () {
+              self.confirmBan(postUid)
+            }
+          }
+        ]
+      })
     },
     async postBad (uid) {
       let re = await addPostBad(uid)
       if (re.code === 0) {
-        snackbar({
+        mdui.snackbar({
           message: '你向楼主扔了一块' + this.fruits[Math.floor((Math.random() * this.fruits.length))]
         })
-        this.refreshPosts()
+        this.updatePostInfo(uid, re)
       }
     },
     saveCurrentInfo () {
@@ -160,10 +230,16 @@ export default {
       sessionStorage.setItem(postsReadingLocation, pos)
       sessionStorage.setItem(postsSearchText, this.searchInput)
       sessionStorage.setItem(postsCurrentPageCode, this.currentPageCode)
+      console.log(pos)
+    },
+    removeCurrentInfo () {
+      sessionStorage.removeItem(postsReadingLocation)
+      sessionStorage.removeItem(postsSearchText)
+      sessionStorage.removeItem(postsCurrentPageCode)
     },
     deletePost (postTitle, postUid) {
       const self = this
-      dialog({
+      mdui.dialog({
         title: '确认删除"' + postTitle + '"吗?',
         buttons: [
           {
@@ -184,6 +260,19 @@ export default {
         this.refreshPosts()
       }
     },
+    async confirmBan (postUid) {
+      let post = await postBan(postUid, true)
+      if (post.code === 0) {
+        mdui.snackbar({
+          message: '封禁成功'
+        })
+        this.refreshPosts()
+      } else {
+        mdui.snackbar({
+          message: '封禁失败,原因:' + post.data
+        })
+      }
+    },
     refreshPosts () {
       let currentBlockMinUid = sessionStorage.getItem('currentBlockMinUid')
       this.blockminuid = currentBlockMinUid
@@ -195,7 +284,6 @@ export default {
       if (this.userProfile !== '') {
         this.loggedInuserUid = this.userProfile.userUid
       }
-      console.log(this.loggedInuserUid)
       this.reqPosts(currentPageCode, this.elementMaxSize)
     },
     parseIndicator (pageObj) {
@@ -218,7 +306,7 @@ export default {
       }
       indicatorsIndex = indexs
 
-      let indicatorEle = document.getElementById('indicator')
+      let indicatorEle = document.getElementById('indicatorposts')
       indicatorEle.innerHTML = ''
       let buttonGroup = document.createElement('div')
       buttonGroup.classList.add('mdui-row')
@@ -322,6 +410,7 @@ export default {
       this.parseIndicator(page)
     },
     reqPosts (currentPageCode, elementMaxSize) {
+      this.hasLoaded = false
       sessionStorage.setItem(postsCurrentPageCode, currentPageCode)
       let blockMinUid = this.blockminuid
       if (blockMinUid !== null) {
@@ -340,7 +429,11 @@ export default {
     }
   },
   mounted () {
-    this.refreshPosts()
+    this.hasLoaded = false
+    if (this.userProfile) {
+      this.loggedInuserUid = this.userProfile.userUid
+    }
+    // this.refreshPosts()
   },
   watch: {
     'userProfile': {
@@ -353,21 +446,44 @@ export default {
       }
     },
     'currentpostsbyblockmin': {
-      deep: true,
+      deep: false,
+      immediate: false,
       handler (val) {
+        const self = this
         this.setPosts(val)
+        this.hasLoaded = true
         this.$nextTick(() => {
           let pos = sessionStorage.getItem(postsReadingLocation)
           console.log('scrollto', pos)
           if (pos !== null) {
             window.scrollTo(0, pos)
           }
+          if (self.clipboard == null) {
+            self.clipboard = new ClipboardJS('.share-link')
+            self.clipboard.on('success', function (e) {
+              mdui.snackbar({
+                message: '已经复制帖子链接 ' + e.text + '，快去分享吧'
+              })
+              console.info('Action:', e.action)
+              console.info('Text:', e.text)
+              console.info('Trigger:', e.trigger)
+              e.clearSelection()
+            })
+
+            self.clipboard.on('error', function (e) {
+              console.error('Action:', e.action)
+              console.error('Trigger:', e.trigger)
+            })
+          }
         })
       }
     },
     'currentminblock': {
-      deep: true,
+      deep: false,
       handler (val) {
+        if (!val.blockMinUid) {
+          return
+        }
         // 处理空帖子的情况
         if (val === undefined || val === null) {
           this.blockminuid = ''
@@ -379,7 +495,8 @@ export default {
         }
         // 帖子板块变化，则需要重置下标
         sessionStorage.setItem(postsCurrentPageCode, '1')
-      }
+      },
+      immediate: true
     }
   },
   computed: {
@@ -394,7 +511,7 @@ export default {
 </script>
 
 <style scoped>
-#indicator {
+#indicatorposts {
   display: flex;
   border: 1px solid black;
   justify-content: center;
