@@ -1,6 +1,7 @@
 <template>
   <!-- 导航栏 -->
-  <div id="navigationBar" class="mdui-appbar mdui-appbar-fixed mdui-appbar-scroll-hide">
+  <div id="navigationBar"
+       class="mdui-appbar mdui-appbar-fixed mdui-color-theme mdui-appbar-scroll-hide">
     <!-- <div id="navigationBar" class="mdui-appbar mdui-appbar-fixed"> -->
     <!-- <div id="navigationBar" class="mdui-appbar"> -->
     <TopHeaderBar
@@ -28,13 +29,17 @@ const postsCurrentPageCode = 'key_current_page_code_in_postlist'
 const postsReadingLocation = 'posts_readingLocation'
 const postsSearchText = 'posts_searchText'
 
-
 export default {
   name: 'PostsTopBar',
   components: {TopHeaderBar, TopTabCard},
   computed: {
     // 把状态属性拿来，如果属性变化，则相应的数据也会变化
     ...mapState(['currentbigblock', 'currentminblock', 'indexcategory'])
+  },
+  data () {
+    return {
+      drawer: null
+    }
   },
   created () {
     /* 初始化数据 */
@@ -81,8 +86,10 @@ export default {
       this.$store.dispatch('changecurrentminblock', mblock)
     },
     toggleSideBar () {
-      var inst = new mdui.Drawer('#main-drawer')
-      inst.toggle()
+      if (this.drawer == null) {
+        this.drawer = new mdui.Drawer('#main-drawer')
+      }
+      this.drawer.toggle()
     }
   }
 }

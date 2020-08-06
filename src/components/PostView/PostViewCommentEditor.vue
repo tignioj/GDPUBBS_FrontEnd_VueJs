@@ -53,7 +53,7 @@
       回复
     </button>
     <button v-else
-            @click.prevent="$router.push('/login')"
+            @click.prevent="goLogin()"
             style="float:right"
             class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent mdui-m-b-2">
       游客请先登录后回复
@@ -92,6 +92,10 @@ export default {
     }
   },
   methods: {
+    goLogin () {
+      const self = this
+      this.$router.push(self.globaRouterURL.LOGIN + '?from=' + self.$route.fullPath)
+    },
     imgDelete () {
       let fileEle = document.getElementById('file')
       fileEle.value = ''

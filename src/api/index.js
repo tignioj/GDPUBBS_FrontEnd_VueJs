@@ -4,8 +4,8 @@
  */
 import ajax, {reqBase64Img, reqBlob} from './ajax'
 
-const BASE_URL = 'http://pc.wszjl.com:9999'
-// const BASE_URL = 'http://www.wszjl.top:9999'
+// const BASE_URL = 'http://pc.wszjl.com:9999'
+const BASE_URL = 'http://www.wszjl.top:9999'
 // const BASE_URL = '/api'
 
 /**
@@ -17,7 +17,19 @@ export const reqIndexPosts = () => ajax(BASE_URL + '/index/posts')
 export const reqIndexblockbigs = () => ajax(BASE_URL + '/index/blockbigs')
 
 /**
- * 根据id获取一篇文章
+ * 根据id获取一篇文章的
+ *  点赞数量，
+ *  收藏数量，
+ *  回复数量，
+ *  踩数量
+ * @param id
+ * @returns {*|Promise<any>}
+ */
+export const reqAPostViewInfoById = (id) => ajax(
+  BASE_URL + `/post/viewinfo?uid=` + id)
+
+/**
+ * 根据id获取一篇文章的详细信息
  * @param id
  * @returns {*|Promise<any>}
  */
@@ -44,11 +56,12 @@ export const reqCommentsByPostId = (id) => ajax(BASE_URL + `/comments/${id}`)
 export const reqCommentsPageByPostId = (byuserid, text, id, pc, ps) => ajax(BASE_URL + '/commentspage?text=' + text + '&postuid=' + id + '&pc=' + pc + '&ps=' + ps + '&byuserid=' + byuserid)
 
 // 密码登录
-export const reqPwdLogin = ({username, pwd, code}) => ajax(BASE_URL + '/login/pwdlogin', {
-  userAccount: username,
-  userPassword: pwd,
-  code
-}, 'POST')
+export const reqPwdLogin = ({username, pwd, code}) => ajax(
+  BASE_URL + '/login/pwdlogin', {
+    userAccount: username,
+    userPassword: pwd,
+    code
+  }, 'POST')
 
 // 注册
 export const reqPwdRegist = ({username, pwd, code}) => ajax(BASE_URL + '/login/pwdregist', {
@@ -121,16 +134,23 @@ export const getPostsBySearch = (blockBig, blockMin, searchInput, pageCode, page
   BASE_URL + '/posts/search?in=' + searchInput + '&pc=' + pageCode + '&ps=' + pageSize + '&bm=' + blockMin + '&bb=' + blockBig)
 
 // 根据一级评论的ID获取二级评论
-export const getCommentRepliesByCommentUid = (commentUid) => ajax(BASE_URL + '/commentreply/getbycommentuid?uid=' + commentUid)
+export const getCommentRepliesByCommentUid = (commentUid, searchInput, pageCode, pageSize) => ajax(
+  BASE_URL +
+  '/commentreply/getbycommentuid?uid=' + commentUid + '&in=' + searchInput + '&pc=' + pageCode + '&ps=' + pageSize)
 
 // 添加二级评论
 export const addCommentReply = (formDate, config) => ajax(BASE_URL + '/commentreply/add', formDate, 'POST', config)
 
 // 删除二级评论
-export const delCommentReply = (uid) => ajax(BASE_URL + '/commentreply/del?uid=' + uid)
+export const delCommentReply = (uid) => ajax(
+  BASE_URL + '/commentreply/del?uid=' + uid)
 
 // 帖子权限
 export const reqPostPrivilege = () => ajax(BASE_URL + '/pri/all')
+
+// 管理员封贴/解封帖
+export const postBan = (postUid, isBan) => ajax(
+  BASE_URL + '/post/ban?uid=' + postUid + '&isban=' + isBan)
 
 // ===================== 大板块 =======================
 
@@ -172,4 +192,34 @@ export const reqBlockMinDetail = (uid) => ajax(BASE_URL + '/blockmin/detail?uid=
 // export const reqBlockMinBeforUpdate = (uid) => ajax(BASE_URL + '/blockmin/get?uid=' + uid)
 export const reqBlockMinByBlockUid = (uid) => ajax(BASE_URL + '/blockmin/listbybbuid?uid=' + uid)
 
-export const avatar404 = () => ajax(BASE_URL + '/image/avatar404')
+// 帖子点赞
+export const addPostGood = (uid) => ajax(
+  BASE_URL + '/post/good', {uid: uid}, 'POST')
+
+// 踩帖子
+export const addPostBad = (uid) => ajax(BASE_URL + '/post/bad', {uid: uid}, 'POST')
+
+// 帖子阅读量
+export const addPostView = (uid) => ajax(BASE_URL + '/post/viewadd', {uid: uid}, 'POST')
+
+// 评论点赞
+export const addPostCommentGood = (uid) => ajax(BASE_URL + '/comment/good', {uid: uid}, 'POST')
+
+// 踩评论
+export const addPostCommentBad = (uid) => ajax(BASE_URL + '/comment/bad', {uid: uid}, 'POST')
+
+// 二级评论点赞
+export const addCommentReplyGood = (uid) => ajax(
+  BASE_URL + '/commentreply/good', {uid: uid}, 'POST')
+
+// 踩二级评论
+export const addCommentReplyBad = (uid) => ajax(
+  BASE_URL + '/commentreply/bad', {uid: uid}, 'POST')
+
+// 获取二级评论热评
+export const getHotCommentReplys = (uid, maxSize) => ajax(
+  BASE_URL + '/commentreply/hot?uid=' + uid + '&maxsize=' + maxSize)
+
+// 根据名称查找标签
+export const getTagsByName = (name) => ajax(
+  BASE_URL + '/tag/search?name=' + name)

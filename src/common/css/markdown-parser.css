@@ -1,7 +1,7 @@
 /*缩进框*/
 .block-frame {
     border-radius: 0.5em;
-    background: lightgray;
+    background: rgba(0,0,0, 0.2);
 }
 
 

@@ -22,6 +22,7 @@ import {
   reqLogout,
   reqPostsByMinBlockUid
 } from '../api'
+const postCurrentMinBlockUid = 'postCurrentMinBlockUid'
 
 export default {
 // 同步更新当前所在大板块
@@ -30,10 +31,10 @@ export default {
   },
   changecurrentminblock ({commit}, currentminblock) {
     if (typeof currentminblock === "undefined" || currentminblock == null) {
-      localStorage.removeItem('currentBlockMinUid')
+      sessionStorage.removeItem(postCurrentMinBlockUid)
       commit(CHANGE_CURRENT_BLOCKMIN, {})
     } else {
-      localStorage.setItem('currentBlockMinUid', currentminblock.blockMinUid)
+      sessionStorage.setItem(postCurrentMinBlockUid, currentminblock.blockMinUid)
       commit(CHANGE_CURRENT_BLOCKMIN, {currentminblock})
     }
   },

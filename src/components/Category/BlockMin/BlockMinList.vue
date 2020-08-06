@@ -52,8 +52,8 @@
       <div v-if="blockmins.length === 0">暂时没有帖子哈~</div>
     </div>
 
-    <div id="indicatorblockmin">
-    </div>
+<!--    <div id="indicatorblockmin"> </div>-->
+
   </div>
 </template>
 
@@ -61,9 +61,11 @@
   import {blockMinListByBlockBigUid, delBlockMin} from '../../../api'
   import {mapState} from 'vuex'
   import mdui from 'mdui'
+  import Indicator from '../../Indicator'
 
   export default {
     name: 'BlockMinList',
+    components: {Indicator},
     props: ['blockbigDetail'],
     mounted () {
       this.loadBlockMins()

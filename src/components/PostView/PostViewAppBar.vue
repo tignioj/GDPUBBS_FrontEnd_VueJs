@@ -1,8 +1,8 @@
 <template>
-  <div id="navigationBar" class="mdui-appbar mdui-appbar-fixed">
+  <div id="navigationBar" class="mdui-appbar mdui-appbar-fixed mdui-color-theme">
     <!-- <div id="navigationBar" class="mdui-appbar mdui-appbar-fixed"> -->
     <!-- <div id="navigationBar" class="mdui-appbar"> -->
-    <div class="mdui-toolbar mdui-color-theme">
+    <div class="mdui-toolbar">
 
       <a  class="mdui-btn mdui-btn-icon" v-show="this.$route.meta.appBar.showBack" @click.prevent="$router.back()"><i class="mdui-icon material-icons">arrow_back</i></a>
       <a href="javascript:;" class="mdui-typo-title" v-text="this.$route.meta.appBar.title"></a>

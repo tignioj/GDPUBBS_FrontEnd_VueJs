@@ -1,6 +1,7 @@
 <template>
-  <div id="reply-dialog" style="position:relative;">
-    <div style="overflow-y: scroll" id="dialog-replys" class="mdui-dialog">
+  <div class="mdui-color-theme" id="reply-dialog" style="position:relative;">
+    <div style="overflow-y: scroll" id="dialog-replys"
+         class="mdui-dialog ">
 
       <!--        <div :id="'dialog-myreply'" class="mdui-dialog">-->
 
@@ -85,7 +86,7 @@
           </div>
         </div>
 
-        <div v-show="comments.length > 0" id="indicatorreply">
+        <div v-show="comments.length > 0" id="indicatorreply" class="mdui-text-color-theme-text">
         </div>
 
         <div style="height: 129px"></div>
@@ -93,7 +94,7 @@
 
       <!--    <div class="mdui-dialog-actions" style="height: 129px">-->
       <!--    </div>-->
-      <div style="position:fixed; bottom: 0; width: 100%; background-color: white">
+      <div style="position:fixed; bottom: 0; width: 100%;" class="mdui-color-theme-200 ">
         <div class="mdui-grid-list">
           <div v-if="postComment" :id="'dialog-myreply'">
             <div class="mdui-dialog-content mdui-row-xs-1 mdui-p-y-0">
@@ -114,8 +115,8 @@
                   <!--        所在楼层-->
                   <!--            <input type="hidden" name="commentReplyComment" :value="postComment.postCommentPlace">-->
 
-                  <div v-if="postComment && postComment.postCommentFromuser"
-                       class="mdui-textfield mdui-p-a-0">
+                  <div   v-if="postComment && postComment.postCommentFromuser"
+                       class=" mdui-textfield mdui-p-a-0 mdui-text-color-theme-text">
                     <label class="mdui-textfield-label">{{ this.placeHolder }}</label>
                     <!--        回复内容-->
                     <!--              :placeholder="'回复:' + postComment.postCommentFromuser.userAccount"-->
@@ -170,7 +171,7 @@
           </div>
 
         </div>
-        <div class="mdui-dialog-actions">
+        <div class="mdui-dialog-actions mdui-text-color-theme-text">
           <button class="mdui-btn mdui-ripple" @click="closeDialog();">关闭</button>
           <button
             v-if="loggedInuserUid"
@@ -182,7 +183,7 @@
           <!--        {{ this.showMyReplyFrame ? '收起' : '显示' }}-->
           <!--        回复框-->
           <!--      </button>-->
-          <button @click="$router.push(globaRouterURL.LOGIN)" class="mdui-btn mdui-ripple" v-show="!loggedInuserUid">
+          <button @click="goLogin()" class="mdui-btn mdui-ripple" v-show="!loggedInuserUid">
             游客登陆后回复
           </button>
         </div>
@@ -270,6 +271,10 @@ export default {
     }
   },
   methods: {
+    goLogin () {
+      const self = this
+      this.$router.push(self.globaRouterURL.LOGIN + '?from=' + self.$route.fullPath)
+    },
     async addReplyBad (uid) {
       // this.saveCurrentInfo()
       let re = await addCommentReplyBad(uid)

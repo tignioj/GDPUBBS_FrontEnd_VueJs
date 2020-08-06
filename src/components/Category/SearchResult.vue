@@ -72,8 +72,9 @@
         <!--如果没有帖子-->
         <div v-if="!posts.length">暂时没有帖子哈~</div>
       </div>
-      <div id="indicatorresult">
-      </div>
+<!--      <div id="indicatorresult">-->
+<!--      </div>-->
+      <Indicator ref="indicator" @reqDataList="reqDataList" />
     </div>
     <div v-show="!hasLoaded">
       <div class="mdui-progress">
@@ -86,6 +87,8 @@
 import {getPostsBySearch} from '../../api'
 import PostViewTag from '../PostView/PostViewTag'
 import {mapState} from 'vuex'
+import Indicator from '../Indicator'
+import mdui from 'mdui'
 
 const currentSearchPosition = 'current_searchresult_position'
 const currentSearchText = 'current_searchresult_text'
@@ -93,7 +96,7 @@ const currentSearchCurrentPageCode = 'current_searchresult_pageCode'
 
 export default {
   name: 'SearchResult',
-  components: {PostViewTag},
+  components: {Indicator, PostViewTag},
   data () {
     return {
       hasLoaded: false,
@@ -101,22 +104,7 @@ export default {
       blockMinUid: '',
       blockBigUid: '',
       loggedInuserUid: null,
-      posts: [],
-      indicatorsIndex: [],
-      /* 当前第几页 */
-      currentPageCode: 1,
-      /* 一共多少页 */
-      totalPageSize: 1,
-      /* 一次请求最多显示多少条记录 */
-      elementMaxSize: 5,
-      /* 显示下标数量 */
-      showIndicatorSize: 5,
-
-      /* 是否显示上一页 */
-      isShowPrevious: false,
-
-      /* 是否显示下一页 */
-      isShowNext: false
+      posts: []
     }
   },
   computed: {
@@ -142,21 +130,19 @@ export default {
     const self = this
     let s = sessionStorage.getItem(currentSearchText)
     let pc = sessionStorage.getItem(currentSearchCurrentPageCode)
-
-
     if (s !== null) {
       this.searchInput = s
     }
+    let pageCode
     if (pc != null) {
-      let pageCode
       try {
         pageCode = parseInt(pc)
       } catch (e) {
         pageCode = 1
       }
-      this.currentPageCode = pageCode
+      this.$refs.indicator.currentPageCode = pageCode
     }
-    this.reqPosts(this.currentPageCode, this.elementMaxSize).then(re => {
+    this.reqPosts(pageCode, this.$refs.indicator.elementMaxSize).then(re => {
       self.hasLoaded = true
       let p = sessionStorage.getItem(currentSearchPosition)
 
@@ -176,144 +162,19 @@ export default {
     next()
   },
   methods: {
-    /**
-     * 分页
-     * @param pageObj
-     */
+    reqDataList ({currentPageCode, elementMaxSize, success, error}) {
+      this.reqPosts(currentPageCode, elementMaxSize)
+    },
     saveCurrentInfo () {
       let pos = window.pageYOffset
       sessionStorage.setItem(currentSearchPosition, pos)
       sessionStorage.setItem(currentSearchText, this.searchInput)
-      sessionStorage.setItem(currentSearchCurrentPageCode, this.currentPageCode)
+      sessionStorage.setItem(currentSearchCurrentPageCode, this.$refs.indicator.currentPageCode)
     },
     removeCurrentInfo () {
       sessionStorage.removeItem(currentSearchPosition)
       sessionStorage.removeItem(currentSearchText)
       sessionStorage.removeItem(currentSearchCurrentPageCode)
-    },
-    parseIndicator (pageObj) {
-      let totalPageSize = this.totalPageSize
-      let currentPageCode = this.currentPageCode
-      let showIndicatorSize = this.showIndicatorSize
-      let indicatorsIndex = this.indicatorsIndex
-      let getUserList = this.reqPosts
-      let elementMaxSize = this.elementMaxSize
-
-      totalPageSize = pageObj.totalPage
-      let indexs = []
-      // 显示5个下标
-      let showMax = showIndicatorSize * (Math.floor((currentPageCode - 1) / showIndicatorSize) + 1)
-      console.log(showMax)
-      for (let i = showMax - showIndicatorSize + 1; i <= showMax; i++) {
-        if (i > totalPageSize) {
-          break
-        }
-        indexs.push(i)
-      }
-      indicatorsIndex = indexs
-
-      let indicatorEle = document.getElementById('indicatorresult')
-      indicatorEle.innerHTML = ''
-      let buttonGroup = document.createElement('div')
-      buttonGroup.classList.add('mdui-row')
-      buttonGroup.classList.add('mdui-btn-group')
-
-      let first = document.createElement('button')
-      first.classList.add('mdui-btn')
-      first.addEventListener('click', function () {
-        getUserList(1, elementMaxSize)
-      })
-      first.appendChild(document.createTextNode('首页'))
-      buttonGroup.appendChild(first)
-
-      let previous = document.createElement('button')
-      previous.classList.add('mdui-btn')
-      if (currentPageCode === 1) {
-        previous.setAttribute('disabled', true)
-        first.setAttribute('disabled', true)
-      }
-      previous.addEventListener('click', function () {
-        getUserList(currentPageCode - 1, elementMaxSize)
-      })
-
-      previous.appendChild(document.createTextNode('<'))
-      buttonGroup.appendChild(previous)
-
-      for (let i = 0; i < indicatorsIndex.length; i++) {
-        let pageNum = indicatorsIndex[i]
-        // let html = '<a href="./index.html?pc="' + pageNum + '&ps=' + elementMaxSize +
-        let aEle = document.createElement('button')
-        // aEle.classList.add('indicator-link')
-        aEle.classList.add('mdui-btn')
-        if (currentPageCode === pageNum) {
-          aEle.classList.add('mdui-btn-active')
-          // aEle.classList.add('mdui-color-pink')
-        }
-        // aEle.href = '/index.html?pc=' + pageNum + '&ps=' + elementMaxSize;
-        // aEle.href = '/index.html?pc=' + pageNum + '&ps=' + elementMaxSize;
-        aEle.addEventListener('click', function () {
-          getUserList(pageNum, elementMaxSize)
-        })
-        aEle.appendChild(document.createTextNode(pageNum))
-        buttonGroup.appendChild(aEle)
-      }
-
-      let next = document.createElement('button')
-      next.classList.add('mdui-btn')
-      next.addEventListener('click', function () {
-        getUserList(currentPageCode + 1, elementMaxSize)
-      })
-      next.appendChild(document.createTextNode('>'))
-      buttonGroup.appendChild(next)
-
-      let last = document.createElement('button')
-      last.classList.add('mdui-btn')
-      last.addEventListener('click', function () {
-        getUserList(pageObj.totalPage, elementMaxSize)
-      })
-      last.appendChild(document.createTextNode('尾页'))
-      if (currentPageCode === totalPageSize) {
-        next.setAttribute('disabled', true)
-        last.setAttribute('disabled', true)
-      }
-      buttonGroup.appendChild(last)
-
-      indicatorEle.appendChild(buttonGroup)
-    },
-    setResultPosts (page) {
-      let posts = []
-      let content = page.content
-      content.forEach(post => {
-        posts.push(post)
-      })
-      this.posts = posts
-      // this.blockminuid = page.currentBlockMinUid
-
-      /**
-       * 1. 分页必须的元素
-       *  1) 当前页码 currentPageCode
-       *  2） 一共多少页 totalPageSize
-       *  3） 数据库中一共多少条记录 totalElements
-       *
-       */
-      let tp = page.totalPage
-      let te = page.totalElements
-
-      // 2）一共多少页 totalPageSize
-      this.totalPageSize = tp
-
-      // 3） 数据库中一共多少条记录 totalElements
-      this.totalElements = te
-
-      /**
-       * 如何显示下标？
-       * 1. 显示数量 showIndicatorSize
-       * @type {number}
-       */
-      this.isShowNext = this.currentPageCode < tp
-      this.isShowPrevious = this.currentPageCode > 1
-
-      this.parseIndicator(page)
     },
     async reqPosts (currentPageCode, elementMaxSize) {
       if (currentPageCode === null) {
@@ -321,24 +182,19 @@ export default {
       } else if (currentPageCode < 1) {
         currentPageCode = 1
       }
-      // sessionStorage.setItem(keyCurrentSearchPageCode, this.currentPageCode)
-      this.currentPageCode = currentPageCode
-      console.log('currentPageCode:', currentPageCode)
 
       let re = await getPostsBySearch(this.blockBigUid, this.blockMinUid, this.searchInput, currentPageCode, elementMaxSize)
       console.log(re)
       if (re.code === 0) {
         console.log(re.code)
-        this.setResultPosts(re.data)
+        this.$refs.indicator.initIndicator(re.data)
+        this.posts = re.data.content
       } else {
         // this.$router.replace('/login')
+        mdui.snackbar({
+          message: '服务器错误'
+        })
       }
-
-      // this.$store.dispatch('getPostsByMinBlockUid', {
-      //   currentblockuid: blockMinUid,
-      //   pagecode: currentPageCode,
-      //   pagesize: elementMaxSize
-      // })
     }
   }
 }

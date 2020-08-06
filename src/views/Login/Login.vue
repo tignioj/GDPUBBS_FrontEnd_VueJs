@@ -63,6 +63,7 @@ export default {
   name: 'Login',
   data () {
     return {
+      from: null,
       waiting: false,
       pwd: '123456', /* 密码 */
       // username: '', /* 用户名 */
@@ -90,13 +91,18 @@ export default {
       // 2. 异步注册
       let result = await reqPwdRegist({username, pwd, code})
 
+      const self = this
       if (result.code === 0) {
         const user = result.data
         console.log(result.data)
         // 将user保存到vuex的state
         this.$store.dispatch('recordUser', user)
         // 去个人中心界面
-        this.$router.replace('/profile')
+        if (self.from) {
+          self.$router.replace(self.from)
+        } else {
+          self.$router.replace('/profile')
+        }
       } else {
         // 显示新的图片验证码
         this.getCaptcha()
@@ -131,7 +137,12 @@ export default {
           // 将user保存到vuex的state
           self.$store.dispatch('recordUser', user)
           // 去个人中心界面
-          self.$router.replace('/profile')
+          // 是否从某个页面来的
+          if (self.from) {
+            self.$router.replace(self.from)
+          } else {
+            self.$router.replace('/profile')
+          }
         } else {
           // 显示新的图片验证码
           self.getCaptcha()
@@ -254,8 +265,10 @@ export default {
     }
   },
   mounted () {
+    this.from = this.$route.query.from
     this.myglobalfun.cleanBodyComponentClass()
-
+    this.myglobalfun.onlyTopHeaderBar()
+    debugger
     this.$nextTick(() => {
       document.getElementById('username').focus()
       this.getCaptcha()

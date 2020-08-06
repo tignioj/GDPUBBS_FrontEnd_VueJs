@@ -1,5 +1,4 @@
 <template>
-
   <!-- 抽屉 -->
   <div id="main-drawer" class="mdui-drawer mdui-drawer-close">
     <ul class="mdui-list">
@@ -8,7 +7,8 @@
           v-for="(bigblock, index) in indexcategory" :key="index"
           @click="changeBigBlock(bigblock)"
       >
-        <i class="mdui-list-item-icon mdui-icon material-icons">move_to_inbox</i>
+        <i class="mdui-list-item-icon mdui-icon material-icons">
+          {{bigblock.iconName === undefined ? 'move_to_inbox' : bigblock.iconName}}</i>
         <div class="mdui-list-item-content">{{bigblock.bBlockName}}</div>
       </li>
       <li class="mdui-subheader">Subheader</li>
@@ -62,6 +62,9 @@
       mutation()
     },
     methods: {
+      resetBigBlock () {
+        this.$store.dispatch('getindexblocksbigs')
+      },
       changeBigBlock (bigblock) {
         /* 更改数据 */
         this.$store.dispatch('changecurrentbigblock', bigblock)

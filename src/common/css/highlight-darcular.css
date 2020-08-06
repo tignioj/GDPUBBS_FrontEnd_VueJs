@@ -38,6 +38,12 @@ idea darcular 风格的代码高亮
   height: 25px;
 }
 
+/* ==背景高亮== */
+.md-highlight {
+  background: rgba(255,255,0,0.2);
+}
+
+
 
 /*折叠代码的按钮*/
 .md-code-fold {
@@ -81,7 +87,6 @@ idea darcular 风格的代码高亮
   /*margin: 0.1em;*/
   padding: 1px;
   /*margin: 4px;*/
-  background-color: whitesmoke;
 }
 
 /*============================单行代码结束====================*/
@@ -131,6 +136,7 @@ idea darcular 风格的代码高亮
 }
 
 
+
 /*=============================================*/
 /*声明 <!DOCTYPE >*/
 .hl-code-html-declare-tag {
@@ -141,7 +147,6 @@ idea darcular 风格的代码高亮
 /*声明类型 <!DOCTYPE html>*/
 .hl-code-html-declare-type {
   color: yellow;
-
 }
 
 /*纯文本*/

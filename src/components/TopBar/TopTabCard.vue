@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div class="mdui-tab mdui-color-theme" mdui-tab>
       <a href="#posts" class="mdui-ripple mdui-ripple-white "
          v-for="(mblock, index) in currentbigblock.bBlockMblocks" :key="index"
@@ -8,7 +7,7 @@
          @click="$emit('changeMinBlock', mblock)"
       >
         <!-- <i class="mdui-icon material-icons">free_breakfast</i> -->
-        <i class="mdui-icon material-icons">brightness_2</i>
+        <i class="mdui-icon material-icons">{{mblock.iconName === undefined ? 'brightness_2': mblock.iconName}}</i>
         <label>{{mblock.blockMinName}}</label>
       </a>
       <a v-if="!currentminblock" href="javascript:void(0)" class="mdui-ripple mdui-ripple-white">

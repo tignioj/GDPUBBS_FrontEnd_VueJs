@@ -1,6 +1,46 @@
 <template>
-
   <div class="mdui-container">
+    <div v-if="this.blockminName === '网抑'" class="mdui-card mdui-m-t-2">
+      <div class="mdui-card-header">
+        <img class="mdui-card-header-avatar" src="http://myimg.wszjl.top/images/icon/wy.ico"/>
+        <div class="mdui-card-header-title">网易云官方</div>
+        <div class="mdui-card-header-subtitle">音乐的力量</div>
+      </div>
+      <div class="mdui-card-media">
+        <img src="http://myimg.wszjl.top/images/background/cover/snjxy.jpg"/>
+        <audio class="audio" src="http://music.wszjl.top/1.mp3" controls="controls">
+        </audio>
+      </div>
+
+      <div class="mdui-card-primary">
+        <div class="mdui-card-primary-title mdui-typo"><a
+          href="https://music.163.com/#/song?id=1384026889">CMJ-所念皆星河</a></div>
+        <div class="mdui-card-primary-subtitle"> 已经六年级了啊，好想爱这个世界</div>
+      </div>
+      <div class="mdui-card-content">却已经失去了爱的能力</div>
+    </div>
+    <div v-if="this.blockminName === '网抑'" class="mdui-card mdui-m-t-2">
+      <!-- 卡片头部，包含头像、标题、副标题 -->
+      <div class="mdui-card-header">
+        <img class="mdui-card-header-avatar" src="http://myimg.wszjl.top/images/icon/bilibili.ico"/>
+        <div class="mdui-card-header-title">Bilibili</div>
+        <div class="mdui-card-header-subtitle">网抑云终结者</div>
+      </div>
+
+      <!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 -->
+      <div class="mdui-card-media">
+        <video src="http://video.wszjl.top/wyyzjz.mp4" controls="controls"></video>
+      </div>
+
+      <!-- 卡片的标题和副标题 -->
+      <div class="mdui-card-primary">
+        <div class="mdui-card-primary-title mdui-typo"><a href="https://www.bilibili.com/video/BV15D4y1U7F1/">为什么海水和眼泪都是咸的 </a>
+        </div>
+        <!--        <div class="mdui-card-primary-subtitle"></div>-->
+      </div>
+      <!-- 卡片的内容 -->
+      <!--      <div class="mdui-card-content">为什么</div>-->
+    </div>
 
     <div id="content" class="mdui-m-t-2">
       <!--            <div v-if="posts.length > 0" id="contentDoc" class="mdui-row-xs-1 mdui-row-sm-2 mdui-row-xl-3  mdui-grid-list ">-->
@@ -10,95 +50,12 @@
         </div>
       </div>
       <div v-else-if="hasLoaded">
-        <div v-if="posts.length > 0" id="contentDoc" class="mdui-row-xs-1   mdui-grid-list ">
-          <div class="mdui-card mdui-col mdui-hoverable mdui-m-y-1 my-card"
-               v-for="(post, index)  in posts" :key="index"
-          >
-            <!--          <a :href="'/document/browse.html?postUid=' + post.postUid" class="docLink" style="display:none;"></a>-->
-            <!-- 卡片头部，包含头像、标题、副标题 -->
-            <router-link tag="div" :to="'/userinfoother/' + post.postUser.userAccount">
-              <div class="mdui-card-header">
-                <img class="mdui-card-header-avatar" :src="myglobalfun.imgBaseUrl(post.postUser.userAvatar)"/>
-                <!--        <img class="mdui-card-header-avatar" src="./user/avatar/default.jpg" />-->
-                <!--        <img class="mdui-card-header-avatar" :src="post.postUser.userAvatar" />-->
-                <div class="mdui-card-header-title">{{ post.postUser.userAccount }}
-                  <span>{{ post.postPrivilege.postPrivilegeDesc }}</span>
-                </div>
-                <div class="mdui-card-header-subtitle">最后修改时间：{{ post.postDate | date-format }}
-                </div>
-              </div>
-            </router-link>
-            <router-link :to="'/post/view/' + post.postUid" tag="div">
-
-              <!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 -->
-              <div class="mdui-card-media" style="max-height: 300px; overflow: hidden">
-                <!--图片地址 -->
-                <img v-if="post.postImg" :src="myglobalfun.imgBaseUrl(post.postImg)"/>
-                <!-- 卡片中可以包含一个或多个菜单按钮 -->
-                <!--        <div class="mdui-card-menu">-->
-                <!--          <button class="mdui-btn mdui-btn-icon mdui-text-color-white"><i class="mdui-icon material-icons">share</i></button>-->
-                <!--        </div>-->
-              </div>
-
-              <!-- 卡片的标题和副标题 -->
-              <div class="mdui-card-primary blur-bg">
-                <div class="mdui-card-primary-title">{{ post.postTitle }}</div>
-                <div v-if="post.postTag" class="mdui-card-primary-subtitle">
-                  <PostViewTag :tags="post.postTag" v-if="post.postTag.length"/>
-                </div>
-              </div>
-
-              <!-- 卡片的内容 -->
-              <div class="mdui-card-content">{{ post.postContent }}</div>
-
-            </router-link>
-            <!-- 卡片的按钮 -->
-            <div class="mdui-card-actions">
-              <button @click="postGood(post.postUid)" class="mdui-btn mdui-btn-icon">
-                <i class="mdui-icon material-icons">thumb_up</i>
-              </button>
-              {{ post.postGood }}
-
-              <button @click="postBad(post.postUid)" class="mdui-btn mdui-btn-icon">
-                <i class="mdui-icon material-icons">thumb_down</i>
-              </button>
-              {{ post.postBad }}
-
-
-              <button class="mdui-btn mdui-btn-icon">
-                <i class="mdui-icon material-icons">comment</i>
-              </button>
-              {{ post.postCommentReply + post.postComments }}
-
-              <button class="mdui-btn mdui-btn-icon">
-                <i class="mdui-icon material-icons">remove_red_eye</i>
-              </button>
-              {{ post.postViewCount }}
-
-
-              <button
-                v-if="post.postUser.userUid ===  loggedInuserUid"
-                @click="$router.push(globaRouterURL.POST_EDIT + '/' + post.postUid)" class="mdui-btn mdui-ripple">编辑
-              </button>
-              <button
-                v-if="(post.postUser.userUid ===  loggedInuserUid) ||
-              (userProfile && userProfile.userPri.userPrivilegeId >= 2)"
-                @click="deletePost(post.postTitle, post.postUid)" class="mdui-btn mdui-ripple">删除
-              </button>
-              <button
-                v-if="(userProfile && userProfile.userPri.userPrivilegeId >= 2)"
-                @click="banThisPost(post.postTitle, post.postUid)" class="mdui-btn mdui-ripple">封禁
-              </button>
-              <!--            <button class="mdui-btn mdui-ripple">评论:{{post.postComments}}</button>-->
-              <button class="mdui-btn mdui-btn-icon mdui-float-right share-link"
-                      :data-clipboard-text="getURL(post.postUid)">
-                <i class="mdui-icon material-icons">share</i>
-              </button>
-            </div>
-          </div>
-          <!--如果没有帖子-->
-        </div>
-        <div v-else-if="posts.length === 0">
+        <PostsComponent v-if="posts.length > 0"
+                        :posts="posts"
+                        @refreshPosts="refreshPosts"
+                        :user-profile="userProfile"
+                        :logged-inuser-uid="loggedInuserUid"/>
+        <div v-else-if="currentminblock && posts.length === 0">
           <h1>
             此处一片荒凉，快来发第一篇帖子~
           </h1>
@@ -107,14 +64,13 @@
           >发帖
           </button>
         </div>
-        <div v-else-if="currentminblock === undefined">
+        <div v-else-if="!currentminblock">
           <h1>
             还没有板块，暂时不开放
           </h1>
         </div>
       </div>
-      <div v-show=" hasLoaded && posts.length>0" id="indicatorposts">
-      </div>
+      <Indicator v-show=" hasLoaded && posts.length>0" ref="indicator" @reqDataList="reqDataList"/>
     </div>
   </div>
 </template>
@@ -124,304 +80,119 @@ import {mapState} from 'vuex'
 import PostViewTag from '../PostView/PostViewTag'
 import mdui from 'mdui'
 import ClipboardJS from 'clipboard'
-import {postBan, deleteOnePost, addPostGood, addPostBad} from '../../api'
+import Indicator from '../Indicator'
+import PostsComponent from './PostsComponent'
 
 const postsCurrentPageCode = 'key_current_page_code_in_postlist'
 const postsReadingLocation = 'posts_readingLocation'
 const postsSearchText = 'posts_searchText'
+const postCurrentMinBlockUid = 'postCurrentMinBlockUid'
 
 export default {
   name: 'PostList',
-  components: {PostViewTag},
+  components: {PostsComponent, PostViewTag, Indicator},
   data () {
     return {
+      page: null,
+      blockminName: null,
+      baseUrl: '',
       hasLoaded: false,
       clipboard: null,
       loggedInuserUid: '',
       blockminuid: '',
       posts: [],
-      indexs: [],
       searchInput: '',
-
-      /* 是否显示分页 */
-      isShowIndicator: false,
-
-      indicatorsIndex: [],
-      /* 当前第几页 */
-      currentPageCode: 1,
-      /* 一共多少页 */
-      totalPageSize: 1,
-      /* 一次请求最多显示多少条记录 */
-      elementMaxSize: 5,
-      /* 显示下标数量 */
-      showIndicatorSize: 5,
-
-      fruits: ['大西瓜皮', '香蕉皮', '臭鸡蛋'],
-
-      /* 是否显示上一页 */
-      isShowPrevious: false,
-
-      /* 是否显示下一页 */
-      isShowNext: false
+      fruits: ['大西瓜皮', '香蕉皮', '臭鸡蛋']
     }
   },
+  activated () {
+    let c = sessionStorage.getItem(postCurrentMinBlockUid)
+    this.blockminuid = c
+    // this.refreshPosts()
+  },
   methods: {
-    getURL (postUid) {
-      return window.location.origin + '/#/post/view/' + postUid
-    },
-    // shareLink () {
-    //   let clipBoardContent = window.location.href
-    //   window.clipboardData.setData('Text', clipBoardContent)
-    //   mdui.snackbar({
-    //     message: '复制链接成功'
-    //   })
-    // },
-    async postGood (uid) {
-      // this.saveCurrentInfo()
-      let re = await addPostGood(uid)
+    loadPosts () {
+      this.baseUrl = window.location.origin
+      this.hasLoaded = false
 
-      if (re.code === 0) {
-        mdui.snackbar({
-          message: '点赞成功'
-        })
-        this.updatePostInfo(uid, re)
+      if (this.userProfile) {
+        this.loggedInuserUid = this.userProfile.userUid
       }
-    },
-    updatePostInfo (uid, re) {
-      let info = re.data
-      for (let i = 0; i < this.posts.length; i++) {
-        let p = this.posts[i]
-        if (p.postUid === uid) {
-          p.postGood = info.postGood
-          p.postBad = info.postBad
-          p.postViewCount = info.postViewCount
-          p.postCommentCount = info.commentCount
-        }
-      }
-    },
-    banThisPost (postTitle, postUid) {
-      const self = this
-      mdui.dialog({
-        title: '确认封禁"' + postTitle + '"吗?',
-        buttons: [
-          {
-            text: '取消'
-          },
-          {
-            text: '确认',
-            onClick: function () {
-              self.confirmBan(postUid)
-            }
-          }
-        ]
-      })
-    },
-    async postBad (uid) {
-      let re = await addPostBad(uid)
-      if (re.code === 0) {
-        mdui.snackbar({
-          message: '你向楼主扔了一块' + this.fruits[Math.floor((Math.random() * this.fruits.length))]
-        })
-        this.updatePostInfo(uid, re)
-      }
-    },
-    saveCurrentInfo () {
-      let pos = window.pageYOffset
-      sessionStorage.setItem(postsReadingLocation, pos)
-      sessionStorage.setItem(postsSearchText, this.searchInput)
-      sessionStorage.setItem(postsCurrentPageCode, this.currentPageCode)
-      console.log(pos)
-    },
-    removeCurrentInfo () {
-      sessionStorage.removeItem(postsReadingLocation)
-      sessionStorage.removeItem(postsSearchText)
-      sessionStorage.removeItem(postsCurrentPageCode)
-    },
-    deletePost (postTitle, postUid) {
-      const self = this
-      mdui.dialog({
-        title: '确认删除"' + postTitle + '"吗?',
-        buttons: [
-          {
-            text: '取消'
-          },
-          {
-            text: '确认',
-            onClick: function () {
-              self.confirmDelete(postUid)
-            }
-          }
-        ]
-      })
-    },
-    async confirmDelete (postUid) {
-      let post = await deleteOnePost(postUid)
-      if (post.code === 0) {
-        this.refreshPosts()
-      }
-    },
-    async confirmBan (postUid) {
-      let post = await postBan(postUid, true)
-      if (post.code === 0) {
-        mdui.snackbar({
-          message: '封禁成功'
-        })
-        this.refreshPosts()
-      } else {
-        mdui.snackbar({
-          message: '封禁失败,原因:' + post.data
-        })
-      }
-    },
-    refreshPosts () {
-      let currentBlockMinUid = sessionStorage.getItem('currentBlockMinUid')
+      let currentBlockMinUid = sessionStorage.getItem(postCurrentMinBlockUid)
       this.blockminuid = currentBlockMinUid
-      let currentPageCode = parseInt(sessionStorage.getItem(postsCurrentPageCode))
-      if (typeof currentPageCode !== 'number') {
+      let currentPageCode
+      try {
+        currentPageCode = parseInt(sessionStorage.getItem(postsCurrentPageCode))
+      } catch (err) {
         currentPageCode = 1
       }
-      this.currentPageCode = currentPageCode
       if (this.userProfile !== '') {
         this.loggedInuserUid = this.userProfile.userUid
       }
       this.reqPosts(currentPageCode, this.elementMaxSize)
     },
-    parseIndicator (pageObj) {
-      let totalPageSize = this.totalPageSize
-      let currentPageCode = this.currentPageCode
-      let showIndicatorSize = this.showIndicatorSize
-      let indicatorsIndex = this.indicatorsIndex
-      let getUserList = this.reqPosts
-      let elementMaxSize = this.elementMaxSize
-
-      totalPageSize = pageObj.totalPage
-      let indexs = []
-      // 显示5个下标
-      let showMax = showIndicatorSize * (Math.floor((currentPageCode - 1) / showIndicatorSize) + 1)
-      for (let i = showMax - showIndicatorSize + 1; i <= showMax; i++) {
-        if (i > totalPageSize) {
-          break
-        }
-        indexs.push(i)
-      }
-      indicatorsIndex = indexs
-
-      let indicatorEle = document.getElementById('indicatorposts')
-      indicatorEle.innerHTML = ''
-      let buttonGroup = document.createElement('div')
-      buttonGroup.classList.add('mdui-row')
-      buttonGroup.classList.add('mdui-btn-group')
-
-      let first = document.createElement('button')
-      first.classList.add('mdui-btn')
-      first.addEventListener('click', function () {
-        getUserList(1, elementMaxSize)
-      })
-      first.appendChild(document.createTextNode('首页'))
-      buttonGroup.appendChild(first)
-
-      let previous = document.createElement('button')
-      previous.classList.add('mdui-btn')
-      if (currentPageCode === 1) {
-        previous.setAttribute('disabled', true)
-        first.setAttribute('disabled', true)
-      }
-      previous.addEventListener('click', function () {
-        getUserList(currentPageCode - 1, elementMaxSize)
-      })
-
-      previous.appendChild(document.createTextNode('<'))
-      buttonGroup.appendChild(previous)
-
-      for (let i = 0; i < indicatorsIndex.length; i++) {
-        let pageNum = indicatorsIndex[i]
-        // let html = '<a href="./index.html?pc="' + pageNum + '&ps=' + elementMaxSize +
-        let aEle = document.createElement('button')
-        // aEle.classList.add('indicator-link')
-        aEle.classList.add('mdui-btn')
-        if (currentPageCode === pageNum) {
-          aEle.classList.add('mdui-btn-active')
-          // aEle.classList.add('mdui-color-pink')
-        }
-        // aEle.href = '/index.html?pc=' + pageNum + '&ps=' + elementMaxSize;
-        // aEle.href = '/index.html?pc=' + pageNum + '&ps=' + elementMaxSize;
-        aEle.addEventListener('click', function () {
-          getUserList(pageNum, elementMaxSize)
-        })
-        aEle.appendChild(document.createTextNode(pageNum))
-        buttonGroup.appendChild(aEle)
-      }
-
-      let next = document.createElement('button')
-      next.classList.add('mdui-btn')
-      next.addEventListener('click', function () {
-        getUserList(currentPageCode + 1, elementMaxSize)
-      })
-      next.appendChild(document.createTextNode('>'))
-      buttonGroup.appendChild(next)
-
-      let last = document.createElement('button')
-      last.classList.add('mdui-btn')
-      last.addEventListener('click', function () {
-        getUserList(pageObj.totalPage, elementMaxSize)
-      })
-      last.appendChild(document.createTextNode('尾页'))
-      if (currentPageCode === totalPageSize) {
-        next.setAttribute('disabled', true)
-        last.setAttribute('disabled', true)
-      }
-      buttonGroup.appendChild(last)
-
-      indicatorEle.appendChild(buttonGroup)
+    /**
+     * 提供给分页组件的方法
+     * @param currentPageCode
+     * @param elementMaxSize
+     * @param success
+     * @param error
+     */
+    reqDataList ({currentPageCode, elementMaxSize, success, error}) {
+      this.reqPosts(currentPageCode, elementMaxSize)
     },
-    setPosts (page) {
-      sessionStorage.setItem('currentBlockMinUid', page.currentBlockMinUid)
-      let posts = []
-      let content = page.content
-      content.forEach(post => {
-        posts.push(post)
-      })
-      this.posts = posts
-      this.blockminuid = page.currentBlockMinUid
-
-      /**
-       * 1. 分页必须的元素
-       *  1) 当前页码 currentPageCode
-       *  2） 一共多少页 totalPageSize
-       *  3） 数据库中一共多少条记录 totalElements
-       *
-       */
-      let tp = page.totalPage
-      let te = page.totalElements
-
-      // 1) 当前页码 currentPageCode
-      // let currentPageCode = parseInt(localStorage.getItem(keyCurrentPageCode))
-      // if (typeof currentPageCode !== "number") {
-      //   currentPageCode = 1
-      // }
-      // this.currentPageCode = currentPageCode
-
-      // 2）一共多少页 totalPageSize
-      this.totalPageSize = tp
-
-      // 3） 数据库中一共多少条记录 totalElements
-      this.totalElements = te
-
-      this.parseIndicator(page)
+    saveCurrentInfo () {
+      let pos = window.pageYOffset
+      sessionStorage.setItem(postCurrentMinBlockUid, this.blockminuid)
+      sessionStorage.setItem(postsReadingLocation, pos)
+      sessionStorage.setItem(postsSearchText, this.searchInput)
+      sessionStorage.setItem(postsCurrentPageCode, this.$refs.indicator.currentPageCode)
+      console.log(pos)
+    },
+    removeCurrentInfo () {
+      sessionStorage.removeItem(postCurrentMinBlockUid)
+      sessionStorage.removeItem(postsReadingLocation)
+      sessionStorage.removeItem(postsSearchText)
+      sessionStorage.removeItem(postsCurrentPageCode)
+    },
+    refreshPosts () {
+      let currentBlockMinUid = sessionStorage.getItem(postCurrentMinBlockUid)
+      this.blockminuid = currentBlockMinUid
+      let currentPageCode
+      try {
+        currentPageCode = parseInt(sessionStorage.getItem(postsCurrentPageCode))
+      } catch (err) {
+        currentPageCode = 1
+      }
+      this.$refs.indicator.currentPageCode = currentPageCode
+      if (this.userProfile !== '') {
+        this.loggedInuserUid = this.userProfile.userUid
+      }
+      this.reqPosts(currentPageCode, this.elementMaxSize)
     },
     reqPosts (currentPageCode, elementMaxSize) {
+      if (!currentPageCode) {
+        currentPageCode = 1
+      } else if (currentPageCode < 1) {
+        currentPageCode = 1
+      } else {
+        try {
+          currentPageCode = parseInt(currentPageCode)
+        } catch (e) {
+          currentPageCode = 1
+        }
+      }
       this.hasLoaded = false
       sessionStorage.setItem(postsCurrentPageCode, currentPageCode)
-      let blockMinUid = this.blockminuid
-      if (blockMinUid !== null) {
+      let blockminuid = sessionStorage.getItem(postCurrentMinBlockUid)
+      if (blockminuid !== null) {
         if (currentPageCode === null) {
           currentPageCode = 1
         } else if (currentPageCode < 1) {
           currentPageCode = 1
         }
-        this.currentPageCode = currentPageCode
         this.$store.dispatch('getPostsByMinBlockUid', {
-          currentblockuid: blockMinUid,
+          currentblockuid: blockminuid,
           pagecode: currentPageCode,
           pagesize: elementMaxSize
         })
@@ -429,11 +200,27 @@ export default {
     }
   },
   mounted () {
-    this.hasLoaded = false
-    if (this.userProfile) {
-      this.loggedInuserUid = this.userProfile.userUid
-    }
-    // this.refreshPosts()
+    /**
+     * 首次加载周期：
+     *  watch -> currentminblock = null
+     *  Indicator.mounted
+     *  PostList.mounted
+     *  watch -> currentminblock = 有数据了
+     *    请求帖子
+     *  watch -> currentposts 有数据了
+     *    初始化Indicator
+     */
+
+    /**
+     * 从其它页面返回
+     * watch -> currentminblock 有数据
+     * 加载数据
+     */
+
+    this.loadPosts()
+  },
+  beforeDestroy () {
+    this.clipboard && this.clipboard.destroy()
   },
   watch: {
     'userProfile': {
@@ -443,16 +230,33 @@ export default {
           console.log(val)
           this.loggedInuserUid = val.userUid
         }
-      }
+      },
+      immediate: true
     },
     'currentpostsbyblockmin': {
       deep: false,
-      immediate: false,
+      immediate: true,
       handler (val) {
+        if (!val.content) {
+          return
+        }
+        this.page = val
+        let page = val
         const self = this
-        this.setPosts(val)
-        this.hasLoaded = true
+        this.posts = page.content
+        this.blockminuid = page.currentBlockMinUid
+        sessionStorage.setItem(postCurrentMinBlockUid, page.currentBlockMinUid)
         this.$nextTick(() => {
+          this.hasLoaded = true
+          let pc = sessionStorage.getItem(postsCurrentPageCode)
+          try {
+            pc = parseInt(pc)
+          } catch (e) {
+            pc = 1
+          }
+          this.$refs.indicator.currentPageCode = pc
+          this.$refs.indicator.initIndicator(page)
+
           let pos = sessionStorage.getItem(postsReadingLocation)
           console.log('scrollto', pos)
           if (pos !== null) {
@@ -462,7 +266,8 @@ export default {
             self.clipboard = new ClipboardJS('.share-link')
             self.clipboard.on('success', function (e) {
               mdui.snackbar({
-                message: '已经复制帖子链接 ' + e.text + '，快去分享吧'
+                message: '已经复制帖子链接 ' + e.text + '，快去分享吧',
+                position: 'top'
               })
               console.info('Action:', e.action)
               console.info('Text:', e.text)
@@ -481,22 +286,21 @@ export default {
     'currentminblock': {
       deep: false,
       handler (val) {
-        if (!val.blockMinUid) {
-          return
-        }
         // 处理空帖子的情况
-        if (val === undefined || val === null) {
+        if (!val || !val.blockMinUid) {
           this.blockminuid = ''
           this.posts = []
           this.indicatorsIndex = []
         } else {
+          this.blockminName = val.blockMinName
           this.blockminuid = val.blockMinUid
+          sessionStorage.setItem(postCurrentMinBlockUid, this.blockminuid)
+          // 帖子板块变化，则需要重置下标
+          sessionStorage.setItem(postsCurrentPageCode, '1')
           this.reqPosts(1, this.elementMaxSize)
         }
-        // 帖子板块变化，则需要重置下标
-        sessionStorage.setItem(postsCurrentPageCode, '1')
       },
-      immediate: true
+      immediate: false
     }
   },
   computed: {
@@ -517,4 +321,6 @@ export default {
   justify-content: center;
   margin: 0 auto 50px auto;
 }
+
+
 </style>

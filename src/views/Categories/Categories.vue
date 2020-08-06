@@ -55,6 +55,9 @@ export default {
   computed: {
     ...mapState(['indexcategory'])
   },
+  activated () {
+    this.myglobalfun.cleanTopTabCard()
+  },
   created () {
     /* 创建之后，马上请求主页帖子分类信息和帖子信息 */
     // 请求大板块
@@ -70,7 +73,6 @@ export default {
     }
   },
   mounted () {
-    this.myglobalfun.cleanTopTabCard()
     this.initCategory(this.indexcategory)
   },
   data () {

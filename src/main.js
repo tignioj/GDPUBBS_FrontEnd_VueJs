@@ -15,6 +15,7 @@ Vue.use(myglobalfun)
 
 Vue.config.productionTip = false
 Vue.prototype.md = md
+Vue.prototype.globalFunction = myglobalfun
 //
 // router.beforeEach((to, from, next) => {
 //   // console.log('之前:', 'to:', to.path, to.meta.keepAlive, ' from:', from.path, from.meta.keepAlive)

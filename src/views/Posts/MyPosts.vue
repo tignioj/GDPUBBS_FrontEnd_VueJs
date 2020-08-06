@@ -75,8 +75,10 @@
         <!--如果没有帖子-->
         <div v-if="myposts.length === 0">暂时没有帖子哈~</div>
       </div>
-      <div v-show="myposts.length >0" class="mdui-m-t-2" id="indicator">
-      </div>
+<!--      <div v-show="myposts.length >0" class="mdui-m-t-2" id="indicator">-->
+<!--      </div>-->
+      <Indicator  v-show="myposts.length >0" ref="indicator" @reqDataList="reqDataList"/>
+
     </div>
     <div v-show="!hasLoaded">
       <div class="mdui-progress">
@@ -92,6 +94,7 @@ import mdui from 'mdui'
 import {reqMyPostsPage, deleteOnePost} from '../../api'
 import PostViewTag from '../../components/PostView/PostViewTag'
 import {mapState} from 'vuex'
+import Indicator from '../../components/Indicator'
 
 const myPostsLocation = 'myposts_location'
 const myPostsSearchText = 'myposts_search_text'
@@ -99,7 +102,7 @@ const myPostsPageCode = 'myposts_pagecode'
 
 export default {
   name: 'MyPosts',
-  components: {PostViewTag},
+  components: {Indicator, PostViewTag},
   data () {
     return {
       hasLoaded: false,
@@ -144,21 +147,23 @@ export default {
     this.loadMyPosts()
   },
   methods: {
+    reqDataList ({currentPageCode, elementMaxSize, success, error}) {
+      this.reqPosts(currentPageCode, elementMaxSize)
+    },
     search () {
       sessionStorage.setItem(myPostsSearchText, this.searchInput)
       sessionStorage.removeItem(myPostsLocation)
       sessionStorage.removeItem(myPostsPageCode)
-      this.currentPageCode = 1
+      this.$refs.indicator.currentPageCode = 1
       this.loadMyPosts()
     },
     async loadMyPosts () {
       this.hasLoaded = false
       let pc = sessionStorage.getItem(myPostsPageCode)
-      this.currentPageCode = (pc === null) ? this.currentPageCode : parseInt(pc)
+      let currentPageCode = (pc === null) ? 1 : parseInt(pc)
       let text = sessionStorage.getItem(myPostsSearchText)
       this.searchInput = (text === null) ? '' : text
-
-      await this.reqPosts(this.currentPageCode, this.elementMaxSize)
+      await this.reqPosts(currentPageCode, this.$refs.indicator.elementMaxSize)
       this.hasLoaded = true
       this.$nextTick(() => {
         let pos = sessionStorage.getItem(myPostsLocation)
@@ -197,164 +202,24 @@ export default {
         this.reqPosts()
       }
     },
-    /**
-     * 分页
-     * @param pageObj
-     */
-    parseIndicator (pageObj) {
-      let totalPageSize = this.totalPageSize
-      let currentPageCode = this.currentPageCode
-      let showIndicatorSize = this.showIndicatorSize
-      let indicatorsIndex = this.indicatorsIndex
-      let getUserList = this.reqPosts
-      let elementMaxSize = this.elementMaxSize
-
-      totalPageSize = pageObj.totalPage
-      let indexs = []
-      // 显示5个下标
-      let showMax = showIndicatorSize * (Math.floor((currentPageCode - 1) / showIndicatorSize) + 1)
-      console.log(showMax)
-      for (let i = showMax - showIndicatorSize + 1; i <= showMax; i++) {
-        if (i > totalPageSize) {
-          break
-        }
-        indexs.push(i)
-      }
-      indicatorsIndex = indexs
-
-      let indicatorEle = document.getElementById('indicator')
-      indicatorEle.innerHTML = ''
-      let buttonGroup = document.createElement('div')
-      buttonGroup.classList.add('mdui-btn-group')
-
-      let first = document.createElement('button')
-      first.classList.add('mdui-btn')
-      first.addEventListener('click', function () {
-        getUserList(1, elementMaxSize)
-      })
-      first.appendChild(document.createTextNode('首页'))
-      buttonGroup.appendChild(first)
-
-      let previous = document.createElement('button')
-      previous.classList.add('mdui-btn')
-      if (currentPageCode === 1) {
-        previous.setAttribute('disabled', true)
-        first.setAttribute('disabled', true)
-      }
-      previous.addEventListener('click', function () {
-        getUserList(currentPageCode - 1, elementMaxSize)
-      })
-
-      previous.appendChild(document.createTextNode('<'))
-      buttonGroup.appendChild(previous)
-
-      for (let i = 0; i < indicatorsIndex.length; i++) {
-        let pageNum = indicatorsIndex[i]
-        // let html = '<a href="./index.html?pc="' + pageNum + '&ps=' + elementMaxSize +
-        let aEle = document.createElement('button')
-        // aEle.classList.add('indicator-link')
-        aEle.classList.add('mdui-btn')
-        if (currentPageCode === pageNum) {
-          aEle.classList.add('mdui-btn-active')
-          // aEle.classList.add('mdui-color-pink')
-        }
-        // aEle.href = '/index.html?pc=' + pageNum + '&ps=' + elementMaxSize;
-        // aEle.href = '/index.html?pc=' + pageNum + '&ps=' + elementMaxSize;
-        aEle.addEventListener('click', function () {
-          getUserList(pageNum, elementMaxSize)
-        })
-        aEle.appendChild(document.createTextNode(pageNum))
-        buttonGroup.appendChild(aEle)
-      }
-
-      let next = document.createElement('button')
-      next.classList.add('mdui-btn')
-      next.addEventListener('click', function () {
-        getUserList(currentPageCode + 1, elementMaxSize)
-      })
-      next.appendChild(document.createTextNode('>'))
-      buttonGroup.appendChild(next)
-
-      let last = document.createElement('button')
-      last.classList.add('mdui-btn')
-      last.addEventListener('click', function () {
-        getUserList(pageObj.totalPage, elementMaxSize)
-      })
-      last.appendChild(document.createTextNode('尾页'))
-      if (currentPageCode === totalPageSize) {
-        next.setAttribute('disabled', true)
-        last.setAttribute('disabled', true)
-      }
-      buttonGroup.appendChild(last)
-
-      indicatorEle.appendChild(buttonGroup)
-    },
-    setResultPosts (page) {
-      let posts = []
-      let content = page.content
-      content.forEach(post => {
-        posts.push(post)
-      })
-      this.myposts = posts
-      // this.blockminuid = page.currentBlockMinUid
-
-      /**
-       * 1. 分页必须的元素
-       *  1) 当前页码 currentPageCode
-       *  2） 一共多少页 totalPageSize
-       *  3） 数据库中一共多少条记录 totalElements
-       *
-       */
-      let tp = page.totalPage
-      let te = page.totalElements
-
-      // 1) 当前页码 currentPageCode
-      // let currentPageCode = sessionStorage.getItem('currentPageCode')
-      // if (currentPageCode === null) {
-      //   currentPageCode = 1
-      // }
-      // this.currentPageCode = parseInt(currentPageCode)
-
-      // 2）一共多少页 totalPageSize
-      this.totalPageSize = tp
-
-      // 3） 数据库中一共多少条记录 totalElements
-      this.totalElements = te
-
-      /**
-       * 如何显示下标？
-       * 1. 显示数量 showIndicatorSize
-       * @type {number}
-       */
-      this.isShowNext = this.currentPageCode < tp
-      this.isShowPrevious = this.currentPageCode > 1
-
-      this.parseIndicator(page)
-    },
     async reqPosts (currentPageCode, elementMaxSize) {
-      if (currentPageCode === null) {
+      if (!currentPageCode) {
         currentPageCode = 1
       } else if (currentPageCode < 1) {
         currentPageCode = 1
       }
-      // sessionStorage.setItem(keyCurrentSearchPageCode, this.currentPageCode)
-      this.currentPageCode = currentPageCode
-      console.log('currentPageCode:', currentPageCode)
-
+      sessionStorage.setItem(myPostsPageCode, currentPageCode)
       let re = await reqMyPostsPage(this.searchInput, currentPageCode, elementMaxSize)
       console.log(re)
       if (re.code === 0) {
-        console.log(re.code)
-        this.setResultPosts(re.data)
+        this.$refs.indicator.currentPageCode = currentPageCode
+        this.$refs.indicator.initIndicator(re.data)
+        this.myposts = re.data.content
       } else {
-        this.$router.replace('/login')
+        mdui.snackbar({
+          message: '服务器错误'
+        })
       }
-
-      // this.$store.dispatch('getPostsByMinBlockUid', {
-      //   currentblockuid: blockMinUid,
-      //   pagecode: currentPageCode,
-      //   pagesize: elementMaxSize
-      // })
     }
   },
   beforeRouteLeave (to, from, next) {

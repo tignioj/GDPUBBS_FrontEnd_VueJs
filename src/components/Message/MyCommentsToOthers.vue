@@ -77,7 +77,8 @@
       <div v-else>
         没有评论哈
       </div>
-      <div v-show="myCommentsToOthers.length >0" class="mdui-m-t-2" id="indicatortoother"></div>
+      <!--      <div v-show="myCommentsToOthers.length >0" class="mdui-m-t-2" id="indicatortoother"></div>-->
+      <Indicator  v-show="myCommentsToOthers.length >0" ref="indicator" @reqDataList="reqDataList"/>
     </div>
     <div v-if="!hasLoaded">
       <div class="mdui-progress">
@@ -91,6 +92,7 @@
 
 import {deleteOneCommentByUid, delCommentReply, reqCommentsPageToOthers} from '../../api'
 import mdui from 'mdui'
+import Indicator from '../Indicator'
 
 const myCommentsToOthersLocation = 'my_comments_to_others_location'
 const myCommentsToOthersSearchText = 'my_comments_to_others_search_text'
@@ -98,6 +100,7 @@ const myCommentsToOthersPageCode = 'my_comments_to_others_pagecode'
 
 export default {
   name: 'MyCommentsToOthers',
+  components: {Indicator},
   data () {
     return {
       hasLoaded: false,
@@ -105,187 +108,40 @@ export default {
       blockMinUid: '',
       blockBigUid: '',
       loggedInuserUid: null,
-      myCommentsToOthers: [],
-      indicatorsIndex: [],
-      /* 当前第几页 */
-      currentPageCode: 1,
-      /* 一共多少页 */
-      totalPageSize: 1,
-      /* 一次请求最多显示多少条记录 */
-      elementMaxSize: 5,
-      /* 显示下标数量 */
-      showIndicatorSize: 5,
-
-      /* 是否显示上一页 */
-      isShowPrevious: false,
-
-      /* 是否显示下一页 */
-      isShowNext: false
+      myCommentsToOthers: []
     }
   },
   methods: {
+    reqDataList ({currentPageCode, elementMaxSize, success, error}) {
+      this.reqPosts(currentPageCode, elementMaxSize)
+    },
     async reqPosts (currentPageCode, elementMaxSize) {
-      if (currentPageCode === null) {
+      if (!currentPageCode) {
         currentPageCode = 1
       } else if (currentPageCode < 1) {
         currentPageCode = 1
       }
-      // sessionStorage.setItem(keyCurrentSearchPageCode, this.currentPageCode)
-      this.currentPageCode = currentPageCode
-      console.log('currentPageCode:', currentPageCode)
+      sessionStorage.setItem(myCommentsToOthersPageCode, currentPageCode)
       let re = await reqCommentsPageToOthers(
         this.searchInput, currentPageCode, elementMaxSize)
       console.log(re)
       this.hasLoaded = true
       if (re.code === 0) {
-        this.setResultPosts(re.data)
+        this.$refs.indicator.currentPageCode = currentPageCode
+        this.$refs.indicator.initIndicator(re.data)
+        this.myCommentsToOthers = re.data.content
       } else {
-        // this.$router.replace('/login')
-      }
-    },
-    setResultPosts (page) {
-      let posts = []
-      let content = page.content
-      content.forEach(post => {
-        posts.push(post)
-      })
-      this.myCommentsToOthers = posts
-      // this.blockminuid = page.currentBlockMinUid
-
-      /**
-       * 1. 分页必须的元素
-       *  1) 当前页码 currentPageCode
-       *  2） 一共多少页 totalPageSize
-       *  3） 数据库中一共多少条记录 totalElements
-       */
-      let tp = page.totalPage
-      let te = page.totalElements
-
-      // 1) 当前页码 currentPageCode
-      // let currentPageCode = sessionStorage.getItem('currentPageCode')
-      // if (currentPageCode === null) {
-      //   currentPageCode = 1
-      // }
-      // this.currentPageCode = parseInt(currentPageCode)
-
-      // 2）一共多少页 totalPageSize
-      this.totalPageSize = tp
-
-      // 3） 数据库中一共多少条记录 totalElements
-      this.totalElements = te
-
-      /**
-       * 如何显示下标？
-       * 1. 显示数量 showIndicatorSize
-       * @type {number}
-       */
-      this.isShowNext = this.currentPageCode < tp
-      this.isShowPrevious = this.currentPageCode > 1
-
-      this.parseIndicator(page)
-    },
-    /**
-     * 分页
-     * @param pageObj
-     */
-    parseIndicator (pageObj) {
-      let totalPageSize = this.totalPageSize
-      let currentPageCode = this.currentPageCode
-      let showIndicatorSize = this.showIndicatorSize
-      let indicatorsIndex = this.indicatorsIndex
-      let getUserList = this.reqPosts
-      let elementMaxSize = this.elementMaxSize
-
-      totalPageSize = pageObj.totalPage
-      let indexs = []
-      // 显示5个下标
-      let showMax = showIndicatorSize * (Math.floor((currentPageCode - 1) / showIndicatorSize) + 1)
-      for (let i = showMax - showIndicatorSize + 1; i <= showMax; i++) {
-        if (i > totalPageSize) {
-          break
-        }
-        indexs.push(i)
-      }
-      indicatorsIndex = indexs
-
-      let indicatorEle = document.getElementById('indicatortoother')
-
-      if (indicatorEle !== null) {
-        indicatorEle.innerHTML = ''
-      }
-      let buttonGroup = document.createElement('div')
-      buttonGroup.classList.add('mdui-btn-group')
-      buttonGroup.classList.add('mdui-row')
-
-      let first = document.createElement('button')
-      first.classList.add('mdui-btn')
-      first.addEventListener('click', function () {
-        getUserList(1, elementMaxSize)
-      })
-      first.appendChild(document.createTextNode('首页'))
-      buttonGroup.appendChild(first)
-
-      let previous = document.createElement('button')
-      previous.classList.add('mdui-btn')
-      if (currentPageCode === 1) {
-        previous.setAttribute('disabled', true)
-        first.setAttribute('disabled', true)
-      }
-      previous.addEventListener('click', function () {
-        getUserList(currentPageCode - 1, elementMaxSize)
-      })
-
-      previous.appendChild(document.createTextNode('<'))
-      buttonGroup.appendChild(previous)
-
-      for (let i = 0; i < indicatorsIndex.length; i++) {
-        let pageNum = indicatorsIndex[i]
-        // let html = '<a href="./index.html?pc="' + pageNum + '&ps=' + elementMaxSize +
-        let aEle = document.createElement('button')
-        // aEle.classList.add('indicator-link')
-        aEle.classList.add('mdui-btn')
-        if (currentPageCode === pageNum) {
-          aEle.classList.add('mdui-btn-active')
-          // aEle.classList.add('mdui-color-pink')
-        }
-        // aEle.href = '/index.html?pc=' + pageNum + '&ps=' + elementMaxSize;
-        // aEle.href = '/index.html?pc=' + pageNum + '&ps=' + elementMaxSize;
-        aEle.addEventListener('click', function () {
-          getUserList(pageNum, elementMaxSize)
+        mdui.snackbar({
+          message: '服务器出错'
         })
-        aEle.appendChild(document.createTextNode(pageNum))
-        buttonGroup.appendChild(aEle)
       }
-
-      let next = document.createElement('button')
-      next.classList.add('mdui-btn')
-      next.addEventListener('click', function () {
-        getUserList(currentPageCode + 1, elementMaxSize)
-      })
-      next.appendChild(document.createTextNode('>'))
-      buttonGroup.appendChild(next)
-
-      let last = document.createElement('button')
-      last.classList.add('mdui-btn')
-      last.addEventListener('click', function () {
-        getUserList(pageObj.totalPage, elementMaxSize)
-      })
-      last.appendChild(document.createTextNode('尾页'))
-      if (currentPageCode === totalPageSize) {
-        next.setAttribute('disabled', true)
-        last.setAttribute('disabled', true)
-      }
-      buttonGroup.appendChild(last)
-
-      indicatorEle.appendChild(buttonGroup)
     },
     reqComments () {
       let pc = sessionStorage.getItem(myCommentsToOthersPageCode)
-      this.currentPageCode = (pc === null) ? this.currentPageCode : parseInt(pc)
+      let currentPageCode = (pc === null) ? 1 : parseInt(pc)
       let text = sessionStorage.getItem(myCommentsToOthersSearchText)
       this.searchInput = (text === null) ? '' : text
-      this.reqPosts(this.currentPageCode, this.elementMaxSize)
-
+      this.reqPosts(currentPageCode, this.$refs.indicator.elementMaxSize)
       this.$nextTick(() => {
         let pos = sessionStorage.getItem(myCommentsToOthersLocation)
         console.log('scrollto', pos)
@@ -305,10 +161,9 @@ export default {
         mdui.snackbar({
           message: '删除成功'
         })
-
         let pos = window.pageYOffset
         sessionStorage.setItem(myCommentsToOthersLocation, pos)
-        this.reqPosts(this.currentPageCode, this.elementMaxSize)
+        this.reqPosts(this.$refs.indicator.currentPageCode, this.$refs.indicator.elementMaxSize)
       }
     },
     async confirmDeleteCommentsReply (uid) {
@@ -322,22 +177,21 @@ export default {
         })
         let pos = window.pageYOffset
         sessionStorage.setItem(myCommentsToOthersLocation, pos)
-        this.reqPosts(this.currentPageCode, this.elementMaxSize)
+        this.reqPosts(this.$refs.indicator.currentPageCode, this.$refs.indicator.elementMaxSize)
       }
     },
     search () {
       sessionStorage.setItem(myCommentsToOthersSearchText, this.searchInput)
       sessionStorage.removeItem(myCommentsToOthersLocation)
       sessionStorage.removeItem(myCommentsToOthersPageCode)
-      this.currentPageCode = 1
+      this.$refs.indicator.currentPageCode = 1
       this.reqComments()
     },
-
     saveCurrentInfo () {
       let pos = window.pageYOffset
       sessionStorage.setItem(myCommentsToOthersLocation, pos)
       sessionStorage.setItem(myCommentsToOthersSearchText, this.searchInput)
-      sessionStorage.setItem(myCommentsToOthersPageCode, this.currentPageCode)
+      sessionStorage.setItem(myCommentsToOthersPageCode, this.$refs.indicator.currentPageCode)
     },
     deleteComment (uid, type) {
       const self = this

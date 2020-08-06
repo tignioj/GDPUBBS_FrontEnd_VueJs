@@ -390,6 +390,7 @@ export default new Router({
     },
     /* 登录 */
     {
+      name: routerURL.LOGIN,
       path: routerUrl.LOGIN,
       component: Login,
       meta: {

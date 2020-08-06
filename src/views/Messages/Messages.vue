@@ -91,7 +91,7 @@ export default {
     }
   },
   beforeRouteLeave (to, from, next) {
-    if (this.$refs.comonent !== undefined) {
+    if (this.$refs.component !== undefined) {
       this.$refs.component.saveCurrentInfo()
     }
     next()

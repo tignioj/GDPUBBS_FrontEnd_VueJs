@@ -400,7 +400,7 @@ function parseLine (singleLine) {
   // 高亮==
   let hlReg = /(^|[^\\])==([^=]*?)==/g
   if (hlReg.test(singleLine)) {
-    singleLine = singleLine.replace(hlReg, '$1<span style=\'background: yellow\'>$2</span>')
+    singleLine = singleLine.replace(hlReg, '$1<span class="md-highlight" >$2</span>')
     //  singleLine = singleLine.replace(/\\=/g, "=");
   }
   singleLine = singleLine.replace(/\\=/g, '=')
