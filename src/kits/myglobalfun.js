@@ -27,7 +27,7 @@ const cleanTopTabCard = function () {
  */
 const onlyTopHeaderBar = function () {
   addBodyComponentClass()
-  document.body.classList.remove('mdui-appbar-with-tab-larger', 'mdui-appbar-with-toolbar')
+  document.body.classList.remove('mdui-appbar-with-tab-larger')
 }
 
 /**

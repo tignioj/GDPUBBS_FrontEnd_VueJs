@@ -264,11 +264,12 @@ export default {
       return true
     }
   },
-  mounted () {
-    this.from = this.$route.query.from
-    this.myglobalfun.cleanBodyComponentClass()
+  activated () {
     this.myglobalfun.onlyTopHeaderBar()
-    debugger
+  },
+  mounted () {
+    this.myglobalfun.onlyTopHeaderBar()
+    this.from = this.$route.query.from
     this.$nextTick(() => {
       document.getElementById('username').focus()
       this.getCaptcha()
