@@ -105,8 +105,8 @@
             <span v-if="postComment.postCommentFromuser.userUid !== commentReply.commentReplyTouser.userUid">
                       回复
                     <a
-                      @click="$router.push(globaRouterURL.PROFILE_OTHER + '/' + commentReply.commentReplyFromuser.userAccount)"
-                    > {{ commentReply.commentReplyFromuser.userAccount }} </a>
+                      @click="$router.push(globaRouterURL.PROFILE_OTHER + '/' + commentReply.commentReplyTouser.userAccount)"
+                    > {{ commentReply.commentReplyTouser.userAccount }} </a>
                     </span> :
             <span @click.stop="showReply(postComment, commentReply.commentReplyFromuser)">
             {{ commentReply.commentReplyContent }}

@@ -205,7 +205,6 @@ export default {
       this.postImg = null
     },
     preview () {
-      let f = this.$refs.form
       let content = this.postContent.trim()
       let title = this.postTitle
       let musicLink = this.musicLink
@@ -291,11 +290,9 @@ export default {
               view = false
             },
             onClose: function () {
-              debugger
               view = false
             },
             onClosed: function () {
-              debugger
               view = false
             }
           })

@@ -147,7 +147,6 @@ export default {
   },
   mounted () {
     this.postuser = this.userProfile
-    debugger
     this.getpost()
   },
   methods: {
